@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ozu Tourism Club</title>
+<style>
+  :root{
+    --bg:#f4f5fa; --bg-elev:#ffffff; --bg-soft:#eceefa; --text:#1c1f27; --text-dim:#5b6072;
+    --border:#e3e5ee; --accent:#6a5cff; --accent-dim:#efedff; --accent-contrast:#ffffff;
+    --danger:#e5484d; --danger-dim:#fdeceb; --success:#1f9254; --success-dim:#e7f7ee;
+    --warn:#b7791f; --warn-dim:#fdf3e1;
+    --radius:14px; --radius-sm:8px;
+    --shadow:0 1px 2px rgba(20,20,45,.06),0 6px 16px rgba(20,20,45,.06);
+    --sidebar-bg:#181a24; --sidebar-text:#cdd0dc; --sidebar-text-dim:#82869a; --sidebar-active:#262a3a;
+  }
+  :root[data-theme="dark"]{
+    --bg:#14151c; --bg-elev:#1d1f2a; --bg-soft:#242737; --text:#e7e8f0; --text-dim:#9a9db0;
+    --border:#2c2f40; --accent:#8b7fff; --accent-dim:#2a2650; --accent-contrast:#ffffff;
+    --danger:#ff6b6f; --danger-dim:#3a2027; --success:#3fcc7e; --success-dim:#123425;
+    --warn:#f0b35a; --warn-dim:#3a2e17;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.35);
+    --sidebar-bg:#0f1017; --sidebar-text:#c8cad6; --sidebar-text-dim:#6e7186; --sidebar-active:#1c1e2a;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14151c; --bg-elev:#1d1f2a; --bg-soft:#242737; --text:#e7e8f0; --text-dim:#9a9db0;
+      --border:#2c2f40; --accent:#8b7fff; --accent-dim:#2a2650; --accent-contrast:#ffffff;
+      --danger:#ff6b6f; --danger-dim:#3a2027; --success:#3fcc7e; --success-dim:#123425;
+      --warn:#f0b35a; --warn-dim:#3a2e17;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.35);
+      --sidebar-bg:#0f1017; --sidebar-text:#c8cad6; --sidebar-text-dim:#6e7186; --sidebar-active:#1c1e2a;
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:14px; line-height:1.5;
+  }
+  [hidden]{ display:none !important; }
+  button, input, select, textarea{ font:inherit; color:inherit; }
+  button{ cursor:pointer; }
+  svg.icon{ width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; vertical-align:-3px; }
+
+  /* Auth screens (same look as the Classwork Organizer lock screen) */
+  #auth-screen{ position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:9999; padding:16px; }
+  .lock-box{ width:min(340px,100%); background:var(--bg-elev); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:28px 26px; text-align:center; }
+  .lock-box .brand-mark{ display:flex; align-items:center; justify-content:center; gap:8px; font-weight:700; font-size:13px; color:var(--text-dim); margin-bottom:14px; }
+  .lock-box .brand-mark .dot{ width:10px; height:10px; border-radius:3px; background:var(--accent); }
+  .lock-box h1{ font-size:16px; font-weight:700; margin:0 0 4px; }
+  .lock-box p{ font-size:12.5px; color:var(--text-dim); margin:0 0 18px; }
+  .lock-box input{ width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:14px; margin-bottom:10px; }
+  .lock-box input:focus{ outline:none; border-color:var(--accent); }
+  .lock-btn{ width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:none; background:var(--accent); color:var(--accent-contrast); font-size:14px; font-weight:600; }
+  .lock-btn:disabled{ opacity:.6; cursor:default; }
+  .lock-btn.secondary{ background:var(--bg-soft); color:var(--text); margin-top:8px; }
+  .lock-error{ color:var(--danger); font-size:12.5px; margin-top:10px; min-height:16px; }
+  .lock-switch{ font-size:12.5px; color:var(--text-dim); margin-top:14px; }
+  .lock-switch a{ color:var(--accent); cursor:pointer; text-decoration:underline; }
+  .lang-switch{ display:inline-flex; border:1px solid var(--border); border-radius:20px; overflow:hidden; margin-top:18px; }
+  .lang-switch button{ border:none; background:transparent; padding:4px 12px; font-size:12px; color:var(--text-dim); }
+  .lang-switch button.active{ background:var(--accent); color:var(--accent-contrast); }
+  .wait-icon{ width:44px; height:44px; border-radius:50%; background:var(--accent-dim); color:var(--accent); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; }
+  .wait-icon svg{ width:22px; height:22px; }
+
+  /* App shell */
+  #app{ display:flex; min-height:100vh; }
+  .sidebar{ width:240px; flex-shrink:0; background:var(--sidebar-bg); color:var(--sidebar-text); display:flex; flex-direction:column; padding:16px 12px; position:sticky; top:0; height:100vh; }
+  .brand{ display:flex; align-items:center; gap:10px; padding:6px 8px 18px; font-weight:700; font-size:15px; color:#fff; }
+  .brand .dot{ width:10px; height:10px; border-radius:3px; background:var(--accent); }
+  .nav-item{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; padding:9px 10px; border-radius:var(--radius-sm); background:transparent; border:none; color:var(--sidebar-text); font-size:13.5px; transition:transform .12s ease, background .12s ease; margin-bottom:2px; }
+  .nav-item:hover{ background:var(--sidebar-active); transform:scale(1.03); }
+  .nav-item.active{ background:var(--sidebar-active); color:#fff; }
+  .nav-item.active svg{ stroke:var(--accent); }
+  .nav-badge{ margin-left:auto; background:var(--accent); color:#fff; font-size:11px; border-radius:10px; padding:0 7px; }
+  .sidebar-spacer{ flex:1; }
+  .sidebar-footer{ padding-top:10px; border-top:1px solid #2a2c38; }
+  .side-user{ display:flex; align-items:center; gap:9px; padding:6px 10px 10px; font-size:13px; }
+  .side-user .role{ font-size:11px; color:var(--sidebar-text-dim); }
+  .side-btn{ display:flex; align-items:center; gap:8px; width:100%; padding:8px 10px; border-radius:var(--radius-sm); background:transparent; border:none; color:var(--sidebar-text-dim); font-size:12.5px; text-align:left; }
+  .side-btn:hover{ background:var(--sidebar-active); color:#fff; }
+  .sidebar .lang-switch{ margin:6px 10px 4px; border-color:#2f3242; }
+  .sidebar .lang-switch button{ color:var(--sidebar-text-dim); }
+  .sidebar .lang-switch button.active{ color:#fff; }
+  .offline-badge{ margin:6px 10px; font-size:11.5px; color:var(--warn); }
+  .topbar{ display:none; }
+  .scrim{ display:none; }
+
+  .main{ flex:1; min-width:0; padding:26px 34px 60px; }
+  .view{ display:none; }
+  .view.active{ display:block; }
+  h1{ font-size:22px; margin:0; }
+  .muted{ color:var(--text-dim); }
+  .small{ font-size:12.5px; }
+  .page-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+  .toolbar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+
+  .btn{ display:inline-flex; align-items:center; gap:7px; padding:8px 14px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg-elev); color:var(--text); font-size:13.5px; font-weight:500; transition:transform .12s ease, border-color .12s ease, color .12s ease; white-space:nowrap; }
+  .btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .btn-primary{ background:var(--accent); border-color:var(--accent); color:var(--accent-contrast); }
+  .btn-primary:hover{ color:var(--accent-contrast); filter:brightness(1.07); }
+  .btn-danger{ color:var(--danger); }
+  .btn-danger:hover{ border-color:var(--danger); color:var(--danger); }
+  .btn-sm{ padding:5px 10px; font-size:12.5px; }
+  .btn-icon{ padding:7px; }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
+  .seg{ display:inline-flex; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; background:var(--bg-elev); }
+  .seg button{ border:none; background:transparent; padding:7px 12px; font-size:13px; color:var(--text-dim); }
+  .seg button + button{ border-left:1px solid var(--border); }
+  .seg button.active{ background:var(--accent-dim); color:var(--accent); font-weight:600; }
+
+  .card{ background:var(--bg-elev); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+  .empty-state{ text-align:center; padding:40px 20px; color:var(--text-dim); }
+  .chip{ display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:20px; border:1px solid var(--border); background:var(--bg-elev); font-size:12.5px; color:var(--text-dim); }
+  .chip.active{ background:var(--accent-dim); border-color:var(--accent); color:var(--accent); font-weight:600; }
+  select.chip{ padding:5px 10px; }
+  .badge{ display:inline-flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600; padding:2px 8px; border-radius:10px; background:var(--bg-soft); color:var(--text-dim); white-space:nowrap; }
+  .badge.p-high{ background:var(--danger-dim); color:var(--danger); }
+  .badge.p-medium{ background:var(--warn-dim); color:var(--warn); }
+  .badge.p-low{ background:var(--success-dim); color:var(--success); }
+  .badge.full{ background:var(--success-dim); color:var(--success); }
+  .badge.accent{ background:var(--accent-dim); color:var(--accent); }
+  .avatar{ width:24px; height:24px; border-radius:50%; background:var(--accent-dim); color:var(--accent); font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; border:2px solid var(--bg-elev); }
+  .avatars{ display:inline-flex; }
+  .avatars .avatar + .avatar{ margin-left:-7px; }
+
+  /* Schedule: month */
+  .cal-title{ font-size:16px; font-weight:700; min-width:150px; text-transform:capitalize; }
+  .month-grid{ display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); border-top:1px solid var(--border); border-left:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:var(--bg-elev); }
+  .month-head{ padding:8px; font-size:11.5px; font-weight:700; text-transform:uppercase; color:var(--text-dim); border-right:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-soft); }
+  .month-cell{ min-height:108px; padding:4px 5px 6px; border-right:1px solid var(--border); border-bottom:1px solid var(--border); cursor:pointer; overflow:hidden; }
+  .month-cell:hover{ background:var(--bg-soft); }
+  .month-cell.other{ background:var(--bg); }
+  .month-cell.other .day-num{ color:var(--text-dim); opacity:.6; }
+  .day-num{ font-size:12px; font-weight:600; width:24px; height:24px; display:flex; align-items:center; justify-content:center; border-radius:50%; margin-bottom:2px; }
+  .month-cell.today .day-num{ background:var(--accent); color:#fff; }
+  .ev-chip{ display:block; width:100%; text-align:left; border:none; border-radius:5px; padding:2px 6px; margin-bottom:2px; font-size:11.5px; line-height:1.35; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .ev-chip.timed{ background:transparent !important; color:var(--text); padding-left:4px; }
+  .ev-chip.timed .ev-dot{ display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:4px; vertical-align:1px; }
+  .ev-chip:hover{ filter:brightness(1.1); }
+  .ev-chip.timed:hover{ background:var(--bg-soft) !important; }
+  .more-link{ font-size:11.5px; color:var(--text-dim); border:none; background:none; padding:0 6px; }
+  .more-link:hover{ color:var(--accent); }
+
+  /* Schedule: week */
+  .week-wrap{ background:var(--bg-elev); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+  .week-head, .week-allday{ display:grid; grid-template-columns:52px repeat(7,minmax(0,1fr)); border-bottom:1px solid var(--border); }
+  .week-head div{ padding:8px 4px; text-align:center; font-size:12px; color:var(--text-dim); border-left:1px solid var(--border); text-transform:capitalize; }
+  .week-head div:first-child, .week-allday > div:first-child{ border-left:none; }
+  .week-head .today{ color:var(--accent); font-weight:700; }
+  .week-allday > div{ border-left:1px solid var(--border); padding:3px; min-height:26px; }
+  .week-allday .lbl{ font-size:10.5px; color:var(--text-dim); padding:6px 4px; }
+  .week-body{ position:relative; display:grid; grid-template-columns:52px repeat(7,minmax(0,1fr)); height:600px; overflow-y:auto; }
+  .week-hours div{ height:44px; font-size:10.5px; color:var(--text-dim); text-align:right; padding-right:6px; transform:translateY(-7px); }
+  .week-col{ position:relative; border-left:1px solid var(--border); background-image:repeating-linear-gradient(to bottom, transparent 0, transparent 43px, var(--border) 43px, var(--border) 44px); height:1056px; cursor:pointer; }
+  .week-ev{ position:absolute; left:2px; right:2px; border-radius:6px; padding:2px 5px; font-size:11px; color:#fff; overflow:hidden; border:1px solid rgba(255,255,255,.35); text-align:left; line-height:1.3; }
+  .week-ev b{ display:block; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  /* Schedule: list */
+  .agenda-day{ margin-bottom:16px; }
+  .agenda-date{ font-size:12.5px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:.03em; margin:0 0 6px; }
+  .agenda-date.today{ color:var(--accent); }
+  .agenda-item{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:11px 14px; margin-bottom:6px; background:var(--bg-elev); border:1px solid var(--border); border-radius:var(--radius-sm); }
+  .agenda-item:hover{ border-color:var(--accent); }
+  .agenda-bar{ width:4px; align-self:stretch; border-radius:3px; flex-shrink:0; }
+  .agenda-time{ width:92px; flex-shrink:0; font-size:12.5px; color:var(--text-dim); }
+  .agenda-main{ flex:1; min-width:0; }
+  .agenda-main b{ display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  /* Tasks: board */
+  .filters{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .kanban{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; align-items:start; }
+  .kanban-col{ background:var(--bg-soft); border-radius:var(--radius); padding:10px; min-height:200px; transition:background .12s; }
+  .kanban-col.drop-target{ background:var(--accent-dim); }
+  .kanban-col h3{ display:flex; align-items:center; justify-content:space-between; font-size:13px; margin:2px 4px 10px; }
+  .kanban-col h3 .count{ font-size:12px; color:var(--text-dim); font-weight:500; }
+  .task-card{ background:var(--bg-elev); border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:8px; cursor:pointer; box-shadow:var(--shadow); user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
+  .task-card:hover{ border-color:var(--accent); }
+  .task-card.dragging{ opacity:.4; }
+  .task-card .t-title{ font-weight:600; margin-bottom:6px; word-break:break-word; }
+  .task-card .t-meta{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:12px; color:var(--text-dim); }
+  .task-card .t-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:8px; }
+  .drop-line{ height:3px; background:var(--accent); border-radius:2px; margin:-2px 0 6px; }
+  .overdue{ color:var(--danger) !important; }
+
+  /* Tasks: list */
+  .table-wrap{ overflow-x:auto; }
+  table.tbl{ width:100%; border-collapse:collapse; background:var(--bg-elev); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+  .tbl th, .tbl td{ padding:10px 12px; text-align:left; border-bottom:1px solid var(--border); font-size:13px; white-space:nowrap; }
+  .tbl th{ font-size:12px; color:var(--text-dim); background:var(--bg-soft); cursor:pointer; user-select:none; }
+  .tbl th.nosort{ cursor:default; }
+  .tbl tr.row-link{ cursor:pointer; }
+  .tbl tr.row-link:hover td{ background:var(--bg-soft); }
+  .tbl td.wrap{ white-space:normal; min-width:180px; }
+
+  /* Members */
+  .section-title{ font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--text-dim); margin:22px 0 10px; }
+  .section-title:first-of-type{ margin-top:0; }
+  .member-row{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+  .member-row:last-child{ border-bottom:none; }
+  .member-row .grow{ flex:1; min-width:140px; }
+
+  /* Modals */
+  .modal{ position:fixed; inset:0; z-index:100; display:flex; justify-content:center; align-items:flex-start; padding:16px; overflow-y:auto; }
+  .modal-overlay{ position:fixed; inset:0; background:rgba(10,10,20,.45); }
+  .modal-box{ position:relative; margin-top:6vh; width:100%; max-width:480px; background:var(--bg-elev); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px 24px; }
+  .modal-box.wide{ max-width:640px; }
+  .modal-title{ font-size:16px; font-weight:700; margin:0 0 16px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .modal-close{ background:none; border:none; color:var(--text-dim); padding:4px; }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:8px; margin-top:18px; flex-wrap:wrap; }
+  .modal-actions .left{ margin-right:auto; }
+  .field{ margin-bottom:12px; }
+  .field > label, .field-label{ display:block; font-size:12.5px; font-weight:600; color:var(--text-dim); margin-bottom:5px; }
+  .field input[type=text], .field input[type=number], .field input[type=date], .field input[type=time], .field select, .field textarea{
+    width:100%; padding:9px 11px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg); font-size:13.5px; }
+  .field textarea{ min-height:80px; resize:vertical; }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline:none; border-color:var(--accent); }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .inline{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .inline input[type=number]{ width:72px; }
+  .check{ display:inline-flex; align-items:center; gap:6px; font-size:13.5px; cursor:pointer; }
+  .wd-picks{ display:flex; gap:5px; flex-wrap:wrap; }
+  .wd-picks label{ cursor:pointer; }
+  .wd-picks input{ display:none; }
+  .wd-picks span{ display:inline-flex; width:38px; height:32px; align-items:center; justify-content:center; border-radius:var(--radius-sm); border:1px solid var(--border); font-size:12px; }
+  .wd-picks input:checked + span{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .swatches{ display:flex; gap:8px; }
+  .swatches label{ cursor:pointer; }
+  .swatches input{ display:none; }
+  .swatches span{ display:block; width:24px; height:24px; border-radius:50%; border:3px solid transparent; }
+  .swatches input:checked + span{ border-color:var(--text); }
+  .repeat-box{ background:var(--bg-soft); border-radius:var(--radius-sm); padding:12px; margin-bottom:12px; }
+  .repeat-box .field:last-child{ margin-bottom:0; }
+  .detail-line{ display:flex; gap:10px; align-items:flex-start; margin-bottom:9px; font-size:13.5px; }
+  .detail-line svg{ margin-top:3px; color:var(--text-dim); }
+  .detail-desc{ white-space:pre-wrap; word-break:break-word; background:var(--bg-soft); border-radius:var(--radius-sm); padding:10px 12px; margin:10px 0; font-size:13.5px; }
+  .title-dot{ width:12px; height:12px; border-radius:4px; flex-shrink:0; display:inline-block; }
+  .linked-task{ display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:6px; width:100%; background:var(--bg-elev); text-align:left; }
+  .linked-task:hover{ border-color:var(--accent); }
+  .scope-btn{ display:block; width:100%; text-align:left; padding:11px 14px; margin-bottom:8px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg-elev); font-weight:500; }
+  .scope-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .claimer{ display:flex; align-items:center; gap:8px; padding:5px 0; }
+  .claimer .grow{ flex:1; }
+  .comments{ margin-top:6px; }
+  .comment{ padding:9px 0; border-bottom:1px solid var(--border); }
+  .comment-head{ display:flex; align-items:center; gap:8px; font-size:12.5px; }
+  .comment-head .grow{ flex:1; }
+  .comment-body{ margin:4px 0 0 32px; white-space:pre-wrap; word-break:break-word; font-size:13.5px; }
+  .comment-form{ display:flex; gap:8px; margin-top:10px; align-items:flex-end; }
+  .comment-form textarea{ flex:1; min-height:42px; padding:9px 11px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg); resize:vertical; }
+  .menu-list button{ display:block; width:100%; text-align:left; padding:12px 14px; border:none; border-bottom:1px solid var(--border); background:none; font-size:14px; }
+  .menu-list button:last-child{ border-bottom:none; }
+  .menu-list button.current{ color:var(--accent); font-weight:600; }
+
+  .toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--text); color:var(--bg-elev); padding:10px 18px; border-radius:20px; font-size:13px; z-index:300; box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; max-width:calc(100vw - 32px); text-align:center; }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(-6px); }
+  .toast.error{ background:var(--danger); color:#fff; }
+  .demo-banner{ background:var(--warn-dim); color:var(--warn); font-size:12.5px; padding:6px 12px; border-radius:var(--radius-sm); margin-bottom:14px; }
+
+  @media (max-width: 860px){
+    .kanban{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 760px){
+    #app{ display:block; }
+    .topbar{ display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:40; background:var(--sidebar-bg); color:#fff; padding:10px 16px; font-weight:700; }
+    .topbar button{ background:none; border:none; color:#fff; padding:4px; }
+    .sidebar{ position:fixed; left:0; top:0; z-index:60; transform:translateX(-100%); transition:transform .2s ease; }
+    body.nav-open .sidebar{ transform:none; }
+    body.nav-open .scrim{ display:block; position:fixed; inset:0; z-index:50; background:rgba(0,0,0,.4); }
+    .main{ padding:16px 16px 60px; }
+    .month-cell{ min-height:64px; padding:2px; }
+    .ev-chip{ font-size:10px; padding:1px 3px; }
+    .ev-chip.timed .ev-dot{ display:none; }
+    .month-head{ padding:6px 2px; font-size:10px; text-align:center; }
+    .week-head div{ font-size:10.5px; padding:6px 1px; }
+    .modal{ padding:0; }
+    .modal-box{ margin-top:0; max-width:100%; min-height:100%; border-radius:0; padding:18px 16px; }
+    .row2{ grid-template-columns:1fr; }
+    .agenda-time{ width:70px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================= Auth screens ======================= -->
+<div id="auth-screen">
+  <div class="lock-box">
+    <div class="brand-mark"><span class="dot"></span><span>Ozu Tourism Club</span></div>
+
+    <div id="signin-box">
+      <h1 data-i18n="signIn"></h1>
+      <p data-i18n="signInSub"></p>
+      <input type="text" id="si-user" autocomplete="username" data-i18n-ph="username" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <input type="password" id="si-pass" autocomplete="current-password" data-i18n-ph="password">
+      <button class="lock-btn" id="si-btn" data-action="signin" data-i18n="signIn"></button>
+      <div class="lock-error" id="si-error"></div>
+      <div class="lock-switch"><span data-i18n="noAccount"></span> <a data-action="show-signup" data-i18n="signUp"></a></div>
+    </div>
+
+    <div id="signup-box" hidden>
+      <h1 data-i18n="createAccount"></h1>
+      <p data-i18n="signUpSub"></p>
+      <input type="text" id="su-user" autocomplete="username" data-i18n-ph="username" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <input type="password" id="su-pass" autocomplete="new-password" data-i18n-ph="password">
+      <input type="password" id="su-pass2" autocomplete="new-password" data-i18n-ph="repeatPassword">
+      <button class="lock-btn" id="su-btn" data-action="signup" data-i18n="signUp"></button>
+      <div class="lock-error" id="su-error"></div>
+      <div class="lock-switch"><span data-i18n="haveAccount"></span> <a data-action="show-signin" data-i18n="signIn"></a></div>
+    </div>
+
+    <div id="waiting-box" hidden>
+      <div class="wait-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+      <h1 id="waiting-title"></h1>
+      <p id="waiting-text"></p>
+      <button class="lock-btn" data-action="check-status" id="waiting-refresh" data-i18n="checkAgain"></button>
+      <button class="lock-btn secondary" data-action="signout" data-i18n="signOut"></button>
+    </div>
+
+    <div id="setup-box" hidden>
+      <h1 data-i18n="setupTitle"></h1>
+      <p data-i18n="setupText"></p>
+    </div>
+
+    <div class="lang-switch"><button data-action="lang" data-lang="tr">TR</button><button data-action="lang" data-lang="en">EN</button></div>
+  </div>
+</div>
+
+<!-- ======================= App ======================= -->
+<div id="app" hidden>
+  <div class="topbar">
+    <button data-action="toggle-nav" aria-label="Menu"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    <span>Ozu Tourism Club</span>
+  </div>
+  <div class="scrim" data-action="toggle-nav"></div>
+  <aside class="sidebar">
+    <div class="brand"><span class="dot"></span><span>Ozu Tourism Club</span></div>
+    <nav id="nav"></nav>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-footer">
+      <div class="offline-badge" id="offline-badge" hidden data-i18n="offline"></div>
+      <div class="side-user" id="side-user"></div>
+      <div class="lang-switch"><button data-action="lang" data-lang="tr">TR</button><button data-action="lang" data-lang="en">EN</button></div>
+      <button class="side-btn" data-action="theme"><svg class="icon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span data-i18n="theme"></span></button>
+      <button class="side-btn" data-action="signout"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span data-i18n="signOut"></span></button>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="demo-banner" id="demo-banner" hidden data-i18n="demoBanner"></div>
+    <section class="view" id="view-schedule"></section>
+    <section class="view" id="view-tasks"></section>
+    <section class="view" id="view-members"></section>
+  </main>
+</div>
+
+<div id="modal-root"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
+<script>
+'use strict';
+
+/* =====================================================================
+   Config
+   ===================================================================== */
+const SUPABASE_URL = 'https://wmttnctgusoobzjxldts.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Z6WY5xtQYJhIWXtmTUx2Fg_SuG8sbhe';
+const EMAIL_DOMAIN = 'ozu-tourism-club.local';
+const DEMO = new URLSearchParams(location.search).has('demo');
+
+/* =====================================================================
+   Translations
+   ===================================================================== */
+const I18N = {
+  tr: {
+    signIn:'Giriş yap', signInSub:'Kulüp hesabınla giriş yap', signUp:'Kayıt ol', createAccount:'Hesap oluştur',
+    signUpSub:'Kaydolduktan sonra bir yöneticinin onayı gerekir', username:'Kullanıcı adı', password:'Şifre',
+    repeatPassword:'Şifreyi tekrar gir', noAccount:'Hesabın yok mu?', haveAccount:'Hesabın var mı?',
+    checkAgain:'Tekrar kontrol et', signOut:'Çıkış yap', theme:'Tema', offline:'● Çevrimdışı — yeniden bağlanıyor',
+    waitingTitle:'Onay bekleniyor', waitingText:'Bir yöneticinin üyeliğini onaylaması bekleniyor. Onaylandığında uygulama kendiliğinden açılacak.',
+    rejectedTitle:'Başvuru onaylanmadı', rejectedText:'Üyelik başvurun bir yönetici tarafından onaylanmadı.',
+    setupTitle:'Supabase ayarlanmadı', setupText:'index.html içindeki SUPABASE_URL ve SUPABASE_ANON_KEY değerlerini kulübün Supabase projesine göre ayarla.',
+    demoBanner:'Demo modu — veriler sadece bu sekmede tutulur ve kaydedilmez.',
+    errFill:'Kullanıcı adı ve şifre gir', errUserRule:'Kullanıcı adı: en az 3 karakter, sadece harf, rakam ve . _ -',
+    errPassLen:'Şifre en az 6 karakter olmalı', errPassMatch:'Şifreler eşleşmiyor', errTaken:'Bu kullanıcı adı alınmış',
+    errBadLogin:'Kullanıcı adı veya şifre hatalı', errNoPerm:'Bunu yapma yetkin yok', errTaskFull:'Bu görev zaten dolu',
+    errGeneric:'Bir hata oluştu', errTitle:'Başlık gerekli', errEndBeforeStart:'Bitiş, başlangıçtan sonra olmalı',
+    errWeekdays:'En az bir gün seç', errUntil:'Bitiş tarihi başlangıçtan önce olamaz',
+    navSchedule:'Takvim', navTasks:'Görevler', navMembers:'Üyeler',
+    roleAdmin:'Yönetici', roleMember:'Üye', rolePending:'Onay bekliyor',
+    today:'Bugün', month:'Ay', week:'Hafta', list:'Liste', newEvent:'Yeni etkinlik', editEvent:'Etkinliği düzenle',
+    allDay:'Tüm gün', more:'+{n} daha', noEvents:'Bu aralıkta etkinlik yok', upcoming:'Yaklaşan',
+    title:'Başlık', description:'Açıklama', location:'Konum', color:'Renk', startDate:'Başlangıç tarihi', startTime:'Başlangıç saati',
+    endDate:'Bitiş tarihi', endTime:'Bitiş saati', repeat:'Tekrar', every:'Her', onDays:'Günler', repeatEnds:'Bitiş',
+    rNone:'Tekrarlanmaz', rDaily:'Günlük', rWeekly:'Haftalık', rMonthly:'Aylık', rYearly:'Yıllık',
+    uDays:'günde bir', uWeeks:'haftada bir', uMonths:'ayda bir', uYears:'yılda bir',
+    monthlyDay:'Ayın {d}. günü', monthlyNth:'Her ayın {nth} {wd} günü', endNever:'Hiçbir zaman', endUntil:'Tarihte', endCount:'Tekrar sayısı',
+    times:'kez', save:'Kaydet', cancel:'Vazgeç', delete:'Sil', edit:'Düzenle', close:'Kapat',
+    createdBy:'Oluşturan: {name}', editedOnce:'Bu tarih için değiştirildi',
+    scopeEditTitle:'Tekrarlanan etkinliği düzenle', scopeDeleteTitle:'Tekrarlanan etkinliği sil',
+    scopeThis:'Sadece bu etkinlik', scopeFollowing:'Bu ve sonraki etkinlikler', scopeAll:'Tüm etkinlikler',
+    confirmDeleteEvent:'Bu etkinlik silinsin mi?', confirmDeleteTask:'Bu görev silinsin mi?', confirmDeleteComment:'Bu yorum silinsin mi?',
+    linkedTasks:'Bağlı görevler', newTaskForEvent:'Bu etkinlik için görev', noLinkedTasks:'Bağlı görev yok',
+    nth1:'ilk', nth2:'ikinci', nth3:'üçüncü', nth4:'dördüncü', nthLast:'son',
+    ruleDaily:'Her gün', ruleDailyN:'{n} günde bir', ruleWeekly:'Her hafta: {days}', ruleWeeklyN:'{n} haftada bir: {days}',
+    ruleMonthlyDay:'Her ay, ayın {d}. günü', ruleMonthlyDayN:'{n} ayda bir, ayın {d}. günü',
+    ruleMonthlyNth:'Her ayın {nth} {wd} günü', ruleMonthlyNthN:'{n} ayda bir, ayın {nth} {wd} günü',
+    ruleYearly:'Her yıl {date}', ruleYearlyN:'{n} yılda bir, {date}', ruleUntil:', {date} tarihine kadar', ruleCount:', {n} kez',
+    newTask:'Yeni görev', editTask:'Görevi düzenle', board:'Pano', dueDate:'Son tarih', priority:'Öncelik', status:'Durum',
+    slots:'Gönüllü sayısı', linkedEvent:'Bağlı etkinlik', noEvent:'— Yok —',
+    pLow:'Düşük', pMedium:'Orta', pHigh:'Yüksek', sTodo:'Yapılacak', sProgress:'Devam ediyor', sDone:'Tamamlandı',
+    fMine:'Görevlerim', fOpen:'Boş yer var', fAnyPriority:'Tüm öncelikler', fAnyEvent:'Tüm etkinlikler',
+    claim:'Üstlen', unclaim:'Bırak', full:'Dolu', claimedBy:'Üstlenenler', nobodyYet:'Henüz kimse üstlenmedi',
+    remove:'Çıkar', comments:'Yorumlar', writeComment:'Yorum yaz…', send:'Gönder', noComments:'Henüz yorum yok',
+    moveTo:'Taşı', noTasks:'Görev yok', spots:'{n}/{m}',
+    pending:'Onay bekleyenler', members:'Üyeler', noPending:'Bekleyen başvuru yok', approve:'Onayla', reject:'Reddet',
+    makeAdmin:'Yönetici yap', makeMember:'Üye yap', removeMember:'Üyelikten çıkar', you:'(sen)',
+    confirmReject:'{name} başvurusu reddedilsin mi?', confirmRemove:'{name} üyelikten çıkarılsın mı? Tekrar onay bekleyecek.',
+    signedUpOn:'Kayıt: {date}', saved:'Kaydedildi', deleted:'Silindi',
+    selfTestPass:'Tekrar testleri geçti', selfTestFail:'Tekrar testlerinde hata — konsola bak',
+  },
+  en: {
+    signIn:'Sign in', signInSub:'Sign in with your club account', signUp:'Sign up', createAccount:'Create account',
+    signUpSub:'After signing up, an admin needs to approve you', username:'Username', password:'Password',
+    repeatPassword:'Repeat password', noAccount:'No account?', haveAccount:'Have an account?',
+    checkAgain:'Check again', signOut:'Sign out', theme:'Theme', offline:'● Offline — reconnecting',
+    waitingTitle:'Waiting for approval', waitingText:'Waiting for an admin to accept your membership. The app opens by itself once you are approved.',
+    rejectedTitle:'Request not approved', rejectedText:'Your membership request was not approved by an admin.',
+    setupTitle:'Supabase is not configured', setupText:'Set SUPABASE_URL and SUPABASE_ANON_KEY in index.html to the club\'s Supabase project.',
+    demoBanner:'Demo mode — data lives only in this tab and is not saved.',
+    errFill:'Enter username and password', errUserRule:'Username: 3+ characters, letters, numbers and . _ - only',
+    errPassLen:'Password must be at least 6 characters', errPassMatch:'Passwords do not match', errTaken:'This username is taken',
+    errBadLogin:'Wrong username or password', errNoPerm:'You do not have permission to do this', errTaskFull:'This task is already full',
+    errGeneric:'Something went wrong', errTitle:'Title is required', errEndBeforeStart:'End must be after start',
+    errWeekdays:'Pick at least one day', errUntil:'End date cannot be before the start',
+    navSchedule:'Schedule', navTasks:'Tasks', navMembers:'Members',
+    roleAdmin:'Admin', roleMember:'Member', rolePending:'Pending',
+    today:'Today', month:'Month', week:'Week', list:'List', newEvent:'New event', editEvent:'Edit event',
+    allDay:'All day', more:'+{n} more', noEvents:'No events in this range', upcoming:'Upcoming',
+    title:'Title', description:'Description', location:'Location', color:'Colour', startDate:'Start date', startTime:'Start time',
+    endDate:'End date', endTime:'End time', repeat:'Repeat', every:'Every', onDays:'On', repeatEnds:'Ends',
+    rNone:'Does not repeat', rDaily:'Daily', rWeekly:'Weekly', rMonthly:'Monthly', rYearly:'Yearly',
+    uDays:'day(s)', uWeeks:'week(s)', uMonths:'month(s)', uYears:'year(s)',
+    monthlyDay:'On day {d}', monthlyNth:'On the {nth} {wd}', endNever:'Never', endUntil:'On date', endCount:'After',
+    times:'times', save:'Save', cancel:'Cancel', delete:'Delete', edit:'Edit', close:'Close',
+    createdBy:'Created by {name}', editedOnce:'Changed for this date',
+    scopeEditTitle:'Edit repeating event', scopeDeleteTitle:'Delete repeating event',
+    scopeThis:'This event only', scopeFollowing:'This and following events', scopeAll:'All events',
+    confirmDeleteEvent:'Delete this event?', confirmDeleteTask:'Delete this task?', confirmDeleteComment:'Delete this comment?',
+    linkedTasks:'Linked tasks', newTaskForEvent:'Task for this event', noLinkedTasks:'No linked tasks',
+    nth1:'first', nth2:'second', nth3:'third', nth4:'fourth', nthLast:'last',
+    ruleDaily:'Every day', ruleDailyN:'Every {n} days', ruleWeekly:'Every week on {days}', ruleWeeklyN:'Every {n} weeks on {days}',
+    ruleMonthlyDay:'Every month on day {d}', ruleMonthlyDayN:'Every {n} months on day {d}',
+    ruleMonthlyNth:'Every month on the {nth} {wd}', ruleMonthlyNthN:'Every {n} months on the {nth} {wd}',
+    ruleYearly:'Every year on {date}', ruleYearlyN:'Every {n} years on {date}', ruleUntil:', until {date}', ruleCount:', {n} times',
+    newTask:'New task', editTask:'Edit task', board:'Board', dueDate:'Due date', priority:'Priority', status:'Status',
+    slots:'Volunteers needed', linkedEvent:'Linked event', noEvent:'— None —',
+    pLow:'Low', pMedium:'Medium', pHigh:'High', sTodo:'To do', sProgress:'In progress', sDone:'Done',
+    fMine:'My tasks', fOpen:'Open spots', fAnyPriority:'Any priority', fAnyEvent:'Any event',
+    claim:'Claim', unclaim:'Unclaim', full:'Full', claimedBy:'Claimed by', nobodyYet:'Nobody has claimed this yet',
+    remove:'Remove', comments:'Comments', writeComment:'Write a comment…', send:'Send', noComments:'No comments yet',
+    moveTo:'Move to', noTasks:'No tasks', spots:'{n}/{m}',
+    pending:'Waiting for approval', members:'Members', noPending:'No pending requests', approve:'Approve', reject:'Reject',
+    makeAdmin:'Make admin', makeMember:'Make member', removeMember:'Remove from club', you:'(you)',
+    confirmReject:'Reject {name}\'s request?', confirmRemove:'Remove {name} from the club? They will need approval again.',
+    signedUpOn:'Signed up {date}', saved:'Saved', deleted:'Deleted',
+    selfTestPass:'Recurrence self-test passed', selfTestFail:'Recurrence self-test failed — see console',
+  }
+};
+
+let lang = 'tr';
+try{ lang = localStorage.getItem('otc-lang') || 'tr'; }catch(e){}
+if(!I18N[lang]) lang = 'tr';
+function t(key, params){
+  let s = (I18N[lang] && I18N[lang][key]) ?? I18N.en[key] ?? key;
+  if(params) for(const k in params) s = s.split('{'+k+'}').join(params[k]);
+  return s;
+}
+function locale(){ return lang==='tr' ? 'tr-TR' : 'en-GB'; }
+function applyStaticI18n(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ el.placeholder = t(el.dataset.i18nPh); });
+  document.querySelectorAll('[data-action="lang"]').forEach(b=> b.classList.toggle('active', b.dataset.lang===lang));
+}
+function setLang(l){
+  lang = l;
+  try{ localStorage.setItem('otc-lang', l); }catch(e){}
+  applyStaticI18n();
+  if(state.me && state.me.role!=='pending') renderAll();
+  else if(state.authView==='waiting') showWaiting(state.waitingKind);
+}
+
+/* =====================================================================
+   Small helpers
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function uuid(){ return (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16);})); }
+function initials(name){ return String(name||'?').replace(/[^\p{L}\p{N}]/gu,' ').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase() || '?'; }
+let toastTimer;
+function toast(msg, isError){
+  const el = $('toast');
+  el.textContent = msg; el.classList.toggle('error', !!isError); el.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>el.classList.remove('show'), isError ? 4200 : 2200);
+}
+function errMessage(err){
+  const raw = String((err && (err.message || err.error_description)) || err || '');
+  if(/TASK_FULL/.test(raw)) return t('errTaskFull');
+  if(/already registered|already exists|duplicate key.*username/i.test(raw)) return t('errTaken');
+  if(/Invalid login credentials/i.test(raw)) return t('errBadLogin');
+  if(/row-level security|permission|NO_PERMISSION|Only admins|Only the creator|own role/i.test(raw)) return t('errNoPerm');
+  return t('errGeneric') + (raw ? ': ' + raw : '');
+}
+function showError(err){ console.error(err); toast(errMessage(err), true); }
+const ICONS = {
+  calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  tasks:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+  users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>', x:'<path d="M18 6L6 18M6 6l12 12"/>',
+  left:'<path d="M15 18l-6-6 6-6"/>', right:'<path d="M9 18l6-6-6-6"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>', pin:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+  repeat:'<path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>',
+  user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/>',
+  trash:'<path d="M3 6h18M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+};
+function icon(name){ return `<svg class="icon" viewBox="0 0 24 24">${ICONS[name]||''}</svg>`; }
+
+/* =====================================================================
+   Dates — all club times are Europe/Istanbul.
+   Istanbul is UTC+3 all year (no daylight saving since 2016), so a fixed
+   offset keeps the calendar maths simple and exact.
+   Day keys are 'YYYY-MM-DD' strings in Istanbul time.
+   ===================================================================== */
+const IST_OFFSET_MS = 3 * 3600 * 1000;
+const DAY_MS = 86400000;
+const pad2 = n => String(n).padStart(2,'0');
+function ymdKey(y, m0, d){
+  const dt = new Date(Date.UTC(y, m0, d));
+  if(dt.getUTCFullYear()!==y || dt.getUTCMonth()!==((m0%12)+12)%12 || dt.getUTCDate()!==d) return null;
+  return `${dt.getUTCFullYear()}-${pad2(dt.getUTCMonth()+1)}-${pad2(dt.getUTCDate())}`;
+}
+function keyParts(key){ const [y,m,d] = key.split('-').map(Number); return { y, m0:m-1, d }; }
+function keyToUtcMs(key){ const p = keyParts(key); return Date.UTC(p.y, p.m0, p.d); }
+function msToKey(ms){ const d = new Date(ms); return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`; }
+function addDays(key, n){ return msToKey(keyToUtcMs(key) + n*DAY_MS); }
+function daysBetween(a, b){ return Math.round((keyToUtcMs(b) - keyToUtcMs(a)) / DAY_MS); }
+function weekdayOf(key){ return (new Date(keyToUtcMs(key)).getUTCDay() + 6) % 7; } // Monday = 0
+function daysInMonth(y, m0){ return new Date(Date.UTC(y, m0+1, 0)).getUTCDate(); }
+function istParts(iso){
+  const d = new Date(new Date(iso).getTime() + IST_OFFSET_MS);
+  return { key: msToKey(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())), hh:d.getUTCHours(), mi:d.getUTCMinutes() };
+}
+function istKey(iso){ return istParts(iso).key; }
+function istToIso(key, hh, mi){ return new Date(keyToUtcMs(key) + (hh*60+mi)*60000 - IST_OFFSET_MS).toISOString(); }
+function todayKey(){ return istKey(new Date().toISOString()); }
+function startOfWeek(key){ return addDays(key, -weekdayOf(key)); }
+function monthKey(key, deltaMonths){ const p = keyParts(key); return ymdKey(p.y, p.m0 + deltaMonths, 1) || msToKey(Date.UTC(p.y, p.m0+deltaMonths, 1)); }
+function fmtDay(key, opts){ return new Intl.DateTimeFormat(locale(), Object.assign({ timeZone:'UTC' }, opts)).format(new Date(keyToUtcMs(key))); }
+function fmtTime(iso){ return new Intl.DateTimeFormat(locale(), { timeZone:'Europe/Istanbul', hour:'2-digit', minute:'2-digit', hourCycle:'h23' }).format(new Date(iso)); }
+function fmtDateShort(key){ return fmtDay(key, { day:'numeric', month:'short' }); }
+function fmtDateLong(key){ return fmtDay(key, { weekday:'long', day:'numeric', month:'long', year:'numeric' }); }
+function weekdayShort(i){ return fmtDay(addDays('2024-01-01', i), { weekday:'short' }); } // 2024-01-01 is a Monday
+function weekdayLong(i){ return fmtDay(addDays('2024-01-01', i), { weekday:'long' }); }
+function hhmm(iso){ const p = istParts(iso); return `${pad2(p.hh)}:${pad2(p.mi)}`; }
+
+/* =====================================================================
+   Recurrence
+   rrule = { freq:'daily'|'weekly'|'monthly'|'yearly', interval, byweekday:[0..6],
+             monthlyMode:'day'|'nth', nth:1..4|-1, end:{type:'never'|'until'|'count', date, count} }
+   ===================================================================== */
+function nthWeekdayKey(y, m0, wd, nth){
+  const dim = daysInMonth(y, m0);
+  if(nth === -1){
+    const lastWd = weekdayOf(ymdKey(y, m0, dim));
+    return ymdKey(y, m0, dim - ((lastWd - wd + 7) % 7));
+  }
+  const firstWd = weekdayOf(ymdKey(y, m0, 1));
+  const day = 1 + ((wd - firstWd + 7) % 7) + (nth-1)*7;
+  return day > dim ? null : ymdKey(y, m0, day);
+}
+// All occurrence day keys from startKey up to and including maxKey, honouring the end rule.
+function ruleDates(startKey, r, maxKey){
+  if(!r) return startKey <= maxKey ? [startKey] : [];
+  const out = [];
+  const interval = Math.max(1, parseInt(r.interval, 10) || 1);
+  const end = r.end || { type:'never' };
+  const limitKey = (end.type==='until' && end.date && end.date < maxKey) ? end.date : maxKey;
+  const maxCount = end.type==='count' ? Math.max(1, parseInt(end.count, 10) || 1) : Infinity;
+  let guard = 0;
+  // returns false when generation must stop
+  const emit = k => {
+    if(k > limitKey || out.length >= maxCount) return false;
+    if(k >= startKey) out.push(k);
+    return out.length < maxCount;
+  };
+  const sp = keyParts(startKey);
+  if(r.freq === 'daily'){
+    for(let i=0; guard++ < 40000; i+=interval){ if(!emit(addDays(startKey, i))) break; }
+  }else if(r.freq === 'weekly'){
+    const days = (r.byweekday && r.byweekday.length ? [...r.byweekday] : [weekdayOf(startKey)]).map(Number).sort((a,b)=>a-b);
+    const ws = startOfWeek(startKey);
+    outer: for(let w=0; guard++ < 10000; w+=interval){
+      for(const wd of days){
+        const k = addDays(ws, w*7 + wd);
+        if(k < startKey) continue;
+        if(!emit(k)) break outer;
+      }
+    }
+  }else if(r.freq === 'monthly'){
+    const wd = weekdayOf(startKey);
+    for(let i=0; guard++ < 5000; i+=interval){
+      const first = msToKey(Date.UTC(sp.y, sp.m0 + i, 1));
+      if(first > limitKey) break;
+      const fp = keyParts(first);
+      const k = r.monthlyMode==='nth' ? nthWeekdayKey(fp.y, fp.m0, wd, Number(r.nth)||1) : ymdKey(fp.y, fp.m0, sp.d);
+      if(k === null) continue;
+      if(!emit(k)) break;
+    }
+  }else if(r.freq === 'yearly'){
+    for(let i=0; guard++ < 500; i+=interval){
+      if(`${sp.y+i}-01-01` > limitKey) break;
+      const k = ymdKey(sp.y + i, sp.m0, sp.d);
+      if(k === null) continue;
+      if(!emit(k)) break;
+    }
+  }else{
+    emit(startKey);
+  }
+  return out;
+}
+// Occurrences of one event that overlap [rangeStartIso, rangeEndIso).
+function expandEvent(ev, exceptions, rangeStartIso, rangeEndIso){
+  const sp = istParts(ev.start_at);
+  const dur = new Date(ev.end_at) - new Date(ev.start_at);
+  const exMap = {};
+  let maxKey = addDays(istKey(rangeEndIso), 1);
+  for(const x of exceptions){ exMap[x.original_date] = x; if(x.original_date > maxKey) maxKey = x.original_date; }
+  const minKey = addDays(istKey(rangeStartIso), -Math.ceil(dur / DAY_MS) - 1);
+  const rs = new Date(rangeStartIso).getTime(), re = new Date(rangeEndIso).getTime();
+  const out = [];
+  for(const k of ruleDates(sp.key, ev.rrule, maxKey)){
+    const x = exMap[k];
+    if(k < minKey && !x) continue;
+    if(x && x.cancelled) continue;
+    const start = (x && x.start_at) || istToIso(k, sp.hh, sp.mi);
+    const end = (x && x.end_at) || new Date(new Date(start).getTime() + dur).toISOString();
+    const s = new Date(start).getTime(), e = new Date(end).getTime();
+    if(s < re && (e > rs || (e === s && s >= rs))){
+      out.push({
+        key: ev.id + '|' + k, event: ev, originalDate: k, exception: x || null,
+        title: x && x.title != null ? x.title : ev.title,
+        description: x && x.description != null ? x.description : ev.description,
+        location: x && x.location != null ? x.location : ev.location,
+        start, end, allDay: ev.all_day, color: ev.color,
+      });
+    }
+  }
+  return out;
+}
+function nthLabel(n){ return t(n === -1 ? 'nthLast' : 'nth' + n); }
+function ruleText(r, startKey){
+  if(!r) return '';
+  const n = Math.max(1, parseInt(r.interval,10)||1);
+  let s;
+  if(r.freq==='daily') s = n===1 ? t('ruleDaily') : t('ruleDailyN', {n});
+  else if(r.freq==='weekly'){
+    const days = (r.byweekday && r.byweekday.length ? r.byweekday : [weekdayOf(startKey)]).slice().sort().map(weekdayShort).join(', ');
+    s = n===1 ? t('ruleWeekly', {days}) : t('ruleWeeklyN', {n, days});
+  }else if(r.freq==='monthly'){
+    if(r.monthlyMode==='nth'){
+      const p = { n, nth: nthLabel(Number(r.nth)||1), wd: weekdayLong(weekdayOf(startKey)) };
+      s = n===1 ? t('ruleMonthlyNth', p) : t('ruleMonthlyNthN', p);
+    }else{
+      const d = keyParts(startKey).d;
+      s = n===1 ? t('ruleMonthlyDay', {d}) : t('ruleMonthlyDayN', {n, d});
+    }
+  }else if(r.freq==='yearly'){
+    const date = fmtDay(startKey, { day:'numeric', month:'long' });
+    s = n===1 ? t('ruleYearly', {date}) : t('ruleYearlyN', {n, date});
+  }
+  const e = r.end || {};
+  if(e.type==='until' && e.date) s += t('ruleUntil', { date: fmtDay(e.date, { day:'numeric', month:'short', year:'numeric' }) });
+  if(e.type==='count') s += t('ruleCount', { n: e.count });
+  return s;
+}
+
+/* =====================================================================
+   Data layer — Supabase, or an in-memory fake for ?demo
+   ===================================================================== */
+function usernameToEmail(u){ return `${u.toLowerCase().replace(/[^a-z0-9_.-]/g,'')}@${EMAIL_DOMAIN}`; }
+
+function makeSupabaseApi(){
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const check = ({ data, error }) => { if(error) throw error; return data; };
+  const applyMatch = (q, match) => { for(const k in match) q = q.eq(k, match[k]); return q; };
+  return {
+    async signIn(username, password){ const { error } = await sb.auth.signInWithPassword({ email: usernameToEmail(username), password }); if(error) throw error; },
+    async signUp(username, password){
+      const { data, error } = await sb.auth.signUp({ email: usernameToEmail(username), password, options:{ data:{ username } } });
+      if(error) throw error;
+      if(data && data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) throw new Error('User already registered');
+      if(!data.session) await this.signIn(username, password);
+    },
+    async signOut(){ await sb.auth.signOut(); },
+    async userId(){ const { data } = await sb.auth.getSession(); return data.session ? data.session.user.id : null; },
+    async list(table, match){ return check(await applyMatch(sb.from(table).select('*'), match || {})); },
+    async insert(table, row){ check(await sb.from(table).insert(row)); },
+    async update(table, match, patch){
+      const rows = check(await applyMatch(sb.from(table).update(patch), match).select());
+      if(!rows || !rows.length) throw new Error('NO_PERMISSION');
+    },
+    async remove(table, match){
+      const rows = check(await applyMatch(sb.from(table).delete(), match).select());
+      if(!rows || !rows.length) throw new Error('NO_PERMISSION');
+    },
+    async upsert(table, row, onConflict){ check(await sb.from(table).upsert(row, { onConflict })); },
+    subscribe(onChange, onStatus){
+      const ch = sb.channel('club-db')
+        .on('postgres_changes', { event:'*', schema:'public' }, p => onChange(p.table))
+        .subscribe(status => onStatus(status === 'SUBSCRIBED'));
+      return () => sb.removeChannel(ch);
+    },
+  };
+}
+
+function makeDemoApi(){
+  const now = new Date();
+  const k0 = todayKey();
+  const db = { profiles:[], events:[], event_exceptions:[], tasks:[], task_claims:[], task_comments:[] };
+  const users = {}; // username -> { id, password }
+  let uid = null, listener = () => {};
+  const addUser = (username, role) => {
+    const id = uuid(); users[username] = { id, password:'demo123' };
+    db.profiles.push({ id, username, display_name:username, role, created_at: now.toISOString() });
+    return id;
+  };
+  const admin = addUser('demo', 'admin');
+  const ayse = addUser('ayse', 'member');
+  addUser('mehmet', 'pending');
+  const meetingId = uuid(), tripId = uuid();
+  const mon = startOfWeek(k0);
+  db.events.push(
+    { id:meetingId, title:'Kulüp toplantısı', description:'Haftalık toplantı', location:'AB1 204', color:'violet', all_day:false,
+      start_at: istToIso(addDays(mon, -14), 18, 0), end_at: istToIso(addDays(mon, -14), 19, 30),
+      rrule:{ freq:'weekly', interval:1, byweekday:[0,2], end:{ type:'never' } }, created_by:admin, created_at:now.toISOString() },
+    { id:tripId, title:'Kapadokya gezisi', description:'', location:'Göreme', color:'orange', all_day:true,
+      start_at: istToIso(addDays(k0, 10), 0, 0), end_at: istToIso(addDays(k0, 13), 0, 0), rrule:null, created_by:ayse, created_at:now.toISOString() },
+  );
+  db.event_exceptions.push({ id:uuid(), event_id:meetingId, original_date:addDays(mon, 7), cancelled:true });
+  const t1 = uuid(), t2 = uuid(), t3 = uuid();
+  db.tasks.push(
+    { id:t1, title:'Afiş tasarla', description:'Gezi için Instagram afişi', due_date:addDays(k0,3), priority:'high', status:'todo', slots:1, event_id:tripId, event_date:null, position:1, created_by:admin, created_at:now.toISOString() },
+    { id:t2, title:'Otobüs firmalarından teklif al', description:'', due_date:addDays(k0,5), priority:'medium', status:'in_progress', slots:2, event_id:null, event_date:null, position:1, created_by:ayse, created_at:now.toISOString() },
+    { id:t3, title:'Toplantı salonunu ayarla', description:'', due_date:addDays(k0,-1), priority:'low', status:'done', slots:1, event_id:meetingId, event_date:mon, position:1, created_by:admin, created_at:now.toISOString() },
+  );
+  db.task_claims.push({ task_id:t2, user_id:ayse, claimed_at:now.toISOString() });
+  db.task_comments.push({ id:uuid(), task_id:t2, user_id:ayse, body:'İki firmayı aradım, yarın dönecekler.', created_at:now.toISOString() });
+
+  const matches = (row, match) => Object.keys(match||{}).every(k => row[k] === match[k]);
+  const me = () => db.profiles.find(p => p.id === uid);
+  const isAdmin = () => me() && me().role === 'admin';
+  const changed = table => setTimeout(() => listener(table), 0);
+  const delay = () => new Promise(r => setTimeout(r, 60));
+  return {
+    async signIn(username, password){
+      await delay();
+      const u = users[username.toLowerCase()];
+      if(!u || u.password !== password) throw new Error('Invalid login credentials');
+      uid = u.id;
+    },
+    async signUp(username, password){
+      await delay();
+      if(users[username.toLowerCase()]) throw new Error('User already registered');
+      const id = addUser(username.toLowerCase(), 'pending'); users[username.toLowerCase()].password = password; uid = id;
+    },
+    async signOut(){ uid = null; },
+    async userId(){ return uid; },
+    async list(table, match){
+      await delay();
+      const p = me();
+      if(table === 'profiles' && p && p.role === 'pending') return db.profiles.filter(r => r.id === uid && matches(r, match)).map(r => ({...r}));
+      if(!p || p.role === 'pending') return [];
+      return db[table].filter(r => matches(r, match)).map(r => ({...r}));
+    },
+    async insert(table, row){
+      await delay();
+      const r = { ...row };
+      if(table === 'task_claims'){
+        const task = db.tasks.find(x => x.id === r.task_id);
+        if(db.task_claims.filter(c => c.task_id === r.task_id).length >= task.slots) throw new Error('TASK_FULL');
+        r.claimed_at = new Date().toISOString();
+      }
+      if(!r.created_at && table !== 'task_claims' && table !== 'event_exceptions') r.created_at = new Date().toISOString();
+      db[table].push(r); changed(table);
+    },
+    async update(table, match, patch){
+      await delay();
+      if(table === 'profiles' && 'role' in patch && (!isAdmin() || match.id === uid)) throw new Error('NO_PERMISSION');
+      const rows = db[table].filter(r => matches(r, match));
+      if(!rows.length) throw new Error('NO_PERMISSION');
+      rows.forEach(r => Object.assign(r, patch)); changed(table);
+    },
+    async remove(table, match){
+      await delay();
+      const before = db[table].length;
+      db[table] = db[table].filter(r => !matches(r, match));
+      if(db[table].length === before) throw new Error('NO_PERMISSION');
+      if(table === 'events'){
+        const ids = new Set(db.events.map(e => e.id));
+        db.event_exceptions = db.event_exceptions.filter(x => ids.has(x.event_id));
+        db.tasks.forEach(tk => { if(tk.event_id && !ids.has(tk.event_id)){ tk.event_id = null; tk.event_date = null; } });
+        changed('event_exceptions'); changed('tasks');
+      }
+      if(table === 'tasks'){
+        const ids = new Set(db.tasks.map(x => x.id));
+        db.task_claims = db.task_claims.filter(c => ids.has(c.task_id));
+        db.task_comments = db.task_comments.filter(c => ids.has(c.task_id));
+        changed('task_claims');
+      }
+      if(table === 'profiles'){
+        const u = Object.keys(users).find(n => users[n].id === match.id); if(u) delete users[u];
+      }
+      changed(table);
+    },
+    async upsert(table, row, onConflict){
+      await delay();
+      const cols = onConflict.split(',');
+      const existing = db[table].find(r => cols.every(c => r[c] === row[c]));
+      if(existing) Object.assign(existing, row); else db[table].push({ ...row });
+      changed(table);
+    },
+    subscribe(onChange, onStatus){ listener = onChange; onStatus(true); return () => { listener = () => {}; }; },
+  };
+}
+
+const configured = DEMO || (SUPABASE_URL && !SUPABASE_URL.includes('YOUR-PROJECT') && typeof window.supabase !== 'undefined');
+const api = DEMO ? makeDemoApi() : (configured ? makeSupabaseApi() : null);
+
+/* =====================================================================
+   State
+   ===================================================================== */
+const state = {
+  uid: null, me: null, authView: 'signin', waitingKind: 'pending',
+  profiles: [], events: [], event_exceptions: [], tasks: [], task_claims: [],
+  view: 'schedule',
+  calView: window.innerWidth < 640 ? 'list' : 'month', calCursor: todayKey(),
+  taskView: 'board', taskFilter: { mine:false, open:false, priority:'', event:'' }, taskSort: { key:'due_date', dir:1 },
+  openTaskId: null, comments: [],
+};
+let unsubscribe = null;
+
+function profileName(id){ const p = state.profiles.find(x => x.id === id); return p ? (p.display_name || p.username) : '—'; }
+function isAdmin(){ return state.me && state.me.role === 'admin'; }
+function canEditEvent(ev){ return isAdmin() || ev.created_by === state.uid; }
+function canEditTask(tk){ return isAdmin() || tk.created_by === state.uid; }
+function claimsOf(taskId){ return state.task_claims.filter(c => c.task_id === taskId).sort((a,b)=> String(a.claimed_at).localeCompare(String(b.claimed_at))); }
+function hasClaimed(taskId){ return state.task_claims.some(c => c.task_id === taskId && c.user_id === state.uid); }
+function canMoveTask(tk){ return canEditTask(tk) || hasClaimed(tk.id); }
+function exceptionsOf(eventId){ return state.event_exceptions.filter(x => x.event_id === eventId); }
+function occurrencesBetween(startIso, endIso){
+  const out = [];
+  for(const ev of state.events) out.push(...expandEvent(ev, exceptionsOf(ev.id), startIso, endIso));
+  return out.sort((a,b) => (b.allDay - a.allDay) || a.start.localeCompare(b.start));
+}
+const COLORS = { violet:'#6a5cff', blue:'#2f7bf5', green:'#1f9e5a', orange:'#e8833a', red:'#e5484d', teal:'#13a3a3' };
+function colorOf(c){ return COLORS[c] || COLORS.violet; }
+
+/* =====================================================================
+   Auth flow
+   ===================================================================== */
+function showAuthBox(which){
+  state.authView = which;
+  for(const id of ['signin-box','signup-box','waiting-box','setup-box']) $(id).hidden = id !== which + '-box';
+  $('auth-screen').hidden = false; $('app').hidden = true;
+  const focus = which==='signin' ? 'si-user' : which==='signup' ? 'su-user' : null;
+  if(focus) setTimeout(() => $(focus).focus(), 0);
+}
+function showWaiting(kind){
+  state.waitingKind = kind;
+  $('waiting-title').textContent = t(kind === 'rejected' ? 'rejectedTitle' : 'waitingTitle');
+  $('waiting-text').textContent = t(kind === 'rejected' ? 'rejectedText' : 'waitingText');
+  $('waiting-refresh').hidden = kind === 'rejected';
+  showAuthBox('waiting');
+}
+const USERNAME_RE = /^[a-zA-Z0-9_.-]{3,}$/;
+async function doSignIn(){
+  const u = $('si-user').value.trim(), p = $('si-pass').value, err = $('si-error');
+  err.textContent = '';
+  if(!u || !p){ err.textContent = t('errFill'); return; }
+  if(!USERNAME_RE.test(u)){ err.textContent = t('errUserRule'); return; }
+  $('si-btn').disabled = true;
+  try{ await api.signIn(u, p); $('si-pass').value = ''; await route(); }
+  catch(e){ err.textContent = errMessage(e); }
+  finally{ $('si-btn').disabled = false; }
+}
+async function doSignUp(){
+  const u = $('su-user').value.trim(), p = $('su-pass').value, p2 = $('su-pass2').value, err = $('su-error');
+  err.textContent = '';
+  if(!u || !p){ err.textContent = t('errFill'); return; }
+  if(!USERNAME_RE.test(u)){ err.textContent = t('errUserRule'); return; }
+  if(p.length < 6){ err.textContent = t('errPassLen'); return; }
+  if(p !== p2){ err.textContent = t('errPassMatch'); return; }
+  $('su-btn').disabled = true;
+  try{ await api.signUp(u, p); $('su-pass').value = ''; $('su-pass2').value = ''; await route(); }
+  catch(e){ err.textContent = errMessage(e); }
+  finally{ $('su-btn').disabled = false; }
+}
+async function doSignOut(){
+  if(unsubscribe){ unsubscribe(); unsubscribe = null; }
+  await api.signOut();
+  Object.assign(state, { uid:null, me:null, profiles:[], events:[], event_exceptions:[], tasks:[], task_claims:[] });
+  closeAllModals();
+  showAuthBox('signin');
+}
+// Decide which screen the signed-in (or not) user sees.
+async function route(){
+  state.uid = await api.userId();
+  if(!state.uid){ showAuthBox('signin'); return; }
+  let rows = [];
+  try{ rows = await api.list('profiles', { id: state.uid }); }catch(e){ showError(e); }
+  state.me = rows[0] || null;
+  if(!state.me){ stopLive(); showWaiting('rejected'); return; }
+  if(state.me.role === 'pending'){ startLive(); showWaiting('pending'); return; }
+  await enterApp();
+}
+async function enterApp(){
+  $('auth-screen').hidden = true; $('app').hidden = false;
+  $('demo-banner').hidden = !DEMO;
+  await loadAll();
+  startLive();
+  renderAll();
+}
+async function loadAll(){
+  const tables = ['profiles','events','event_exceptions','tasks','task_claims'];
+  try{
+    const results = await Promise.all(tables.map(tb => api.list(tb)));
+    tables.forEach((tb, i) => { state[tb] = results[i]; });
+    state.me = state.profiles.find(p => p.id === state.uid) || state.me;
+  }catch(e){ showError(e); }
+}
+
+/* Live updates: refetch the changed table (debounced), then re-render. */
+const pendingTables = new Set();
+let refetchTimer = null;
+function startLive(){
+  if(unsubscribe) return;
+  unsubscribe = api.subscribe(table => {
+    pendingTables.add(table);
+    clearTimeout(refetchTimer);
+    refetchTimer = setTimeout(flushRefetch, 150);
+  }, ok => { $('offline-badge').hidden = ok; });
+}
+function stopLive(){ if(unsubscribe){ unsubscribe(); unsubscribe = null; } }
+async function flushRefetch(){
+  const tables = [...pendingTables]; pendingTables.clear();
+  if(!state.uid) return;
+  // pending users only watch their own profile
+  if(!state.me || state.me.role === 'pending'){
+    if(tables.includes('profiles')) await route();
+    return;
+  }
+  try{
+    for(const tb of tables){
+      if(tb === 'task_comments'){ if(state.openTaskId) await loadComments(state.openTaskId); continue; }
+      if(!(tb in state)) continue;
+      state[tb] = await api.list(tb);
+    }
+  }catch(e){ showError(e); return; }
+  if(tables.includes('profiles')){
+    const me = state.profiles.find(p => p.id === state.uid);
+    if(!me || me.role === 'pending'){ stopLive(); await route(); return; }
+    state.me = me;
+  }
+  renderAll();
+}
+async function reload(...tables){
+  try{ for(const tb of tables) state[tb] = await api.list(tb); }catch(e){ showError(e); }
+  renderAll();
+}
+
+/* =====================================================================
+   Shell
+   ===================================================================== */
+function renderAll(){
+  applyStaticI18n();
+  renderNav();
+  for(const v of ['schedule','tasks','members']) $('view-'+v).classList.toggle('active', state.view === v);
+  if(state.view === 'schedule') renderSchedule();
+  if(state.view === 'tasks') renderTasks();
+  if(state.view === 'members') renderMembers();
+  if(state.openTaskId) refreshTaskDetail();
+}
+function renderNav(){
+  if(state.view === 'members' && !isAdmin()) state.view = 'schedule';
+  const pendingCount = state.profiles.filter(p => p.role === 'pending').length;
+  const items = [['schedule','calendar','navSchedule'], ['tasks','tasks','navTasks']];
+  if(isAdmin()) items.push(['members','users','navMembers']);
+  $('nav').innerHTML = items.map(([v, ic, label]) =>
+    `<button class="nav-item ${state.view===v?'active':''}" data-action="nav" data-view="${v}">${icon(ic)}<span>${t(label)}</span>${v==='members' && pendingCount ? `<span class="nav-badge">${pendingCount}</span>` : ''}</button>`).join('');
+  const me = state.me;
+  $('side-user').innerHTML = me ? `<span class="avatar">${esc(initials(me.display_name||me.username))}</span><div><div>${esc(me.display_name||me.username)}</div><div class="role">${t(me.role==='admin'?'roleAdmin':'roleMember')}</div></div>` : '';
+}
+function setView(v){ state.view = v; document.body.classList.remove('nav-open'); renderAll(); window.scrollTo(0,0); }
+
+/* =====================================================================
+   Modals
+   ===================================================================== */
+const modalStack = [];
+function openModal(html, opts){
+  opts = opts || {};
+  const wrap = document.createElement('div');
+  wrap.className = 'modal';
+  wrap.innerHTML = `<div class="modal-overlay"></div><div class="modal-box ${opts.wide?'wide':''}">${html}</div>`;
+  wrap.querySelector('.modal-overlay').addEventListener('click', () => closeModal(wrap));
+  $('modal-root').appendChild(wrap);
+  modalStack.push({ el: wrap, onClose: opts.onClose });
+  const first = wrap.querySelector('[autofocus]'); if(first) setTimeout(() => first.focus(), 0);
+  return wrap;
+}
+function closeModal(el){
+  const i = el ? modalStack.findIndex(m => m.el === el) : modalStack.length - 1;
+  if(i < 0) return;
+  const [m] = modalStack.splice(i, 1);
+  m.el.remove();
+  if(m.onClose) m.onClose();
+}
+function closeAllModals(){ while(modalStack.length) closeModal(); }
+function modalHeader(title){ return `<div class="modal-title"><span>${title}</span><button class="modal-close" data-action="close-modal" aria-label="${t('close')}">${icon('x')}</button></div>`; }
+function confirmDialog(text, okLabel){
+  return new Promise(resolve => {
+    let answered = false;
+    const el = openModal(`<p style="margin:0 0 6px">${esc(text)}</p><div class="modal-actions"><button class="btn" data-r="0">${t('cancel')}</button><button class="btn btn-primary" data-r="1">${esc(okLabel || t('delete'))}</button></div>`,
+      { onClose: () => { if(!answered) resolve(false); } });
+    el.querySelectorAll('[data-r]').forEach(b => b.addEventListener('click', () => { answered = true; resolve(b.dataset.r === '1'); closeModal(el); }));
+  });
+}
+function askScope(title, allowThis){
+  return new Promise(resolve => {
+    let answered = false;
+    const opts = [allowThis ? 'this' : null, 'following', 'all'].filter(Boolean);
+    const labels = { this:'scopeThis', following:'scopeFollowing', all:'scopeAll' };
+    const el = openModal(modalHeader(esc(title)) + opts.map(o => `<button class="scope-btn" data-scope="${o}">${t(labels[o])}</button>`).join('') +
+      `<div class="modal-actions"><button class="btn" data-scope="">${t('cancel')}</button></div>`, { onClose: () => { if(!answered) resolve(null); } });
+    el.querySelectorAll('[data-scope]').forEach(b => b.addEventListener('click', () => { answered = true; resolve(b.dataset.scope || null); closeModal(el); }));
+  });
+}
+
+/* =====================================================================
+   Schedule view
+   ===================================================================== */
+function renderSchedule(){
+  const v = state.calView, c = state.calCursor;
+  let title = '', body = '';
+  if(v === 'month'){
+    title = fmtDay(c, { month:'long', year:'numeric' });
+    body = renderMonth();
+  }else if(v === 'week'){
+    const ws = startOfWeek(c);
+    title = `${fmtDateShort(ws)} – ${fmtDay(addDays(ws,6), { day:'numeric', month:'short', year:'numeric' })}`;
+    body = renderWeek();
+  }else{
+    title = `${fmtDateShort(c)} – ${fmtDay(addDays(c,59), { day:'numeric', month:'short', year:'numeric' })}`;
+    body = renderAgenda();
+  }
+  $('view-schedule').innerHTML = `
+    <div class="page-header">
+      <h1>${t('navSchedule')}</h1>
+      <button class="btn btn-primary" data-action="new-event">${icon('plus')}${t('newEvent')}</button>
+    </div>
+    <div class="page-header">
+      <div class="toolbar">
+        <button class="btn btn-icon" data-action="cal-prev" aria-label="prev">${icon('left')}</button>
+        <button class="btn" data-action="cal-today">${t('today')}</button>
+        <button class="btn btn-icon" data-action="cal-next" aria-label="next">${icon('right')}</button>
+        <span class="cal-title">${esc(title)}</span>
+      </div>
+      <div class="seg">${['month','week','list'].map(x => `<button class="${v===x?'active':''}" data-action="cal-view" data-v="${x}">${t(x)}</button>`).join('')}</div>
+    </div>
+    ${body}`;
+  if(v === 'week'){
+    const wb = document.querySelector('.week-body');
+    if(wb && !wb.dataset.scrolled){ wb.scrollTop = 8*44; wb.dataset.scrolled = '1'; }
+  }
+}
+function dayRangeIso(key){ return [istToIso(key,0,0), istToIso(addDays(key,1),0,0)]; }
+function occOnDay(occs, key){
+  const [ds, de] = dayRangeIso(key);
+  return occs.filter(o => o.start < de && (o.end > ds || (o.end === o.start && o.start >= ds)));
+}
+function evChip(o){
+  const col = colorOf(o.color);
+  if(o.allDay) return `<button class="ev-chip" style="background:${col}" data-action="open-occ" data-occ="${esc(o.key)}">${esc(o.title)}</button>`;
+  return `<button class="ev-chip timed" data-action="open-occ" data-occ="${esc(o.key)}"><span class="ev-dot" style="background:${col}"></span>${hhmm(o.start)} ${esc(o.title)}</button>`;
+}
+function renderMonth(){
+  const first = monthKey(state.calCursor, 0);
+  const gridStart = startOfWeek(first);
+  const gridEnd = addDays(gridStart, 42);
+  const occs = occurrencesBetween(istToIso(gridStart,0,0), istToIso(gridEnd,0,0));
+  const curMonth = keyParts(first).m0, today = todayKey();
+  let html = '<div class="month-grid">';
+  for(let i=0;i<7;i++) html += `<div class="month-head">${esc(weekdayShort(i))}</div>`;
+  for(let i=0;i<42;i++){
+    const k = addDays(gridStart, i);
+    const list = occOnDay(occs, k);
+    const shown = list.slice(0, 3);
+    html += `<div class="month-cell ${keyParts(k).m0!==curMonth?'other':''} ${k===today?'today':''}" data-action="day-click" data-day="${k}">
+      <div class="day-num">${keyParts(k).d}</div>
+      ${shown.map(evChip).join('')}
+      ${list.length > 3 ? `<button class="more-link" data-action="day-more" data-day="${k}">${t('more',{n:list.length-3})}</button>` : ''}
+    </div>`;
+  }
+  return html + '</div>';
+}
+function renderWeek(){
+  const ws = startOfWeek(state.calCursor), today = todayKey();
+  const occs = occurrencesBetween(istToIso(ws,0,0), istToIso(addDays(ws,7),0,0));
+  let head = '<div class="week-head"><div></div>', allday = `<div class="week-allday"><div class="lbl">${t('allDay')}</div>`, cols = '';
+  for(let i=0;i<7;i++){
+    const k = addDays(ws, i);
+    head += `<div class="${k===today?'today':''}">${esc(fmtDay(k,{weekday:'short'}))} ${keyParts(k).d}</div>`;
+    const dayOccs = occOnDay(occs, k);
+    allday += `<div>${dayOccs.filter(o => o.allDay).map(evChip).join('')}</div>`;
+    const timed = dayOccs.filter(o => !o.allDay);
+    // simple side-by-side layout for overlapping events
+    const lanes = [];
+    const placed = timed.map(o => {
+      const [ds] = dayRangeIso(k);
+      const s = Math.max(0, (new Date(o.start) - new Date(ds)) / 60000);
+      const e = Math.min(1440, Math.max(s + 20, (new Date(o.end) - new Date(ds)) / 60000));
+      let lane = lanes.findIndex(end => end <= s); if(lane < 0){ lane = lanes.length; lanes.push(e); } else lanes[lane] = e;
+      return { o, s, e, lane };
+    });
+    const n = Math.max(1, lanes.length);
+    cols += `<div class="week-col" data-action="week-slot" data-day="${k}">${placed.map(({o,s,e,lane}) =>
+      `<button class="week-ev" style="top:${s/60*44}px;height:${(e-s)/60*44-2}px;left:calc(${lane/n*100}% + 2px);width:calc(${100/n}% - 4px);background:${colorOf(o.color)}" data-action="open-occ" data-occ="${esc(o.key)}"><b>${esc(o.title)}</b>${hhmm(o.start)}–${hhmm(o.end)}</button>`).join('')}</div>`;
+  }
+  let hours = '<div class="week-hours">';
+  for(let h=0; h<24; h++) hours += `<div>${h ? pad2(h)+':00' : ''}</div>`;
+  hours += '</div>';
+  return `<div class="week-wrap">${head}</div>${allday}</div><div class="week-body">${hours}${cols}</div></div>`;
+}
+function renderAgenda(){
+  const start = state.calCursor, end = addDays(start, 60), today = todayKey();
+  const occs = occurrencesBetween(istToIso(start,0,0), istToIso(end,0,0));
+  if(!occs.length) return `<div class="card empty-state">${t('noEvents')}</div>`;
+  let html = '';
+  for(let k = start; k < end; k = addDays(k,1)){
+    const list = occOnDay(occs, k);
+    if(!list.length) continue;
+    html += `<div class="agenda-day"><div class="agenda-date ${k===today?'today':''}">${esc(fmtDateLong(k))}</div>` +
+      list.map(o => `<button class="agenda-item" data-action="open-occ" data-occ="${esc(o.key)}">
+        <span class="agenda-bar" style="background:${colorOf(o.color)}"></span>
+        <span class="agenda-time">${o.allDay ? t('allDay') : `${hhmm(o.start)}–${hhmm(o.end)}`}</span>
+        <span class="agenda-main"><b>${esc(o.title)}</b>${o.location ? `<span class="muted small">${esc(o.location)}</span>` : ''}</span>
+        ${o.event.rrule ? `<span class="muted">${icon('repeat')}</span>` : ''}
+      </button>`).join('') + '</div>';
+  }
+  return html;
+}
+function calMove(dir){
+  const v = state.calView, c = state.calCursor;
+  if(v === 'month') state.calCursor = monthKey(c, dir);
+  else if(v === 'week') state.calCursor = addDays(c, 7*dir);
+  else state.calCursor = addDays(c, 30*dir);
+  renderSchedule();
+}
+// Find a single occurrence by "eventId|originalDate".
+function findOcc(occKey){
+  const [id, k] = occKey.split('|');
+  const ev = state.events.find(e => e.id === id);
+  if(!ev) return null;
+  const x = exceptionsOf(id).find(e => e.original_date === k);
+  const startIso = x && x.start_at ? x.start_at : istToIso(k, 0, 0);
+  const occs = expandEvent(ev, exceptionsOf(id), istToIso(addDays(istKey(startIso), -1),0,0), istToIso(addDays(istKey(startIso), 2),0,0));
+  return occs.find(o => o.originalDate === k) || null;
+}
+function linkedTasksFor(occ){
+  return state.tasks.filter(tk => tk.event_id === occ.event.id && (!occ.event.rrule || !tk.event_date || tk.event_date === occ.originalDate));
+}
+function occTimeText(o){
+  const sk = istKey(o.start);
+  if(o.allDay){
+    const lastDay = addDays(istKey(o.end), -1);
+    return lastDay > sk ? `${fmtDateLong(sk)} – ${fmtDateLong(lastDay)}` : `${fmtDateLong(sk)} · ${t('allDay')}`;
+  }
+  const ek = istKey(o.end);
+  return ek === sk ? `${fmtDateLong(sk)} · ${hhmm(o.start)}–${hhmm(o.end)}` : `${fmtDateLong(sk)} ${hhmm(o.start)} – ${fmtDateLong(ek)} ${hhmm(o.end)}`;
+}
+function openEventDetail(occKey){
+  const o = findOcc(occKey);
+  if(!o) return;
+  const ev = o.event, tasks = linkedTasksFor(o);
+  const el = openModal(`
+    ${modalHeader(`<span class="inline"><span class="title-dot" style="background:${colorOf(o.color)}"></span>${esc(o.title)}</span>`)}
+    <div class="detail-line">${icon('clock')}<span>${esc(occTimeText(o))}</span></div>
+    ${ev.rrule ? `<div class="detail-line">${icon('repeat')}<span>${esc(ruleText(ev.rrule, istKey(ev.start_at)))}${o.exception ? ` · <span class="badge accent">${t('editedOnce')}</span>` : ''}</span></div>` : ''}
+    ${o.location ? `<div class="detail-line">${icon('pin')}<span>${esc(o.location)}</span></div>` : ''}
+    <div class="detail-line">${icon('user')}<span class="muted">${esc(t('createdBy', { name: profileName(ev.created_by) }))}</span></div>
+    ${o.description ? `<div class="detail-desc">${esc(o.description)}</div>` : ''}
+    <div class="section-title" style="margin-top:16px">${t('linkedTasks')}</div>
+    ${tasks.length ? tasks.map(tk => `<button class="linked-task" data-action="open-task" data-id="${tk.id}"><span class="badge ${'p-'+tk.priority}">${t(priorityKey(tk.priority))}</span><span style="flex:1">${esc(tk.title)}</span><span class="muted small">${t(statusKey(tk.status))}</span></button>`).join('') : `<div class="muted small">${t('noLinkedTasks')}</div>`}
+    <div class="modal-actions">
+      <button class="btn btn-sm left" data-action="task-for-occ" data-occ="${esc(o.key)}">${icon('plus')}${t('newTaskForEvent')}</button>
+      ${canEditEvent(ev) ? `<button class="btn btn-danger" data-action="delete-occ" data-occ="${esc(o.key)}">${t('delete')}</button><button class="btn btn-primary" data-action="edit-occ" data-occ="${esc(o.key)}">${t('edit')}</button>` : ''}
+    </div>`);
+  el.dataset.kind = 'event';
+}
+function openDayList(key){
+  const [ds, de] = dayRangeIso(key);
+  const occs = occOnDay(occurrencesBetween(ds, de), key);
+  openModal(modalHeader(esc(fmtDateLong(key))) + occs.map(o => `<button class="agenda-item" data-action="open-occ" data-occ="${esc(o.key)}"><span class="agenda-bar" style="background:${colorOf(o.color)}"></span><span class="agenda-time">${o.allDay ? t('allDay') : hhmm(o.start)}</span><span class="agenda-main"><b>${esc(o.title)}</b></span></button>`).join('') +
+    `<div class="modal-actions"><button class="btn btn-primary" data-action="new-event-day" data-day="${key}">${icon('plus')}${t('newEvent')}</button></div>`);
+}
+
+/* ---------- Event form ---------- */
+// ctx: { occ } when editing an existing occurrence; { day, hour } for a new event.
+function openEventForm(ctx){
+  ctx = ctx || {};
+  const occ = ctx.occ, ev = occ ? occ.event : null;
+  const r = ev && ev.rrule ? ev.rrule : null;
+  let sKey, sTime, eKey, eTime, allDay;
+  if(occ){
+    allDay = !!occ.allDay;
+    sKey = istKey(occ.start); sTime = hhmm(occ.start);
+    eKey = allDay ? addDays(istKey(occ.end), -1) : istKey(occ.end); eTime = hhmm(occ.end);
+  }else{
+    allDay = false;
+    sKey = ctx.day || state.calCursor;
+    const h = ctx.hour != null ? ctx.hour : 18;
+    sTime = `${pad2(h)}:00`; eKey = sKey; eTime = `${pad2(Math.min(23, h+1))}:00`;
+  }
+  const color = (ev && ev.color) || 'violet';
+  const freq = r ? r.freq : 'none';
+  const end = (r && r.end) || { type:'never' };
+  const byWd = r && r.byweekday && r.byweekday.length ? r.byweekday : [weekdayOf(sKey)];
+  const el = openModal(`
+    ${modalHeader(ev ? t('editEvent') : t('newEvent'))}
+    <div class="field"><label>${t('title')}</label><input type="text" id="ef-title" maxlength="200" value="${esc(occ ? occ.title : '')}" autofocus></div>
+    <div class="field"><label class="check"><input type="checkbox" id="ef-allday" ${allDay?'checked':''}> ${t('allDay')}</label></div>
+    <div class="row2">
+      <div class="field"><label>${t('startDate')}</label><input type="date" id="ef-sdate" value="${sKey}"></div>
+      <div class="field ef-time"><label>${t('startTime')}</label><input type="time" id="ef-stime" value="${sTime}"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>${t('endDate')}</label><input type="date" id="ef-edate" value="${eKey}"></div>
+      <div class="field ef-time"><label>${t('endTime')}</label><input type="time" id="ef-etime" value="${eTime}"></div>
+    </div>
+    <div class="repeat-box">
+      <div class="field"><label>${t('repeat')}</label>
+        <select id="ef-freq">${['none','daily','weekly','monthly','yearly'].map(f => `<option value="${f}" ${freq===f?'selected':''}>${t({none:'rNone',daily:'rDaily',weekly:'rWeekly',monthly:'rMonthly',yearly:'rYearly'}[f])}</option>`).join('')}</select>
+      </div>
+      <div class="field rep-only"><div class="inline"><span>${t('every')}</span><input type="number" id="ef-interval" min="1" max="99" value="${r ? (r.interval||1) : 1}"><span id="ef-unit"></span></div></div>
+      <div class="field rep-weekly"><span class="field-label">${t('onDays')}</span><div class="wd-picks">${[0,1,2,3,4,5,6].map(i => `<label><input type="checkbox" name="ef-wd" value="${i}" ${byWd.includes(i)?'checked':''}><span>${esc(weekdayShort(i))}</span></label>`).join('')}</div></div>
+      <div class="field rep-monthly" id="ef-mmode-wrap"></div>
+      <div class="field rep-only"><span class="field-label">${t('repeatEnds')}</span>
+        <div class="inline">
+          <select id="ef-endtype" style="width:auto">${['never','until','count'].map(x => `<option value="${x}" ${end.type===x?'selected':''}>${t({never:'endNever',until:'endUntil',count:'endCount'}[x])}</option>`).join('')}</select>
+          <input type="date" id="ef-until" value="${end.date || addDays(sKey, 90)}" style="width:auto">
+          <span id="ef-count-wrap" class="inline"><input type="number" id="ef-count" min="1" max="999" value="${end.count || 10}"><span>${t('times')}</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="field"><label>${t('location')}</label><input type="text" id="ef-loc" maxlength="200" value="${esc(occ ? occ.location || '' : '')}"></div>
+    <div class="field"><label>${t('description')}</label><textarea id="ef-desc" maxlength="5000">${esc(occ ? occ.description || '' : '')}</textarea></div>
+    <div class="field"><span class="field-label">${t('color')}</span><div class="swatches">${Object.keys(COLORS).map(c => `<label><input type="radio" name="ef-color" value="${c}" ${c===color?'checked':''}><span style="background:${COLORS[c]}"></span></label>`).join('')}</div></div>
+    <div class="lock-error" id="ef-error" style="text-align:left"></div>
+    <div class="modal-actions"><button class="btn" data-action="close-modal">${t('cancel')}</button><button class="btn btn-primary" id="ef-save">${t('save')}</button></div>
+  `, { wide:true });
+  const q = sel => el.querySelector(sel);
+  const mmode = r && r.freq==='monthly' ? (r.monthlyMode==='nth' ? (Number(r.nth)===-1 ? 'last' : 'nth') : 'day') : 'day';
+  function refresh(){
+    const f = q('#ef-freq').value, ad = q('#ef-allday').checked, sk = q('#ef-sdate').value || sKey;
+    el.querySelectorAll('.ef-time').forEach(x => x.hidden = ad);
+    el.querySelectorAll('.rep-only').forEach(x => x.hidden = f==='none');
+    el.querySelectorAll('.rep-weekly').forEach(x => x.hidden = f!=='weekly');
+    el.querySelectorAll('.rep-monthly').forEach(x => x.hidden = f!=='monthly');
+    q('#ef-unit').textContent = t({daily:'uDays',weekly:'uWeeks',monthly:'uMonths',yearly:'uYears'}[f] || 'uDays');
+    const et = q('#ef-endtype').value;
+    q('#ef-until').hidden = et !== 'until'; q('#ef-count-wrap').hidden = et !== 'count';
+    // monthly options depend on the start date
+    const p = keyParts(sk), wd = weekdayOf(sk), nth = Math.ceil(p.d/7), isLast = p.d + 7 > daysInMonth(p.y, p.m0);
+    const cur = (el.querySelector('input[name=ef-mm]:checked') || {}).value || mmode;
+    const opts = [['day', t('monthlyDay',{d:p.d})]];
+    if(nth <= 4) opts.push(['nth', t('monthlyNth',{nth:nthLabel(nth), wd:weekdayLong(wd)})]);
+    if(isLast) opts.push(['last', t('monthlyNth',{nth:nthLabel(-1), wd:weekdayLong(wd)})]);
+    const sel = opts.some(o => o[0]===cur) ? cur : 'day';
+    q('#ef-mmode-wrap').innerHTML = opts.map(([v,l]) => `<label class="check" style="display:flex;margin-bottom:4px"><input type="radio" name="ef-mm" value="${v}" ${v===sel?'checked':''}> ${esc(l)}</label>`).join('');
+  }
+  ['#ef-freq','#ef-allday','#ef-sdate','#ef-endtype'].forEach(s => q(s).addEventListener('change', refresh));
+  q('#ef-sdate').addEventListener('change', () => { if(q('#ef-edate').value < q('#ef-sdate').value) q('#ef-edate').value = q('#ef-sdate').value; });
+  refresh();
+  q('#ef-save').addEventListener('click', async () => {
+    const err = q('#ef-error'); err.textContent = '';
+    const v = readEventForm(el);
+    if(v.error){ err.textContent = v.error; return; }
+    q('#ef-save').disabled = true;
+    try{
+      const done = ev ? await saveEventEdit(occ, v) : await createEvent(v);
+      if(done !== false){ closeModal(el); closeModalsOfKind('event'); toast(t('saved')); }
+    }catch(e){ showError(e); }
+    finally{ q('#ef-save').disabled = false; }
+  });
+}
+function closeModalsOfKind(kind){ modalStack.filter(m => m.el.dataset.kind === kind).forEach(m => closeModal(m.el)); }
+function readEventForm(el){
+  const q = sel => el.querySelector(sel);
+  const title = q('#ef-title').value.trim();
+  if(!title) return { error: t('errTitle') };
+  const allDay = q('#ef-allday').checked;
+  const sk = q('#ef-sdate').value, ek = q('#ef-edate').value || sk;
+  if(!sk) return { error: t('errEndBeforeStart') };
+  let start, end;
+  if(allDay){
+    start = istToIso(sk, 0, 0); end = istToIso(addDays(ek, 1), 0, 0);
+  }else{
+    const [sh, sm] = (q('#ef-stime').value || '00:00').split(':').map(Number);
+    const [eh, em] = (q('#ef-etime').value || '00:00').split(':').map(Number);
+    start = istToIso(sk, sh, sm); end = istToIso(ek, eh, em);
+  }
+  if(new Date(end) <= new Date(start)) return { error: t('errEndBeforeStart') };
+  const f = q('#ef-freq').value;
+  let rrule = null;
+  if(f !== 'none'){
+    rrule = { freq: f, interval: Math.min(99, Math.max(1, parseInt(q('#ef-interval').value,10) || 1)) };
+    if(f === 'weekly'){
+      rrule.byweekday = [...el.querySelectorAll('input[name=ef-wd]:checked')].map(x => Number(x.value));
+      if(!rrule.byweekday.length) return { error: t('errWeekdays') };
+    }
+    if(f === 'monthly'){
+      const mm = (el.querySelector('input[name=ef-mm]:checked') || {}).value || 'day';
+      rrule.monthlyMode = mm === 'day' ? 'day' : 'nth';
+      if(mm === 'nth') rrule.nth = Math.ceil(keyParts(sk).d / 7);
+      if(mm === 'last') rrule.nth = -1;
+    }
+    const et = q('#ef-endtype').value;
+    if(et === 'until'){
+      const d = q('#ef-until').value;
+      if(!d || d < sk) return { error: t('errUntil') };
+      rrule.end = { type:'until', date:d };
+    }else if(et === 'count'){
+      rrule.end = { type:'count', count: Math.min(999, Math.max(1, parseInt(q('#ef-count').value,10) || 1)) };
+    }else rrule.end = { type:'never' };
+  }
+  return {
+    title, allDay, start, end, rrule,
+    location: q('#ef-loc').value.trim() || null,
+    description: q('#ef-desc').value.trim() || null,
+    color: (el.querySelector('input[name=ef-color]:checked') || {}).value || 'violet',
+  };
+}
+function eventRow(v){
+  return { title:v.title, description:v.description, location:v.location, color:v.color, all_day:v.allDay, start_at:v.start, end_at:v.end, rrule:v.rrule };
+}
+async function createEvent(v){
+  await api.insert('events', { id: uuid(), ...eventRow(v), created_by: state.uid });
+  await reload('events');
+}
+const sameRule = (a, b) => JSON.stringify(a || null) === JSON.stringify(b || null);
+
+async function saveEventEdit(occ, v){
+  const ev = occ.event;
+  if(!ev.rrule){
+    await api.update('events', { id: ev.id }, eventRow(v));
+    await reload('events');
+    return;
+  }
+  const ruleChanged = !sameRule(ev.rrule, v.rrule);
+  const scope = await askScope(t('scopeEditTitle'), !ruleChanged && v.allDay === !!ev.all_day);
+  if(!scope) return false;
+  const D = occ.originalDate, seriesStart = istKey(ev.start_at);
+  if(scope === 'this'){
+    const defStart = istToIso(D, istParts(ev.start_at).hh, istParts(ev.start_at).mi);
+    const defEnd = new Date(new Date(defStart).getTime() + (new Date(ev.end_at) - new Date(ev.start_at))).toISOString();
+    const prev = occ.exception || {};
+    await api.upsert('event_exceptions', {
+      id: prev.id || uuid(), event_id: ev.id, original_date: D, cancelled: false,
+      title: v.title !== ev.title ? v.title : null,
+      description: (v.description || null) !== (ev.description || null) ? v.description : null,
+      location: (v.location || null) !== (ev.location || null) ? v.location : null,
+      start_at: v.start !== defStart ? v.start : null,
+      end_at: v.end !== defEnd ? v.end : null,
+    }, 'event_id,original_date');
+    if(v.color !== ev.color) await api.update('events', { id: ev.id }, { color: v.color });
+    await reload('event_exceptions', 'events');
+    return;
+  }
+  if(scope === 'all' || D === seriesStart){
+    // shift the series start by the same number of days the occurrence moved
+    const shift = daysBetween(D, istKey(v.start));
+    const newStartKey = addDays(seriesStart, shift);
+    const sp = istParts(v.start);
+    const newStart = v.allDay ? istToIso(newStartKey, 0, 0) : istToIso(newStartKey, sp.hh, sp.mi);
+    const newEnd = new Date(new Date(newStart).getTime() + (new Date(v.end) - new Date(v.start))).toISOString();
+    await api.update('events', { id: ev.id }, { ...eventRow(v), start_at: newStart, end_at: newEnd });
+    if(ruleChanged || newStart !== ev.start_at){
+      await dropOrphanExceptions(ev.id, newStartKey, v.rrule, () => true);
+    }
+    await reload('events', 'event_exceptions');
+    return;
+  }
+  // this and following: end the old series the day before, start a new one here
+  const used = ruleDates(seriesStart, ev.rrule, addDays(D, -1)).length;
+  const newRule = v.rrule ? JSON.parse(JSON.stringify(v.rrule)) : null;
+  if(newRule && newRule.end && newRule.end.type === 'count' && ev.rrule.end && ev.rrule.end.type === 'count' && newRule.end.count === ev.rrule.end.count){
+    newRule.end.count = Math.max(1, newRule.end.count - used);
+  }
+  const newId = uuid();
+  await api.insert('events', { id: newId, ...eventRow({ ...v, rrule: newRule }), created_by: ev.created_by || state.uid });
+  await api.update('events', { id: ev.id }, { rrule: { ...ev.rrule, end: { type:'until', date: addDays(D, -1) } } });
+  const newDates = new Set(ruleDates(istKey(v.start), newRule, maxExceptionKey(ev.id)));
+  for(const x of exceptionsOf(ev.id).filter(x => x.original_date >= D)){
+    if(newDates.has(x.original_date)) await api.update('event_exceptions', { id: x.id }, { event_id: newId });
+    else await api.remove('event_exceptions', { id: x.id });
+  }
+  // keep tasks pointing at occurrences that moved to the new series
+  for(const tk of state.tasks.filter(tk => tk.event_id === ev.id && tk.event_date && tk.event_date >= D && canEditTask(tk))){
+    await api.update('tasks', { id: tk.id }, { event_id: newId });
+  }
+  await reload('events', 'event_exceptions', 'tasks');
+}
+function maxExceptionKey(eventId){
+  return exceptionsOf(eventId).reduce((m, x) => x.original_date > m ? x.original_date : m, todayKey());
+}
+// Delete exceptions whose date is no longer an occurrence of the (new) rule.
+async function dropOrphanExceptions(eventId, startKey, rrule, filter){
+  const dates = new Set(ruleDates(startKey, rrule, maxExceptionKey(eventId)));
+  for(const x of exceptionsOf(eventId).filter(filter)){
+    if(!dates.has(x.original_date)) await api.remove('event_exceptions', { id: x.id });
+  }
+}
+async function deleteOccurrence(occKey){
+  const o = findOcc(occKey); if(!o) return;
+  const ev = o.event;
+  try{
+    if(!ev.rrule){
+      if(!await confirmDialog(t('confirmDeleteEvent'))) return;
+      await api.remove('events', { id: ev.id });
+    }else{
+      const scope = await askScope(t('scopeDeleteTitle'), true);
+      if(!scope) return;
+      const D = o.originalDate, seriesStart = istKey(ev.start_at);
+      if(scope === 'this'){
+        await api.upsert('event_exceptions', { id: (o.exception && o.exception.id) || uuid(), event_id: ev.id, original_date: D, cancelled: true,
+          title:null, description:null, location:null, start_at:null, end_at:null }, 'event_id,original_date');
+      }else if(scope === 'all' || D === seriesStart){
+        await api.remove('events', { id: ev.id });
+      }else{
+        await api.update('events', { id: ev.id }, { rrule: { ...ev.rrule, end: { type:'until', date: addDays(D, -1) } } });
+        for(const x of exceptionsOf(ev.id).filter(x => x.original_date >= D)) await api.remove('event_exceptions', { id: x.id });
+      }
+    }
+    closeModalsOfKind('event');
+    toast(t('deleted'));
+    await reload('events', 'event_exceptions', 'tasks');
+  }catch(e){ showError(e); }
+}
+
+/* =====================================================================
+   Tasks view
+   ===================================================================== */
+const STATUSES = ['todo','in_progress','done'];
+function statusKey(s){ return { todo:'sTodo', in_progress:'sProgress', done:'sDone' }[s]; }
+function priorityKey(p){ return { low:'pLow', medium:'pMedium', high:'pHigh' }[p]; }
+const PRIORITY_RANK = { high:0, medium:1, low:2 };
+function taskEventLabel(tk){
+  if(!tk.event_id) return '';
+  const ev = state.events.find(e => e.id === tk.event_id);
+  if(!ev) return '';
+  return ev.title + (tk.event_date ? ' · ' + fmtDateShort(tk.event_date) : '');
+}
+function filteredTasks(){
+  const f = state.taskFilter;
+  return state.tasks.filter(tk => {
+    if(f.mine && !hasClaimed(tk.id) && tk.created_by !== state.uid) return false;
+    if(f.open && claimsOf(tk.id).length >= tk.slots) return false;
+    if(f.priority && tk.priority !== f.priority) return false;
+    if(f.event && tk.event_id !== f.event) return false;
+    return true;
+  });
+}
+function renderTasks(){
+  const f = state.taskFilter;
+  const evOpts = state.events.filter(ev => state.tasks.some(tk => tk.event_id === ev.id));
+  $('view-tasks').innerHTML = `
+    <div class="page-header">
+      <h1>${t('navTasks')}</h1>
+      <div class="toolbar">
+        <div class="seg"><button class="${state.taskView==='board'?'active':''}" data-action="task-view" data-v="board">${t('board')}</button><button class="${state.taskView==='list'?'active':''}" data-action="task-view" data-v="list">${t('list')}</button></div>
+        <button class="btn btn-primary" data-action="new-task">${icon('plus')}${t('newTask')}</button>
+      </div>
+    </div>
+    <div class="filters">
+      <button class="chip ${f.mine?'active':''}" data-action="tf-toggle" data-f="mine">${t('fMine')}</button>
+      <button class="chip ${f.open?'active':''}" data-action="tf-toggle" data-f="open">${t('fOpen')}</button>
+      <select class="chip" id="tf-priority"><option value="">${t('fAnyPriority')}</option>${['high','medium','low'].map(p => `<option value="${p}" ${f.priority===p?'selected':''}>${t(priorityKey(p))}</option>`).join('')}</select>
+      <select class="chip" id="tf-event"><option value="">${t('fAnyEvent')}</option>${evOpts.map(ev => `<option value="${ev.id}" ${f.event===ev.id?'selected':''}>${esc(ev.title)}</option>`).join('')}</select>
+    </div>
+    ${state.taskView === 'board' ? renderBoard() : renderTaskList()}`;
+  $('tf-priority').addEventListener('change', e => { f.priority = e.target.value; renderTasks(); });
+  $('tf-event').addEventListener('change', e => { f.event = e.target.value; renderTasks(); });
+}
+function taskCard(tk){
+  const claims = claimsOf(tk.id), full = claims.length >= tk.slots;
+  const overdue = tk.due_date && tk.status !== 'done' && tk.due_date < todayKey();
+  const evLabel = taskEventLabel(tk);
+  return `<div class="task-card" draggable="${canMoveTask(tk)}" data-task="${tk.id}">
+    <div class="t-title">${esc(tk.title)}</div>
+    <div class="t-meta">
+      <span class="badge p-${tk.priority}">${t(priorityKey(tk.priority))}</span>
+      ${tk.due_date ? `<span class="${overdue?'overdue':''}">${icon('clock')} ${esc(fmtDateShort(tk.due_date))}</span>` : ''}
+      ${evLabel ? `<span>${icon('link')} ${esc(evLabel)}</span>` : ''}
+    </div>
+    <div class="t-foot">
+      <span class="avatars">${claims.map(c => `<span class="avatar" title="${esc(profileName(c.user_id))}">${esc(initials(profileName(c.user_id)))}</span>`).join('')}</span>
+      <span class="badge ${full?'full':''}">${t('spots',{n:claims.length, m:tk.slots})}</span>
+    </div>
+  </div>`;
+}
+function renderBoard(){
+  const list = filteredTasks();
+  return `<div class="kanban">${STATUSES.map(s => {
+    const col = list.filter(tk => tk.status === s).sort((a,b) => a.position - b.position || a.created_at.localeCompare(b.created_at));
+    return `<div class="kanban-col" data-status="${s}"><h3>${t(statusKey(s))}<span class="count">${col.length}</span></h3>${col.map(taskCard).join('') || `<div class="muted small" style="padding:8px">${t('noTasks')}</div>`}</div>`;
+  }).join('')}</div>`;
+}
+function renderTaskList(){
+  const s = state.taskSort;
+  const val = (tk, k) => k==='priority' ? PRIORITY_RANK[tk.priority] : k==='status' ? STATUSES.indexOf(tk.status) : k==='slots' ? claimsOf(tk.id).length - tk.slots : k==='event' ? taskEventLabel(tk) : (tk[k] || '￿');
+  const list = filteredTasks().sort((a,b) => { const x = val(a,s.key), y = val(b,s.key); return (x < y ? -1 : x > y ? 1 : 0) * s.dir; });
+  if(!list.length) return `<div class="card empty-state">${t('noTasks')}</div>`;
+  const th = (k, label) => `<th data-action="task-sort" data-k="${k}">${t(label)}${s.key===k ? (s.dir>0?' ▲':' ▼') : ''}</th>`;
+  return `<div class="table-wrap"><table class="tbl"><thead><tr>${th('title','title')}${th('status','status')}${th('priority','priority')}${th('due_date','dueDate')}${th('slots','slots')}${th('event','linkedEvent')}</tr></thead><tbody>
+    ${list.map(tk => { const c = claimsOf(tk.id).length; return `<tr class="row-link" data-action="open-task" data-id="${tk.id}">
+      <td class="wrap">${esc(tk.title)}</td><td>${t(statusKey(tk.status))}</td><td><span class="badge p-${tk.priority}">${t(priorityKey(tk.priority))}</span></td>
+      <td class="${tk.due_date && tk.status!=='done' && tk.due_date < todayKey() ? 'overdue':''}">${tk.due_date ? esc(fmtDateShort(tk.due_date)) : ''}</td>
+      <td><span class="badge ${c>=tk.slots?'full':''}">${t('spots',{n:c,m:tk.slots})}</span></td><td>${esc(taskEventLabel(tk))}</td></tr>`; }).join('')}
+  </tbody></table></div>`;
+}
+
+/* ---------- Task form ---------- */
+function eventOptionsForTask(selected){
+  // upcoming occurrences for the next 90 days, plus the currently linked one
+  const from = addDays(todayKey(), -1), to = addDays(todayKey(), 90);
+  const occs = occurrencesBetween(istToIso(from,0,0), istToIso(to,0,0));
+  const opts = occs.map(o => ({ value: o.event.id + '|' + (o.event.rrule ? o.originalDate : ''), label: `${o.title} · ${fmtDateShort(istKey(o.start))}` }));
+  if(selected && !opts.some(o => o.value === selected)){
+    const [id, d] = selected.split('|');
+    const ev = state.events.find(e => e.id === id);
+    if(ev) opts.unshift({ value: selected, label: ev.title + (d ? ' · ' + fmtDateShort(d) : '') });
+  }
+  return `<option value="">${t('noEvent')}</option>` + opts.map(o => `<option value="${esc(o.value)}" ${o.value===selected?'selected':''}>${esc(o.label)}</option>`).join('');
+}
+function openTaskForm(tk, preset){
+  preset = preset || {};
+  const sel = tk ? (tk.event_id ? tk.event_id + '|' + (tk.event_date || '') : '') : (preset.eventValue || '');
+  const el = openModal(`
+    ${modalHeader(tk ? t('editTask') : t('newTask'))}
+    <div class="field"><label>${t('title')}</label><input type="text" id="tf-title" maxlength="200" value="${esc(tk ? tk.title : '')}" autofocus></div>
+    <div class="field"><label>${t('description')}</label><textarea id="tf-desc" maxlength="5000">${esc(tk ? tk.description || '' : '')}</textarea></div>
+    <div class="row2">
+      <div class="field"><label>${t('dueDate')}</label><input type="date" id="tf-due" value="${tk && tk.due_date ? tk.due_date : (preset.due || '')}"></div>
+      <div class="field"><label>${t('priority')}</label><select id="tf-prio">${['low','medium','high'].map(p => `<option value="${p}" ${(tk ? tk.priority : 'medium')===p?'selected':''}>${t(priorityKey(p))}</option>`).join('')}</select></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>${t('slots')}</label><input type="number" id="tf-slots" min="1" max="50" value="${tk ? tk.slots : 1}"></div>
+      <div class="field"><label>${t('status')}</label><select id="tf-status">${STATUSES.map(s => `<option value="${s}" ${(tk ? tk.status : 'todo')===s?'selected':''}>${t(statusKey(s))}</option>`).join('')}</select></div>
+    </div>
+    <div class="field"><label>${t('linkedEvent')}</label><select id="tf-event">${eventOptionsForTask(sel)}</select></div>
+    <div class="lock-error" id="tf-error" style="text-align:left"></div>
+    <div class="modal-actions"><button class="btn" data-action="close-modal">${t('cancel')}</button><button class="btn btn-primary" id="tf-save">${t('save')}</button></div>
+  `);
+  el.querySelector('#tf-save').addEventListener('click', async () => {
+    const q = s => el.querySelector(s);
+    const title = q('#tf-title').value.trim();
+    if(!title){ q('#tf-error').textContent = t('errTitle'); return; }
+    const [eventId, eventDate] = (q('#tf-event').value || '|').split('|');
+    const status = q('#tf-status').value;
+    const row = {
+      title, description: q('#tf-desc').value.trim() || null, due_date: q('#tf-due').value || null,
+      priority: q('#tf-prio').value, slots: Math.min(50, Math.max(1, parseInt(q('#tf-slots').value,10) || 1)),
+      status, event_id: eventId || null, event_date: eventDate || null,
+    };
+    q('#tf-save').disabled = true;
+    try{
+      if(tk){
+        if(status !== tk.status) row.position = nextPosition(status);
+        await api.update('tasks', { id: tk.id }, row);
+      }else{
+        await api.insert('tasks', { id: uuid(), ...row, position: nextPosition(status), created_by: state.uid });
+      }
+      closeModal(el); toast(t('saved'));
+      await reload('tasks');
+    }catch(e){ showError(e); q('#tf-save').disabled = false; }
+  });
+}
+function nextPosition(status){
+  return state.tasks.filter(tk => tk.status === status).reduce((m, tk) => Math.max(m, tk.position), 0) + 1;
+}
+
+/* ---------- Task detail ---------- */
+async function loadComments(taskId){
+  try{
+    const rows = await api.list('task_comments', { task_id: taskId });
+    if(state.openTaskId !== taskId) return;
+    state.comments = rows.sort((a,b) => a.created_at.localeCompare(b.created_at));
+    refreshTaskDetail();
+  }catch(e){ showError(e); }
+}
+function openTaskDetail(taskId){
+  closeModalsOfKind('task');
+  state.openTaskId = taskId; state.comments = [];
+  const el = openModal('<div id="task-detail"></div>', { wide:true, onClose: () => { state.openTaskId = null; } });
+  el.dataset.kind = 'task';
+  refreshTaskDetail();
+  loadComments(taskId);
+}
+function refreshTaskDetail(){
+  const box = $('task-detail');
+  if(!box) return;
+  const tk = state.tasks.find(x => x.id === state.openTaskId);
+  if(!tk){ closeModalsOfKind('task'); return; }
+  const draft = box.querySelector('#cm-body') ? box.querySelector('#cm-body').value : '';
+  const claims = claimsOf(tk.id), mine = hasClaimed(tk.id), full = claims.length >= tk.slots;
+  const evLabel = taskEventLabel(tk);
+  box.innerHTML = `
+    ${modalHeader(esc(tk.title))}
+    <div class="inline" style="margin-bottom:12px">
+      <span class="badge p-${tk.priority}">${icon('flag')} ${t(priorityKey(tk.priority))}</span>
+      ${canMoveTask(tk) ? `<select id="td-status" class="chip">${STATUSES.map(s => `<option value="${s}" ${tk.status===s?'selected':''}>${t(statusKey(s))}</option>`).join('')}</select>` : `<span class="badge">${t(statusKey(tk.status))}</span>`}
+      ${tk.due_date ? `<span class="badge ${tk.status!=='done' && tk.due_date < todayKey() ? 'p-high':''}">${icon('clock')} ${esc(fmtDateShort(tk.due_date))}</span>` : ''}
+    </div>
+    ${evLabel ? `<div class="detail-line">${icon('link')}<a href="#" data-action="task-goto-event" data-id="${tk.id}">${esc(evLabel)}</a></div>` : ''}
+    <div class="detail-line">${icon('user')}<span class="muted">${esc(t('createdBy', { name: profileName(tk.created_by) }))}</span></div>
+    ${tk.description ? `<div class="detail-desc">${esc(tk.description)}</div>` : ''}
+    <div class="section-title" style="margin-top:16px">${t('claimedBy')} · ${t('spots',{n:claims.length, m:tk.slots})}</div>
+    ${claims.length ? claims.map(c => `<div class="claimer"><span class="avatar">${esc(initials(profileName(c.user_id)))}</span><span class="grow">${esc(profileName(c.user_id))}${c.user_id===state.uid ? ' '+t('you') : ''}</span>
+      ${isAdmin() && c.user_id !== state.uid ? `<button class="btn btn-sm btn-danger" data-action="unclaim-user" data-task="${tk.id}" data-user="${c.user_id}">${t('remove')}</button>` : ''}</div>`).join('') : `<div class="muted small">${t('nobodyYet')}</div>`}
+    <div style="margin-top:10px">
+      ${mine ? `<button class="btn" data-action="unclaim" data-id="${tk.id}">${t('unclaim')}</button>`
+             : `<button class="btn btn-primary" data-action="claim" data-id="${tk.id}" ${full?'disabled':''}>${full ? t('full') : t('claim')}</button>`}
+    </div>
+    <div class="section-title" style="margin-top:20px">${t('comments')}</div>
+    <div class="comments">${state.comments.length ? state.comments.map(c => `<div class="comment"><div class="comment-head"><span class="avatar">${esc(initials(profileName(c.user_id)))}</span><b class="grow">${esc(profileName(c.user_id))} <span class="muted small" style="font-weight:400">${esc(fmtDateShort(istKey(c.created_at)))} ${hhmm(c.created_at)}</span></b>
+      ${c.user_id === state.uid || isAdmin() ? `<button class="modal-close" data-action="delete-comment" data-id="${c.id}" aria-label="${t('delete')}">${icon('trash')}</button>` : ''}</div><div class="comment-body">${esc(c.body)}</div></div>`).join('') : `<div class="muted small">${t('noComments')}</div>`}</div>
+    <div class="comment-form"><textarea id="cm-body" maxlength="2000" placeholder="${t('writeComment')}">${esc(draft)}</textarea><button class="btn btn-primary" data-action="send-comment" data-id="${tk.id}">${t('send')}</button></div>
+    ${canEditTask(tk) ? `<div class="modal-actions"><button class="btn btn-danger" data-action="delete-task" data-id="${tk.id}">${t('delete')}</button><button class="btn" data-action="edit-task" data-id="${tk.id}">${t('edit')}</button></div>` : ''}`;
+  const st = box.querySelector('#td-status');
+  if(st) st.addEventListener('change', () => moveTask(tk.id, st.value, null));
+}
+async function moveTask(taskId, status, position){
+  const tk = state.tasks.find(x => x.id === taskId);
+  if(!tk) return;
+  const pos = position != null ? position : nextPosition(status);
+  const prev = { status: tk.status, position: tk.position };
+  Object.assign(tk, { status, position: pos }); renderAll(); // optimistic
+  try{ await api.update('tasks', { id: taskId }, { status, position: pos }); }
+  catch(e){ Object.assign(tk, prev); renderAll(); showError(e); }
+}
+function openMoveMenu(taskId){
+  const tk = state.tasks.find(x => x.id === taskId);
+  if(!tk || !canMoveTask(tk)) return;
+  const el = openModal(modalHeader(t('moveTo')) + `<div class="menu-list">${STATUSES.map(s => `<button data-s="${s}" class="${tk.status===s?'current':''}">${t(statusKey(s))}</button>`).join('')}</div>`);
+  el.querySelectorAll('[data-s]').forEach(b => b.addEventListener('click', () => { closeModal(el); if(b.dataset.s !== tk.status) moveTask(taskId, b.dataset.s, null); }));
+}
+
+/* ---------- Drag and drop (desktop) ---------- */
+let dragId = null;
+document.addEventListener('dragstart', e => {
+  const card = e.target.closest && e.target.closest('.task-card');
+  if(!card) return;
+  dragId = card.dataset.task; card.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  try{ e.dataTransfer.setData('text/plain', dragId); }catch(_){}
+});
+document.addEventListener('dragend', () => {
+  dragId = null;
+  document.querySelectorAll('.dragging').forEach(x => x.classList.remove('dragging'));
+  document.querySelectorAll('.drop-target').forEach(x => x.classList.remove('drop-target'));
+  document.querySelectorAll('.drop-line').forEach(x => x.remove());
+});
+function dropIndex(col, y){
+  const cards = [...col.querySelectorAll('.task-card:not(.dragging)')];
+  const i = cards.findIndex(c => { const r = c.getBoundingClientRect(); return y < r.top + r.height/2; });
+  return { cards, i: i < 0 ? cards.length : i };
+}
+document.addEventListener('dragover', e => {
+  const col = e.target.closest && e.target.closest('.kanban-col');
+  if(!col || !dragId) return;
+  e.preventDefault();
+  document.querySelectorAll('.drop-target').forEach(x => x !== col && x.classList.remove('drop-target'));
+  col.classList.add('drop-target');
+  document.querySelectorAll('.drop-line').forEach(x => x.remove());
+  const { cards, i } = dropIndex(col, e.clientY);
+  const line = document.createElement('div'); line.className = 'drop-line';
+  if(cards[i]) col.insertBefore(line, cards[i]); else col.appendChild(line);
+});
+document.addEventListener('drop', e => {
+  const col = e.target.closest && e.target.closest('.kanban-col');
+  if(!col || !dragId) return;
+  e.preventDefault();
+  const { cards, i } = dropIndex(col, e.clientY);
+  const posOf = c => (state.tasks.find(x => x.id === c.dataset.task) || {}).position || 0;
+  const before = cards[i-1], after = cards[i];
+  const pos = before && after ? (posOf(before) + posOf(after)) / 2 : before ? posOf(before) + 1 : after ? posOf(after) - 1 : 1;
+  const id = dragId;
+  dragId = null;
+  moveTask(id, col.dataset.status, pos);
+});
+
+/* ---------- Long-press (touch) ---------- */
+let pressTimer = null, pressFired = false;
+document.addEventListener('touchstart', e => {
+  const card = e.target.closest && e.target.closest('.task-card');
+  if(!card) return;
+  pressFired = false;
+  pressTimer = setTimeout(() => { pressFired = true; openMoveMenu(card.dataset.task); }, 550);
+}, { passive:true });
+['touchend','touchmove','touchcancel'].forEach(ev => document.addEventListener(ev, () => clearTimeout(pressTimer), { passive:true }));
+
+/* =====================================================================
+   Members view (admins)
+   ===================================================================== */
+function renderMembers(){
+  const pending = state.profiles.filter(p => p.role === 'pending').sort((a,b) => a.created_at.localeCompare(b.created_at));
+  const members = state.profiles.filter(p => p.role !== 'pending').sort((a,b) => (a.role==='admin'?0:1) - (b.role==='admin'?0:1) || a.username.localeCompare(b.username));
+  const row = (p, actions) => `<div class="member-row"><span class="avatar">${esc(initials(p.display_name||p.username))}</span>
+    <div class="grow"><div><b>${esc(p.display_name||p.username)}</b> ${p.id===state.uid ? `<span class="muted">${t('you')}</span>` : ''}</div><div class="muted small">@${esc(p.username)} · ${esc(t('signedUpOn',{date: fmtDateShort(istKey(p.created_at))}))}</div></div>
+    ${actions}</div>`;
+  $('view-members').innerHTML = `
+    <div class="page-header"><h1>${t('navMembers')}</h1></div>
+    <div class="section-title">${t('pending')} (${pending.length})</div>
+    <div class="card">${pending.length ? pending.map(p => row(p, `<div class="toolbar"><button class="btn btn-sm btn-danger" data-action="m-reject" data-id="${p.id}">${t('reject')}</button><button class="btn btn-sm btn-primary" data-action="m-role" data-role="member" data-id="${p.id}">${t('approve')}</button></div>`)).join('') : `<div class="empty-state">${t('noPending')}</div>`}</div>
+    <div class="section-title">${t('members')} (${members.length})</div>
+    <div class="card">${members.map(p => row(p, `<span class="badge ${p.role==='admin'?'accent':''}">${t(p.role==='admin'?'roleAdmin':'roleMember')}</span>` +
+      (p.id === state.uid ? '' : `<div class="toolbar">${p.role==='admin'
+        ? `<button class="btn btn-sm" data-action="m-role" data-role="member" data-id="${p.id}">${t('makeMember')}</button>`
+        : `<button class="btn btn-sm" data-action="m-role" data-role="admin" data-id="${p.id}">${t('makeAdmin')}</button>`}
+        <button class="btn btn-sm btn-danger" data-action="m-remove" data-id="${p.id}">${t('removeMember')}</button></div>`))).join('')}</div>`;
+}
+async function setRole(id, role){
+  try{ await api.update('profiles', { id }, { role }); toast(t('saved')); await reload('profiles'); }
+  catch(e){ showError(e); }
+}
+
+/* =====================================================================
+   Click handling
+   ===================================================================== */
+document.addEventListener('click', async e => {
+  const a = e.target.closest('[data-action]');
+  // task cards open the detail panel (unless a long-press just fired)
+  const card = e.target.closest('.task-card');
+  if(card && !a){ if(pressFired){ pressFired = false; return; } openTaskDetail(card.dataset.task); return; }
+  if(!a) return;
+  const act = a.dataset.action;
+  switch(act){
+    case 'signin': return doSignIn();
+    case 'signup': return doSignUp();
+    case 'show-signup': $('si-error').textContent=''; return showAuthBox('signup');
+    case 'show-signin': $('su-error').textContent=''; return showAuthBox('signin');
+    case 'check-status': return route();
+    case 'signout': return doSignOut();
+    case 'lang': return setLang(a.dataset.lang);
+    case 'theme': return toggleTheme();
+    case 'toggle-nav': return document.body.classList.toggle('nav-open');
+    case 'nav': return setView(a.dataset.view);
+    case 'close-modal': return closeModal(modalStack.find(m => m.el.contains(a))?.el);
+    // schedule
+    case 'cal-prev': return calMove(-1);
+    case 'cal-next': return calMove(1);
+    case 'cal-today': state.calCursor = todayKey(); return renderSchedule();
+    case 'cal-view': state.calView = a.dataset.v; return renderSchedule();
+    case 'new-event': return openEventForm({ day: state.calView==='month' && keyParts(state.calCursor).m0 !== keyParts(todayKey()).m0 ? state.calCursor : todayKey() });
+    case 'new-event-day': closeModal(); return openEventForm({ day: a.dataset.day });
+    case 'day-click': return openEventForm({ day: a.dataset.day });
+    case 'day-more': e.stopPropagation(); return openDayList(a.dataset.day);
+    case 'week-slot': {
+      const r = a.getBoundingClientRect();
+      const hour = Math.max(0, Math.min(23, Math.floor((e.clientY - r.top) / 44)));
+      return openEventForm({ day: a.dataset.day, hour });
+    }
+    case 'open-occ': e.stopPropagation(); return openEventDetail(a.dataset.occ);
+    case 'edit-occ': { const o = findOcc(a.dataset.occ); if(o) openEventForm({ occ: o }); return; }
+    case 'delete-occ': return deleteOccurrence(a.dataset.occ);
+    case 'task-for-occ': {
+      const o = findOcc(a.dataset.occ); if(!o) return;
+      return openTaskForm(null, { eventValue: o.event.id + '|' + (o.event.rrule ? o.originalDate : ''), due: istKey(o.start) });
+    }
+    // tasks
+    case 'task-view': state.taskView = a.dataset.v; return renderTasks();
+    case 'tf-toggle': state.taskFilter[a.dataset.f] = !state.taskFilter[a.dataset.f]; return renderTasks();
+    case 'task-sort': { const s = state.taskSort; if(s.key === a.dataset.k) s.dir *= -1; else { s.key = a.dataset.k; s.dir = 1; } return renderTasks(); }
+    case 'new-task': return openTaskForm(null);
+    case 'open-task': return openTaskDetail(a.dataset.id);
+    case 'edit-task': { const tk = state.tasks.find(x => x.id === a.dataset.id); if(tk) openTaskForm(tk); return; }
+    case 'delete-task': {
+      if(!await confirmDialog(t('confirmDeleteTask'))) return;
+      try{ await api.remove('tasks', { id: a.dataset.id }); closeModalsOfKind('task'); toast(t('deleted')); await reload('tasks','task_claims'); }catch(err){ showError(err); }
+      return;
+    }
+    case 'claim':
+      try{ await api.insert('task_claims', { task_id: a.dataset.id, user_id: state.uid }); }catch(err){ showError(err); }
+      return reload('task_claims');
+    case 'unclaim':
+      try{ await api.remove('task_claims', { task_id: a.dataset.id, user_id: state.uid }); }catch(err){ showError(err); }
+      return reload('task_claims');
+    case 'unclaim-user':
+      try{ await api.remove('task_claims', { task_id: a.dataset.task, user_id: a.dataset.user }); }catch(err){ showError(err); }
+      return reload('task_claims');
+    case 'send-comment': {
+      const box = $('cm-body'); const body = box.value.trim();
+      if(!body) return;
+      a.disabled = true;
+      try{ await api.insert('task_comments', { id: uuid(), task_id: a.dataset.id, user_id: state.uid, body }); box.value = ''; await loadComments(a.dataset.id); }
+      catch(err){ showError(err); a.disabled = false; }
+      return;
+    }
+    case 'delete-comment': {
+      if(!await confirmDialog(t('confirmDeleteComment'))) return;
+      try{ await api.remove('task_comments', { id: a.dataset.id }); if(state.openTaskId) await loadComments(state.openTaskId); }catch(err){ showError(err); }
+      return;
+    }
+    case 'task-goto-event': {
+      e.preventDefault();
+      const tk = state.tasks.find(x => x.id === a.dataset.id); if(!tk || !tk.event_id) return;
+      const ev = state.events.find(x => x.id === tk.event_id); if(!ev) return;
+      const day = tk.event_date || istKey(ev.start_at);
+      closeAllModals();
+      state.calCursor = day; setView('schedule');
+      openEventDetail(ev.id + '|' + day);
+      return;
+    }
+    // members
+    case 'm-role': return setRole(a.dataset.id, a.dataset.role);
+    case 'm-reject': {
+      const p = state.profiles.find(x => x.id === a.dataset.id);
+      if(!await confirmDialog(t('confirmReject', { name: p ? p.username : '' }), t('reject'))) return;
+      try{ await api.remove('profiles', { id: a.dataset.id }); await reload('profiles'); }catch(err){ showError(err); }
+      return;
+    }
+    case 'm-remove': {
+      const p = state.profiles.find(x => x.id === a.dataset.id);
+      if(!await confirmDialog(t('confirmRemove', { name: p ? p.username : '' }), t('removeMember'))) return;
+      return setRole(a.dataset.id, 'pending');
+    }
+  }
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && modalStack.length){ closeModal(); return; }
+  if(e.key !== 'Enter') return;
+  const id = e.target.id;
+  if(id === 'si-user' || id === 'si-pass') doSignIn();
+  if(id === 'su-user' || id === 'su-pass' || id === 'su-pass2') doSignUp();
+});
+
+/* =====================================================================
+   Theme
+   ===================================================================== */
+function applyTheme(th){ if(th) document.documentElement.setAttribute('data-theme', th); else document.documentElement.removeAttribute('data-theme'); }
+function toggleTheme(){
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+    (!document.documentElement.getAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
+  const next = dark ? 'light' : 'dark';
+  applyTheme(next);
+  try{ localStorage.setItem('otc-theme', next); }catch(e){}
+}
+try{ applyTheme(localStorage.getItem('otc-theme')); }catch(e){}
+
+/* =====================================================================
+   Recurrence self-test (open with ?selftest)
+   ===================================================================== */
+function runSelfTest(){
+  const cases = [
+    ['daily every 2, count 4', '2026-10-01', { freq:'daily', interval:2, end:{type:'count',count:4} }, '2026-12-31', ['2026-10-01','2026-10-03','2026-10-05','2026-10-07']],
+    ['weekly Mon+Wed', '2026-10-05', { freq:'weekly', interval:1, byweekday:[0,2], end:{type:'until',date:'2026-10-14'} }, '2026-12-31', ['2026-10-05','2026-10-07','2026-10-12','2026-10-14']],
+    ['weekly every 2 weeks, start on Wed with Mon+Wed', '2026-10-07', { freq:'weekly', interval:2, byweekday:[0,2], end:{type:'count',count:3} }, '2026-12-31', ['2026-10-07','2026-10-19','2026-10-21']],
+    ['monthly day 31 skips short months', '2026-01-31', { freq:'monthly', interval:1, monthlyMode:'day', end:{type:'count',count:3} }, '2026-12-31', ['2026-01-31','2026-03-31','2026-05-31']],
+    ['monthly first Monday', '2026-10-05', { freq:'monthly', interval:1, monthlyMode:'nth', nth:1, end:{type:'count',count:3} }, '2027-12-31', ['2026-10-05','2026-11-02','2026-12-07']],
+    ['monthly last Friday', '2026-10-30', { freq:'monthly', interval:1, monthlyMode:'nth', nth:-1, end:{type:'count',count:3} }, '2027-12-31', ['2026-10-30','2026-11-27','2026-12-25']],
+    ['yearly Feb 29', '2024-02-29', { freq:'yearly', interval:1, end:{type:'never'} }, '2032-12-31', ['2024-02-29','2028-02-29','2032-02-29']],
+    ['max key cuts never-ending rule', '2026-10-01', { freq:'weekly', interval:1, end:{type:'never'} }, '2026-10-20', ['2026-10-01','2026-10-08','2026-10-15']],
+    ['one-time', '2026-10-01', null, '2026-12-31', ['2026-10-01']],
+  ];
+  let ok = true;
+  for(const [name, start, rule, max, want] of cases){
+    const got = ruleDates(start, rule, max);
+    const pass = JSON.stringify(got) === JSON.stringify(want);
+    ok = ok && pass;
+    console[pass ? 'log' : 'error'](`${pass ? 'PASS' : 'FAIL'} ${name}`, pass ? '' : { got, want });
+  }
+  // exceptions: cancelled date removed, override moves time
+  const ev = { id:'e', title:'T', start_at: istToIso('2026-10-05',18,0), end_at: istToIso('2026-10-05',19,0), rrule:{ freq:'weekly', interval:1, byweekday:[0], end:{type:'never'} } };
+  const occ = expandEvent(ev, [{ event_id:'e', original_date:'2026-10-12', cancelled:true }, { event_id:'e', original_date:'2026-10-19', cancelled:false, title:'Moved', start_at: istToIso('2026-10-20',10,0), end_at: istToIso('2026-10-20',11,0) }],
+    istToIso('2026-10-01',0,0), istToIso('2026-10-31',0,0));
+  const pass2 = occ.map(o => o.originalDate).join() === '2026-10-05,2026-10-19,2026-10-26' && occ[1].title === 'Moved' && hhmm(occ[1].start) === '10:00' && istKey(occ[1].start) === '2026-10-20';
+  ok = ok && pass2;
+  console[pass2 ? 'log' : 'error'](`${pass2 ? 'PASS' : 'FAIL'} exceptions`);
+  console.log(ok ? 'SELFTEST OK' : 'SELFTEST FAILED');
+  toast(t(ok ? 'selfTestPass' : 'selfTestFail'), !ok);
+  return ok;
+}
+
+/* =====================================================================
+   Boot
+   ===================================================================== */
+applyStaticI18n();
+(async function boot(){
+  if(new URLSearchParams(location.search).has('selftest')) runSelfTest();
+  if(!api){ showAuthBox('setup'); return; }
+  if(DEMO){ try{ await api.signIn('demo', 'demo123'); }catch(e){} }
+  await route();
+})();
+</script>
+</body>
+</html>
