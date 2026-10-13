@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ozu Tourism Club</title>
 <meta name="theme-color" content="#f3ece0">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -51,6 +53,8 @@
   .mono{ font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
 
   /* Club stamp mark */
+  .logo-mark{ width:46px; height:46px; border-radius:8px; object-fit:cover; flex-shrink:0; display:block; }
+  .lock-box .logo-mark{ width:56px; height:56px; }
   .stamp-mark{ width:34px; height:34px; border:1.5px solid var(--accent); border-radius:50%; color:var(--accent); display:inline-flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:11px; font-weight:500; letter-spacing:.04em; transform:rotate(-8deg); flex-shrink:0; }
 
   /* Auth screens: a boarding pass */
@@ -365,7 +369,7 @@
     .filters .search-input{ width:100%; }
     .topbar{ display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:40; background:var(--bg); color:var(--text); padding:10px 16px; border-bottom:1px solid var(--rule); font-family:var(--font-display); font-size:17px; }
     .topbar button{ background:none; border:none; color:var(--text); padding:4px; }
-    .topbar .stamp-mark{ width:28px; height:28px; font-size:9.5px; }
+    .topbar .logo-mark{ width:32px; height:32px; border-radius:6px; }
     .sidebar{ position:fixed; left:0; top:0; z-index:60; transform:translateX(-100%); transition:transform .2s ease; }
     body.nav-open .sidebar{ transform:none; }
     body.nav-open .scrim{ display:block; position:fixed; inset:0; z-index:50; background:rgba(18,26,44,.45); }
@@ -392,7 +396,7 @@
 <!-- ======================= Auth screens ======================= -->
 <div id="auth-screen">
   <div class="lock-box">
-    <div class="brand-mark"><span class="stamp-mark">ÖT</span><span><span class="name">Ozu Tourism Club</span><span class="sub">Özyeğin · Turizm Kulübü</span></span></div>
+    <div class="brand-mark"><img class="logo-mark" src="logo.jpg" alt="OzU.To"><span><span class="name">Ozu Tourism Club</span><span class="sub">Özyeğin · Turizm Kulübü</span></span></div>
 
     <div id="signin-box">
       <h1 data-i18n="signIn"></h1>
@@ -436,11 +440,11 @@
 <div id="app" hidden>
   <div class="topbar">
     <button data-action="toggle-nav" aria-label="Menu"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
-    <span class="stamp-mark">ÖT</span><span>Ozu Tourism Club</span>
+    <img class="logo-mark" src="logo.jpg" alt="OzU.To"><span>Ozu Tourism Club</span>
   </div>
   <div class="scrim" data-action="toggle-nav"></div>
   <aside class="sidebar">
-    <div class="brand"><span class="stamp-mark">ÖT</span><span><span class="name">Ozu Tourism Club</span><span class="sub">Özyeğin · Turizm Kulübü</span></span></div>
+    <div class="brand"><img class="logo-mark" src="logo.jpg" alt="OzU.To"><span><span class="name">Ozu Tourism Club</span><span class="sub">Özyeğin · Turizm Kulübü</span></span></div>
     <nav id="nav"></nav>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-footer">
