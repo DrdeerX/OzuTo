@@ -159,6 +159,11 @@
   .ev-chip.timed .ev-dot{ display:inline-block; width:3px; height:11px; margin-right:5px; vertical-align:-1px; }
   .ev-chip.timed .ev-time{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-dim); margin-right:3px; }
   .ev-chip:hover{ filter:brightness(1.1); }
+  .ev-chip.due{ background:transparent; color:var(--text); border:1px dashed var(--accent); padding:1px 5px; }
+  .ev-chip.due .icon{ width:11px; height:11px; vertical-align:-1px; margin-right:3px; color:var(--accent); }
+  .ev-chip.due.done{ color:var(--text-dim); text-decoration:line-through; border-color:var(--border); }
+  .ev-chip.due.done .icon{ color:var(--text-dim); }
+  .ev-chip.due:hover{ background:var(--bg-soft); filter:none; }
   .ev-chip.timed:hover{ background:var(--bg-soft) !important; filter:none; }
   .more-link{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-dim); border:none; background:none; padding:0; }
   .more-link:hover{ color:var(--accent); }
@@ -515,7 +520,7 @@ const I18N = {
     navSchedule:'Takvim', navTasks:'Görevler', navMembers:'Üyeler',
     roleAdmin:'Yönetici', roleMember:'Üye', rolePending:'Onay bekliyor',
     today:'Bugün', month:'Ay', week:'Hafta', list:'Liste', newEvent:'Yeni etkinlik', editEvent:'Etkinliği düzenle',
-    allDay:'Tüm gün', more:'+{n} daha', noEvents:'Bu aralıkta etkinlik yok', upcoming:'Yaklaşan',
+    allDay:'Tüm gün', more:'+{n} daha', noEvents:'Bu aralıkta etkinlik yok', deadline:'Son gün', upcoming:'Yaklaşan',
     title:'Başlık', description:'Açıklama', location:'Konum', color:'Renk', startDate:'Başlangıç tarihi', startTime:'Başlangıç saati',
     endDate:'Bitiş tarihi', endTime:'Bitiş saati', repeat:'Tekrar', every:'Her', onDays:'Günler', repeatEnds:'Bitiş',
     rNone:'Tekrarlanmaz', rDaily:'Günlük', rWeekly:'Haftalık', rMonthly:'Aylık', rYearly:'Yıllık',
@@ -585,7 +590,7 @@ const I18N = {
     navSchedule:'Schedule', navTasks:'Tasks', navMembers:'Members',
     roleAdmin:'Admin', roleMember:'Member', rolePending:'Pending',
     today:'Today', month:'Month', week:'Week', list:'List', newEvent:'New event', editEvent:'Edit event',
-    allDay:'All day', more:'+{n} more', noEvents:'No events in this range', upcoming:'Upcoming',
+    allDay:'All day', more:'+{n} more', noEvents:'No events in this range', deadline:'Due', upcoming:'Upcoming',
     title:'Title', description:'Description', location:'Location', color:'Colour', startDate:'Start date', startTime:'Start time',
     endDate:'End date', endTime:'End time', repeat:'Repeat', every:'Every', onDays:'On', repeatEnds:'Ends',
     rNone:'Does not repeat', rDaily:'Daily', rWeekly:'Weekly', rMonthly:'Monthly', rYearly:'Yearly',
@@ -1365,6 +1370,18 @@ function evChip(o){
   if(o.allDay) return `<button class="ev-chip" style="background:${col}" data-action="open-occ" data-occ="${esc(o.key)}">${esc(o.title)}</button>`;
   return `<button class="ev-chip timed" data-action="open-occ" data-occ="${esc(o.key)}"><span class="ev-dot" style="background:${col}"></span><span class="ev-time">${hhmm(o.start)}</span>${esc(o.title)}</button>`;
 }
+// Task deadlines shown on the schedule (tasks the user can see, by due date).
+function tasksDueOn(key){ return state.tasks.filter(tk => tk.due_date === key).sort((a,b) => (a.status === 'done') - (b.status === 'done') || a.title.localeCompare(b.title, locale())); }
+function dueChip(tk){
+  return `<button class="ev-chip due ${tk.status === 'done' ? 'done' : ''}" data-action="open-task" data-id="${tk.id}" title="${esc(t('deadline'))}: ${esc(tk.title)}">${icon('flag')}${esc(tk.title)}</button>`;
+}
+function dueAgendaItem(tk){
+  return `<button class="agenda-item" data-action="open-task" data-id="${tk.id}">
+    <span class="agenda-bar" style="background:var(--accent)"></span>
+    <span class="agenda-time">${icon('flag')} ${t('deadline')}</span>
+    <span class="agenda-main"><b ${tk.status === 'done' ? 'style="text-decoration:line-through"' : ''}>${esc(tk.title)}</b><span class="muted small">${t(statusKey(tk.status))}</span></span>
+  </button>`;
+}
 function renderMonth(){
   const first = monthKey(state.calCursor, 0);
   const gridStart = startOfWeek(first);
@@ -1375,11 +1392,11 @@ function renderMonth(){
   for(let i=0;i<7;i++) html += `<div class="month-head">${esc(weekdayShort(i))}</div>`;
   for(let i=0;i<42;i++){
     const k = addDays(gridStart, i);
-    const list = occOnDay(occs, k);
+    const list = [...occOnDay(occs, k).map(evChip), ...tasksDueOn(k).map(dueChip)];
     const shown = list.slice(0, 3);
     html += `<div class="month-cell ${keyParts(k).m0!==curMonth?'other':''} ${k===today?'today':''}" data-action="day-click" data-day="${k}">
       <div class="day-num">${keyParts(k).d}</div>
-      ${shown.map(evChip).join('')}
+      ${shown.join('')}
       ${list.length > 3 ? `<button class="more-link" data-action="day-more" data-day="${k}">${t('more',{n:list.length-3})}</button>` : ''}
     </div>`;
   }
@@ -1393,7 +1410,7 @@ function renderWeek(){
     const k = addDays(ws, i);
     head += `<div class="${k===today?'today':''}">${esc(fmtDay(k,{weekday:'short'}))} ${keyParts(k).d}</div>`;
     const dayOccs = occOnDay(occs, k);
-    allday += `<div>${dayOccs.filter(o => o.allDay).map(evChip).join('')}</div>`;
+    allday += `<div>${dayOccs.filter(o => o.allDay).map(evChip).join('')}${tasksDueOn(k).map(dueChip).join('')}</div>`;
     const timed = dayOccs.filter(o => !o.allDay);
     // simple side-by-side layout for overlapping events
     const lanes = [];
@@ -1416,18 +1433,18 @@ function renderWeek(){
 function renderAgenda(){
   const start = state.calCursor, end = addDays(start, 60), today = todayKey();
   const occs = occurrencesBetween(istToIso(start,0,0), istToIso(end,0,0));
-  if(!occs.length) return `<div class="card empty-state">${t('noEvents')}</div>`;
+  if(!occs.length && !state.tasks.some(tk => tk.due_date && tk.due_date >= start && tk.due_date < end)) return `<div class="card empty-state">${t('noEvents')}</div>`;
   let html = '';
   for(let k = start; k < end; k = addDays(k,1)){
-    const list = occOnDay(occs, k);
-    if(!list.length) continue;
+    const list = occOnDay(occs, k), due = tasksDueOn(k);
+    if(!list.length && !due.length) continue;
     html += `<div class="agenda-day"><div class="agenda-date ${k===today?'today':''}"><span class="dnum">${keyParts(k).d}</span><span class="dlbl">${esc(fmtDay(k,{weekday:'short'}))} · ${esc(fmtDay(k,{month:'short'}))}</span></div><div>` +
       list.map(o => `<button class="agenda-item" data-action="open-occ" data-occ="${esc(o.key)}">
         <span class="agenda-bar" style="background:${colorOf(o.color)}"></span>
         <span class="agenda-time">${o.allDay ? t('allDay') : `${hhmm(o.start)}–${hhmm(o.end)}`}</span>
         <span class="agenda-main"><b>${esc(o.title)}</b>${o.location ? `<span class="muted small">${esc(o.location)}</span>` : ''}</span>
         ${o.event.rrule ? `<span class="muted">${icon('repeat')}</span>` : ''}
-      </button>`).join('') + '</div></div>';
+      </button>`).join('') + due.map(dueAgendaItem).join('') + '</div></div>';
   }
   return html;
 }
@@ -1483,6 +1500,7 @@ function openDayList(key){
   const [ds, de] = dayRangeIso(key);
   const occs = occOnDay(occurrencesBetween(ds, de), key);
   openModal(modalHeader(esc(fmtDateLong(key))) + occs.map(o => `<button class="agenda-item" data-action="open-occ" data-occ="${esc(o.key)}"><span class="agenda-bar" style="background:${colorOf(o.color)}"></span><span class="agenda-time">${o.allDay ? t('allDay') : hhmm(o.start)}</span><span class="agenda-main"><b>${esc(o.title)}</b></span></button>`).join('') +
+    tasksDueOn(key).map(dueAgendaItem).join('') +
     `<div class="modal-actions"><button class="btn btn-primary" data-action="new-event-day" data-day="${key}">${icon('plus')}${t('newEvent')}</button></div>`);
 }
 
