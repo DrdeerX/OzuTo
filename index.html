@@ -356,6 +356,20 @@
   .note-settings .check{ margin-top:4px; }
   .conflict{ border:1px solid var(--danger); color:var(--danger); border-radius:var(--radius-sm); padding:8px 12px; margin-bottom:12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:13px; }
 
+  /* Teams */
+  .pos-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+  .pos-card{ border:1px solid var(--border); border-radius:var(--radius); background:var(--bg-elev); padding:12px 14px; }
+  .pos-label{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
+  .pos-name{ font-family:var(--font-display); font-size:20px; line-height:1.2; margin:4px 0 8px; display:flex; align-items:center; gap:8px; }
+  .pos-name.vacant{ color:var(--text-dim); font-style:italic; }
+  .pos-card select, .team-add select, select.club-role{ width:100%; padding:6px 8px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg); font-size:13px; }
+  .team-block{ margin-top:26px; }
+  .team-block > .section-title{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .team-add{ display:flex; gap:8px; padding:10px 14px; border-top:1px dashed var(--border); flex-wrap:wrap; }
+  .team-add select{ flex:1; min-width:160px; width:auto; }
+  select.club-role{ width:auto; max-width:240px; }
+  .team-hint{ font-size:12.5px; color:var(--text-dim); margin:6px 0 0; }
+
   @media (max-width: 860px){
     .kanban{ grid-template-columns:1fr; }
   }
@@ -460,6 +474,7 @@
     <section class="view" id="view-schedule"></section>
     <section class="view" id="view-tasks"></section>
     <section class="view" id="view-notes"></section>
+    <section class="view" id="view-teams"></section>
     <section class="view" id="view-members"></section>
   </main>
 </div>
@@ -544,6 +559,14 @@ const I18N = {
     followsEvent:'Etkinlik tarihlerini izler', nextCopy:'Sonraki kopya oluşturuldu: {date}',
     alsoTask:'Bunu görev olarak da ekle', alsoTaskHelp:'Seçilen kişiler göreve otomatik atanır.', errPickPeople:'En az bir kişi seç',
     addPerson:'Kişi ekle',
+    navTeams:'Ekipler', clubRole:'Kulüp görevi', noClubRole:'Görev yok', leadership:'Yönetim', vacant:'Boş', teamMembersT:'Ekip üyeleri', noTeamMembers:'Henüz üye yok',
+    addMember:'Üye ekle', removeFromTeam:'Ekipten çıkar', noFreeMembers:'Ekibi olmayan üye yok', newTeamTask:'Ekip görevi',
+    posPresident:'Başkan', posVP:'Başkan Yardımcısı', posHeadFinance:'Mali İşler Başkanı',
+    posHeadEvents:'Etkinlik ve Organizasyon Başkanı', posHeadMedia:'Medya Başkanı',
+    teamFinance:'Mali İşler', teamEvents:'Etkinlik ve Organizasyon', teamMedia:'Medya', teamOf:'{team} ekibi',
+    team:'Ekip', clubWide:'Tüm kulüp', fAnyTeam:'Tüm ekipler',
+    teamOnlyHint:'Ekip görevlerini sadece bu ekip, ekip başkanı, Başkan ve Başkan Yardımcısı görür.',
+    confirmRemoveTeam:'{name} ekipten çıkarılsın mı?',
   },
   en: {
     signIn:'Sign in', signInSub:'Sign in with your club account', signUp:'Sign up', createAccount:'Create account',
@@ -606,6 +629,14 @@ const I18N = {
     followsEvent:'Follows the event dates', nextCopy:'Next copy created: {date}',
     alsoTask:'Also make a task', alsoTaskHelp:'Chosen people are assigned to the task automatically.', errPickPeople:'Pick at least one person',
     addPerson:'Add person',
+    navTeams:'Teams', clubRole:'Club role', noClubRole:'No club role', leadership:'Leadership', vacant:'Vacant', teamMembersT:'Team members', noTeamMembers:'No members yet',
+    addMember:'Add member', removeFromTeam:'Remove from team', noFreeMembers:'Everyone already has a team', newTeamTask:'Team task',
+    posPresident:'President', posVP:'Vice President', posHeadFinance:'President of Financial Affairs',
+    posHeadEvents:'President of Events and Organisation', posHeadMedia:'President of Media',
+    teamFinance:'Financial Affairs', teamEvents:'Events and Organisation', teamMedia:'Media', teamOf:'{team} team',
+    team:'Team', clubWide:'Club-wide', fAnyTeam:'Any team',
+    teamOnlyHint:'Team tasks are visible only to this team, its head, the President and the Vice President.',
+    confirmRemoveTeam:'Remove {name} from the team?',
   }
 };
 
@@ -673,6 +704,7 @@ const ICONS = {
   eyeoff:'<path d="M17.94 17.94A10 10 0 0 1 12 20c-7 0-11-8-11-8a18 18 0 0 1 5.06-5.94M9.9 4.24A9 9 0 0 1 12 4c7 0 11 8 11 8a18 18 0 0 1-2.16 3.19M1 1l22 22"/>',
   note:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>',
   tag:'<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1"/>',
+  crown:'<path d="M2 18h20M3 7l5 5 4-7 4 7 5-5-2 11H5z"/>',
   link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
 };
 function icon(name){ return `<svg class="icon" viewBox="0 0 24 24">${ICONS[name]||''}</svg>`; }
@@ -890,6 +922,10 @@ function makeDemoApi(){
   const admin = addUser('demo', 'admin');
   const ayse = addUser('ayse', 'member');
   addUser('mehmet', 'pending');
+  const deniz = addUser('deniz', 'member'), can = addUser('can', 'member');
+  addUser('ece', 'member');
+  const setPos = (id, position, team) => Object.assign(db.profiles.find(p => p.id === id), { position, team });
+  setPos(admin, 'president', null); setPos(ayse, 'head_media', 'media'); setPos(deniz, 'head_finance', 'finance'); setPos(can, null, 'finance');
   const meetingId = uuid(), tripId = uuid();
   const mon = startOfWeek(k0);
   db.events.push(
@@ -915,6 +951,10 @@ function makeDemoApi(){
   db.tasks.push({ id:t4, title:'Haftalık Instagram paylaşımı', description:'', due_date:addDays(k0,1), priority:'medium', status:'todo', slots:1, event_id:null, event_date:null, position:2, created_by:admin, created_at:now.toISOString(),
     repeat:{ freq:'weekly', interval:1, byweekday:[weekdayOf(addDays(k0,1))], end:{ type:'never' } }, series_id:t4, occurrence:1 });
   db.task_claims.push({ task_id:t4, user_id:admin, claimed_at:now.toISOString() });
+  const t5 = uuid();
+  db.tasks.push({ id:t5, title:'Bütçe tablosunu güncelle', description:'Sadece mali işler ekibi görür.', due_date:addDays(k0,4), priority:'high', status:'todo', slots:1, event_id:null, event_date:null, position:3, created_by:deniz, created_at:now.toISOString(), team:'finance' });
+  db.task_claims.push({ task_id:t5, user_id:can, claimed_at:now.toISOString() });
+  db.task_comments.push({ id:uuid(), task_id:t5, user_id:can, body:'Ekim harcamalarını ekledim.', created_at:now.toISOString() });
   db.task_tags.push({ task_id:t4, tag_id:tagSocial });
   const iso = now.toISOString();
   db.notes.push(
@@ -925,7 +965,9 @@ function makeDemoApi(){
 
   const matches = (row, match) => Object.keys(match||{}).every(k => row[k] === match[k]);
   const me = () => db.profiles.find(p => p.id === uid);
-  const isAdmin = () => me() && me().role === 'admin';
+  const isAdmin = () => isAdminProfile(me());
+  const seesTeam = team => !team || isAdmin() || (me() && (me().team === team || headOf(me()) === team));
+  const seesTask = id => { const tk = db.tasks.find(x => x.id === id); return !!tk && seesTeam(tk.team); };
   const changed = table => setTimeout(() => listener(table), 0);
   const canReadNote = n => n.author_id === uid || n.visibility === 'members' || (n.visibility === 'people' && db.note_shares.some(s => s.note_id === n.id && s.user_id === uid));
   const delay = () => new Promise(r => setTimeout(r, 60));
@@ -952,12 +994,17 @@ function makeDemoApi(){
       if(table === 'notes') rows = rows.filter(canReadNote);
       if(table === 'note_shares') rows = rows.filter(s => s.user_id === uid || db.notes.some(n => n.id === s.note_id && n.author_id === uid));
       if(table === 'note_hidden') rows = rows.filter(x => x.user_id === uid);
+      if(table === 'tasks') rows = rows.filter(x => seesTeam(x.team));
+      if(['task_claims','task_tags','task_comments'].includes(table)) rows = rows.filter(x => seesTask(x.task_id));
       return rows.filter(r => matches(r, match)).map(r => ({...r}));
     },
     async insert(table, row){
       await delay();
       const r = { ...row };
+      if(table === 'tasks' && r.team && !isAdmin() && r.team !== headOf(me())) throw new Error('NO_PERMISSION');
       if(table === 'task_claims'){
+        const tk0 = db.tasks.find(x => x.id === r.task_id);
+        if(tk0 && tk0.team && !userInTeam(db.profiles.find(p => p.id === r.user_id), tk0.team) && !(r.user_id === uid && isAdmin())) throw new Error('NO_PERMISSION');
         const task = db.tasks.find(x => x.id === r.task_id);
         if(db.task_claims.filter(c => c.task_id === r.task_id).length >= task.slots) throw new Error('TASK_FULL');
         r.claimed_at = new Date().toISOString();
@@ -968,6 +1015,17 @@ function makeDemoApi(){
     async update(table, match, patch){
       await delay();
       if(table === 'profiles' && 'role' in patch && (!isAdmin() || match.id === uid)) throw new Error('NO_PERMISSION');
+      if(table === 'profiles' && 'position' in patch){
+        if(!isAdmin() || (match.id === uid && me().role !== 'admin')) throw new Error('NO_PERMISSION');
+        if(patch.position && db.profiles.some(p => p.position === patch.position && p.id !== match.id)) throw new Error('duplicate key value violates unique constraint "profiles_position_unique"');
+        if(patch.position && patch.position.startsWith('head_')) patch = { ...patch, team: patch.position.slice(5) };
+        if(patch.position === 'president' || patch.position === 'vice_president') patch = { ...patch, team: null };
+      }else if(table === 'profiles' && 'team' in patch && !isAdmin()){
+        const target = db.profiles.find(p => p.id === match.id), mine = headOf(me());
+        const ok = mine && target && target.id !== uid && ((!target.team && patch.team === mine && target.role !== 'pending' && !target.position) || (target.team === mine && patch.team === null));
+        if(!ok) throw new Error('NO_PERMISSION');
+      }
+      if(table === 'tasks' && 'team' in patch && patch.team && !isAdmin() && patch.team !== headOf(me())) throw new Error('NO_PERMISSION');
       let rows = db[table].filter(r => matches(r, match));
       if(table === 'notes') rows = rows.filter(n => canReadNote(n) && (n.author_id === uid || n.readers_can_edit));
       if(!rows.length) throw new Error('NO_PERMISSION');
@@ -1038,16 +1096,28 @@ const state = {
   view: 'schedule',
   calView: window.innerWidth < 640 ? 'list' : 'month', calCursor: todayKey(),
   tags: [], task_tags: [], notes: [], note_shares: [], note_hidden: [],
-  taskView: 'board', taskFilter: { mine:false, open:false, priority:'', event:'', tag:'', q:'' }, taskSort: { key:'due_date', dir:1 },
+  taskView: 'board', taskFilter: { mine:false, open:false, priority:'', event:'', tag:'', team:'', q:'' }, taskSort: { key:'due_date', dir:1 },
   openTaskId: null, comments: [],
   notesLoaded: false, notesLoading: false, openNoteId: null, noteEdit: null, noteSettings: false, noteFilter: 'all', noteSearch: '',
 };
 let unsubscribe = null;
 
 function profileName(id){ const p = state.profiles.find(x => x.id === id); return p ? (p.display_name || p.username) : '—'; }
-function isAdmin(){ return state.me && state.me.role === 'admin'; }
+// President and Vice President have every admin power.
+function isAdminProfile(p){ return !!p && (p.role === 'admin' || (p.role !== 'pending' && (p.position === 'president' || p.position === 'vice_president'))); }
+function isAdmin(){ return isAdminProfile(state.me); }
+const TEAMS = ['finance','events','media'];
+const TEAM_HEAD = { finance:'head_finance', events:'head_events', media:'head_media' };
+const POSITIONS = ['president','vice_president','head_finance','head_events','head_media'];
+function headOf(p){ p = p || state.me; return p && p.role !== 'pending' && p.position && p.position.startsWith('head_') ? p.position.slice(5) : null; }
+function userInTeam(p, team){ return !!p && p.role !== 'pending' && (p.team === team || p.position === TEAM_HEAD[team]); }
+function teamName(team){ return team ? t({ finance:'teamFinance', events:'teamEvents', media:'teamMedia' }[team]) : t('clubWide'); }
+function positionLabel(pos){ return pos ? t({ president:'posPresident', vice_president:'posVP', head_finance:'posHeadFinance', head_events:'posHeadEvents', head_media:'posHeadMedia' }[pos]) : ''; }
+function holderOf(pos){ return state.profiles.find(p => p.position === pos) || null; }
+function profileTitle(p){ return p.position ? positionLabel(p.position) : p.team ? t('teamOf', { team: teamName(p.team) }) : t(p.role === 'admin' ? 'roleAdmin' : p.role === 'pending' ? 'rolePending' : 'roleMember'); }
+function assignableTeams(){ return isAdmin() ? TEAMS : (headOf() ? [headOf()] : []); }
 function canEditEvent(ev){ return isAdmin() || ev.created_by === state.uid; }
-function canEditTask(tk){ return isAdmin() || tk.created_by === state.uid; }
+function canEditTask(tk){ return isAdmin() || tk.created_by === state.uid || (!!tk.team && tk.team === headOf()); }
 function claimsOf(taskId){ return state.task_claims.filter(c => c.task_id === taskId).sort((a,b)=> String(a.claimed_at).localeCompare(String(b.claimed_at))); }
 function hasClaimed(taskId){ return state.task_claims.some(c => c.task_id === taskId && c.user_id === state.uid); }
 function canMoveTask(tk){ return canEditTask(tk) || hasClaimed(tk.id); }
@@ -1167,7 +1237,9 @@ async function flushRefetch(){
   if(tables.includes('profiles')){
     const me = state.profiles.find(p => p.id === state.uid);
     if(!me || me.role === 'pending'){ stopLive(); await route(); return; }
+    const scopeChanged = state.me && (state.me.team !== me.team || state.me.position !== me.position || state.me.role !== me.role);
     state.me = me;
+    if(scopeChanged){ for(const tb of ['tasks','task_claims','task_tags']) state[tb] = await api.list(tb); }
   }
   renderAll();
 }
@@ -1182,7 +1254,8 @@ async function reload(...tables){
 function renderAll(){
   applyStaticI18n();
   renderNav();
-  for(const v of ['schedule','tasks','notes','members']) $('view-'+v).classList.toggle('active', state.view === v);
+  for(const v of ['schedule','tasks','notes','teams','members']) $('view-'+v).classList.toggle('active', state.view === v);
+  if(state.view === 'teams') renderTeams();
   if(state.view === 'schedule') renderSchedule();
   if(state.view === 'tasks') renderTasks();
   if(state.view === 'notes') renderNotes();
@@ -1193,12 +1266,12 @@ function renderAll(){
 function renderNav(){
   if(state.view === 'members' && !isAdmin()) state.view = 'schedule';
   const pendingCount = state.profiles.filter(p => p.role === 'pending').length;
-  const items = [['schedule','calendar','navSchedule'], ['tasks','tasks','navTasks'], ['notes','note','navNotes']];
+  const items = [['schedule','calendar','navSchedule'], ['tasks','tasks','navTasks'], ['notes','note','navNotes'], ['teams','crown','navTeams']];
   if(isAdmin()) items.push(['members','users','navMembers']);
   $('nav').innerHTML = items.map(([v, ic, label]) =>
     `<button class="nav-item ${state.view===v?'active':''}" data-action="nav" data-view="${v}">${icon(ic)}<span>${t(label)}</span>${v==='members' && pendingCount ? `<span class="nav-badge">${pendingCount}</span>` : ''}</button>`).join('');
   const me = state.me;
-  $('side-user').innerHTML = me ? `<span class="avatar">${esc(initials(me.display_name||me.username))}</span><div><div>${esc(me.display_name||me.username)}</div><div class="role">${t(me.role==='admin'?'roleAdmin':'roleMember')}</div></div>` : '';
+  $('side-user').innerHTML = me ? `<span class="avatar">${esc(initials(me.display_name||me.username))}</span><div><div>${esc(me.display_name||me.username)}</div><div class="role">${esc(profileTitle(me))}</div></div>` : '';
 }
 function setView(v){ state.view = v; document.body.classList.remove('nav-open'); renderAll(); window.scrollTo(0,0); }
 
@@ -1748,6 +1821,7 @@ function filteredTasks(){
     if(f.priority && tk.priority !== f.priority) return false;
     if(f.event && tk.event_id !== f.event) return false;
     if(f.tag && !state.task_tags.some(x => x.task_id === tk.id && x.tag_id === f.tag)) return false;
+    if(f.team && (f.team === 'club' ? !!tk.team : tk.team !== f.team)) return false;
     if(q && !norm([tk.title, tk.description, ...tagsOf(tk.id).map(x => x.name)].join(' ')).includes(q)) return false;
     return true;
   });
@@ -1770,6 +1844,7 @@ function renderTasks(){
       <input type="search" class="search-input" id="tf-search" placeholder="${t('searchTasks')}" value="${esc(f.q)}">
       <button class="chip ${f.mine?'active':''}" data-action="tf-toggle" data-f="mine">${t('fMine')}</button>
       <button class="chip ${f.open?'active':''}" data-action="tf-toggle" data-f="open">${t('fOpen')}</button>
+      ${state.tasks.some(x => x.team) ? `<select class="chip" id="tf-team"><option value="">${t('fAnyTeam')}</option><option value="club" ${f.team==='club'?'selected':''}>${t('clubWide')}</option>${TEAMS.filter(tm => state.tasks.some(x => x.team === tm)).map(tm => `<option value="${tm}" ${f.team===tm?'selected':''}>${esc(teamName(tm))}</option>`).join('')}</select>` : ''}
       <select class="chip" id="tf-tag"><option value="">${t('fAnyTag')}</option>${state.tags.slice().sort((a,b) => a.name.localeCompare(b.name, locale())).map(tg => `<option value="${tg.id}" ${f.tag===tg.id?'selected':''}>${esc(tg.name)}</option>`).join('')}</select>
       <select class="chip" id="tf-priority"><option value="">${t('fAnyPriority')}</option>${['high','medium','low'].map(p => `<option value="${p}" ${f.priority===p?'selected':''}>${t(priorityKey(p))}</option>`).join('')}</select>
       <select class="chip" id="tf-event"><option value="">${t('fAnyEvent')}</option>${evOpts.map(ev => `<option value="${ev.id}" ${f.event===ev.id?'selected':''}>${esc(ev.title)}</option>`).join('')}</select>
@@ -1779,6 +1854,7 @@ function renderTasks(){
   search.addEventListener('input', () => { f.q = search.value; $('task-body').innerHTML = renderTaskBody(); });
   if(hadFocus){ search.focus(); search.setSelectionRange(search.value.length, search.value.length); }
   $('tf-tag').addEventListener('change', e => { f.tag = e.target.value; renderTasks(); });
+  if($('tf-team')) $('tf-team').addEventListener('change', e => { f.team = e.target.value; renderTasks(); });
   $('tf-priority').addEventListener('change', e => { f.priority = e.target.value; renderTasks(); });
   $('tf-event').addEventListener('change', e => { f.event = e.target.value; renderTasks(); });
 }
@@ -1789,7 +1865,7 @@ function taskCard(tk){
   const evLabel = taskEventLabel(tk);
   const tags = tagLabels(tk.id);
   return `<div class="task-card" draggable="${canMoveTask(tk)}" data-task="${tk.id}">
-    <div class="t-kicker p-${tk.priority}">${t(priorityKey(tk.priority))}</div>
+    <div class="t-kicker p-${tk.priority}">${t(priorityKey(tk.priority))}${tk.team ? ' · ' + esc(teamName(tk.team)) : ''}</div>
     <div class="t-title">${esc(tk.title)}</div>
     <div class="t-meta">
       ${tk.due_date ? `<span class="${overdue?'overdue':''}">${icon('clock')} ${esc(fmtDateShort(tk.due_date))}</span>` : ''}
@@ -1818,7 +1894,7 @@ function renderTaskList(){
   const th = (k, label) => `<th data-action="task-sort" data-k="${k}">${t(label)}${s.key===k ? (s.dir>0?' ▲':' ▼') : ''}</th>`;
   return `<div class="table-wrap"><table class="tbl"><thead><tr>${th('title','title')}${th('status','status')}${th('priority','priority')}${th('due_date','dueDate')}${th('slots','slots')}${th('event','linkedEvent')}</tr></thead><tbody>
     ${list.map(tk => { const c = claimsOf(tk.id).length; return `<tr class="row-link" data-action="open-task" data-id="${tk.id}">
-      <td class="wrap">${esc(tk.title)}${tk.repeat ? ` <span class="muted">${icon('repeat')}</span>` : ''}${tagLabels(tk.id)}</td><td>${t(statusKey(tk.status))}</td><td><span class="badge p-${tk.priority}">${t(priorityKey(tk.priority))}</span></td>
+      <td class="wrap">${esc(tk.title)}${tk.team ? ` <span class="badge accent">${esc(teamName(tk.team))}</span>` : ''}${tk.repeat ? ` <span class="muted">${icon('repeat')}</span>` : ''}${tagLabels(tk.id)}</td><td>${t(statusKey(tk.status))}</td><td><span class="badge p-${tk.priority}">${t(priorityKey(tk.priority))}</span></td>
       <td class="${tk.due_date && tk.status!=='done' && tk.due_date < todayKey() ? 'overdue':''}">${tk.due_date ? esc(fmtDateShort(tk.due_date)) : ''}</td>
       <td><span class="badge ${c>=tk.slots?'full':''}">${t('spots',{n:c,m:tk.slots})}</span></td><td>${esc(taskEventLabel(tk))}</td></tr>`; }).join('')}
   </tbody></table></div>`;
@@ -1873,6 +1949,15 @@ function eventOptionsForTask(selected){
   }
   return `<option value="">${t('noEvent')}</option>` + opts.map(o => `<option value="${esc(o.value)}" ${o.value===selected?'selected':''}>${esc(o.label)}</option>`).join('');
 }
+function teamFieldHtml(current){
+  const teams = assignableTeams();
+  if(!teams.length && !current) return '';
+  const opts = [...new Set([...(current ? [current] : []), ...teams])];
+  const locked = !!current && !teams.includes(current);
+  return `<div class="field"><label>${t('team')}</label><select id="tf-team" ${locked ? 'disabled' : ''}>
+    ${locked ? '' : `<option value="">${t('clubWide')}</option>`}${opts.map(tm => `<option value="${tm}" ${tm===current?'selected':''}>${esc(teamName(tm))}</option>`).join('')}
+  </select><p class="team-hint">${t('teamOnlyHint')}</p></div>`;
+}
 function openTaskForm(tk, preset){
   preset = preset || {};
   const sel = tk ? (tk.event_id ? tk.event_id + '|' + (tk.event_date || '') : '') : (preset.eventValue || '');
@@ -1891,6 +1976,7 @@ function openTaskForm(tk, preset){
       <div class="field"><label>${t('slots')}</label><input type="number" id="tf-slots" min="1" max="50" value="${tk ? tk.slots : 1}"></div>
       <div class="field"><label>${t('status')}</label><select id="tf-status">${STATUSES.map(s => `<option value="${s}" ${(tk ? tk.status : 'todo')===s?'selected':''}>${t(statusKey(s))}</option>`).join('')}</select></div>
     </div>
+    ${teamFieldHtml(tk ? tk.team : (preset.team || ''))}
     <div class="field"><span class="field-label">${t('tags')}</span>${state.tags.length ? `<div class="tag-picks">${state.tags.slice().sort((a,b) => a.name.localeCompare(b.name, locale())).map(tg => `<label><input type="checkbox" name="tf-tag" value="${tg.id}" ${myTags.includes(tg.id)?'checked':''}><span><i style="background:${colorOf(tg.color)}"></i>${esc(tg.name)}</span></label>`).join('')}</div>` : `<div class="muted small">${t('noTags')}</div>`}</div>
     ${follow ? `<div class="repeat-box small">${icon('repeat')} ${t('followsEvent')}</div>` : repeatSectionHtml('tr', tk && tk.repeat, due || todayKey())}
     <div class="field"><label>${t('linkedEvent')}</label><select id="tf-event">${eventOptionsForTask(sel)}</select></div>
@@ -1912,6 +1998,7 @@ function openTaskForm(tk, preset){
       title, description: q('#tf-desc').value.trim() || null, due_date: q('#tf-due').value || null,
       priority: q('#tf-prio').value, slots: Math.min(50, Math.max(1, parseInt(q('#tf-slots').value,10) || 1)),
       status, event_id: eventId || null, event_date: eventDate || null,
+      team: q('#tf-team') ? (q('#tf-team').value || null) : (tk ? tk.team : null),
     };
     if(follow) row.repeat = tk.repeat;
     else{
@@ -1975,6 +2062,7 @@ function refreshTaskDetail(){
     ${modalHeader(esc(tk.title))}
     <div class="inline" style="margin-bottom:12px">
       <span class="badge p-${tk.priority}">${icon('flag')} ${t(priorityKey(tk.priority))}</span>
+      ${tk.team ? `<span class="badge accent">${icon('users')} ${esc(teamName(tk.team))}</span>` : ''}
       ${canMoveTask(tk) ? `<select id="td-status" class="chip">${STATUSES.map(s => `<option value="${s}" ${tk.status===s?'selected':''}>${t(statusKey(s))}</option>`).join('')}</select>` : `<span class="badge">${t(statusKey(tk.status))}</span>`}
       ${tk.due_date ? `<span class="badge ${tk.status!=='done' && tk.due_date < todayKey() ? 'p-high':''}">${icon('clock')} ${esc(fmtDateShort(tk.due_date))}</span>` : ''}
     </div>
@@ -1990,7 +2078,7 @@ function refreshTaskDetail(){
       ${mine ? `<button class="btn" data-action="unclaim" data-id="${tk.id}">${t('unclaim')}</button>`
              : `<button class="btn btn-primary" data-action="claim" data-id="${tk.id}" ${full?'disabled':''}>${full ? t('full') : t('claim')}</button>`}
     </div>
-    ${canEditTask(tk) && !full ? `<div class="inline" style="margin-top:10px"><select id="td-add-person" class="chip">${state.profiles.filter(p => p.role !== 'pending' && !claims.some(c => c.user_id === p.id)).map(p => `<option value="${p.id}">${esc(p.display_name || p.username)}</option>`).join('')}</select><button class="btn btn-sm" data-action="add-person" data-id="${tk.id}">${icon('plus')}${t('addPerson')}</button></div>` : ''}
+    ${canEditTask(tk) && !full ? `<div class="inline" style="margin-top:10px"><select id="td-add-person" class="chip">${state.profiles.filter(p => p.role !== 'pending' && !claims.some(c => c.user_id === p.id) && (!tk.team || userInTeam(p, tk.team))).map(p => `<option value="${p.id}">${esc(p.display_name || p.username)}</option>`).join('')}</select><button class="btn btn-sm" data-action="add-person" data-id="${tk.id}">${icon('plus')}${t('addPerson')}</button></div>` : ''}
     <div class="section-title" style="margin-top:20px">${t('comments')}</div>
     <div class="comments">${state.comments.length ? state.comments.map(c => `<div class="comment"><div class="comment-head"><span class="avatar">${esc(initials(profileName(c.user_id)))}</span><b class="grow">${esc(profileName(c.user_id))} <span class="when">${esc(fmtDateShort(istKey(c.created_at)))} ${hhmm(c.created_at)}</span></b>
       ${c.user_id === state.uid || isAdmin() ? `<button class="modal-close" data-action="delete-comment" data-id="${c.id}" aria-label="${t('delete')}">${icon('trash')}</button>` : ''}</div><div class="comment-body">${esc(c.body)}</div></div>`).join('') : `<div class="muted small">${t('noComments')}</div>`}</div>
@@ -2277,6 +2365,63 @@ async function updateNoteSettings(patch){
 }
 
 /* =====================================================================
+   Teams view
+   ===================================================================== */
+function approvedProfiles(){ return state.profiles.filter(p => p.role !== 'pending').sort((a,b) => (a.display_name||a.username).localeCompare(b.display_name||b.username, locale())); }
+function posCard(pos){
+  const p = holderOf(pos);
+  const picker = isAdmin() ? `<select data-appoint="${pos}">
+      <option value="">— ${t('vacant')} —</option>
+      ${approvedProfiles().map(x => `<option value="${x.id}" ${p && p.id === x.id ? 'selected' : ''}>${esc(x.display_name || x.username)}${x.position && x.position !== pos ? ' · ' + esc(positionLabel(x.position)) : ''}</option>`).join('')}
+    </select>` : '';
+  return `<div class="pos-card"><div class="pos-label">${esc(positionLabel(pos))}</div>
+    <div class="pos-name ${p ? '' : 'vacant'}">${p ? `<span class="avatar">${esc(initials(profileName(p.id)))}</span>${esc(profileName(p.id))}${p.id === state.uid ? ` <span class="muted small">${t('you')}</span>` : ''}` : esc(t('vacant'))}</div>
+    ${picker}</div>`;
+}
+function renderTeams(){
+  const myHead = headOf();
+  const blocks = TEAMS.map(team => {
+    const members = state.profiles.filter(p => p.team === team && p.position !== TEAM_HEAD[team] && p.role !== 'pending')
+      .sort((a,b) => (a.display_name||a.username).localeCompare(b.display_name||b.username, locale()));
+    const canManage = isAdmin() || myHead === team;
+    const free = approvedProfiles().filter(p => !p.team && !p.position);
+    return `<div class="team-block">
+      <div class="section-title"><span>${esc(teamName(team))}</span>${canManage ? `<button class="btn btn-sm" data-action="team-task" data-team="${team}">${icon('plus')}${t('newTeamTask')}</button>` : ''}</div>
+      <div class="pos-grid">${posCard(TEAM_HEAD[team])}</div>
+      <div class="card" style="margin-top:10px">
+        ${members.length ? members.map(p => `<div class="member-row"><span class="avatar">${esc(initials(profileName(p.id)))}</span>
+          <div class="grow"><b>${esc(profileName(p.id))}</b>${p.id === state.uid ? ` <span class="muted">${t('you')}</span>` : ''}<div class="muted small">@${esc(p.username)}</div></div>
+          ${canManage && p.id !== state.uid ? `<button class="btn btn-sm btn-danger" data-action="team-remove" data-id="${p.id}">${t('removeFromTeam')}</button>` : ''}</div>`).join('')
+          : `<div class="empty-state" style="padding:18px">${t('noTeamMembers')}</div>`}
+        ${canManage ? `<div class="team-add">${free.length ? `<select data-team-add="${team}">${free.map(p => `<option value="${p.id}">${esc(p.display_name || p.username)}</option>`).join('')}</select><button class="btn btn-sm btn-primary" data-action="team-add" data-team="${team}">${icon('plus')}${t('addMember')}</button>` : `<span class="muted small">${t('noFreeMembers')}</span>`}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  $('view-teams').innerHTML = `
+    <div class="page-header rule"><div><span class="kicker">${esc(t('kMembers', { n: approvedProfiles().length }))}</span><h1>${t('navTeams')}</h1></div></div>
+    <div class="section-title">${t('leadership')}</div>
+    <div class="pos-grid">${posCard('president')}${posCard('vice_president')}</div>
+    ${blocks}
+    <p class="team-hint" style="margin-top:20px">${t('teamOnlyHint')}</p>`;
+  $('view-teams').querySelectorAll('[data-appoint]').forEach(sel => sel.addEventListener('change', () => appoint(sel.dataset.appoint, sel.value)));
+}
+// One holder per position: clear the current holder first, then appoint.
+async function appoint(pos, userId){
+  const cur = holderOf(pos);
+  try{
+    if(cur && cur.id === userId) return;
+    if(cur) await api.update('profiles', { id: cur.id }, { position: null });
+    if(userId) await api.update('profiles', { id: userId }, { position: pos });
+    toast(t('saved'));
+  }catch(e){ showError(e); }
+  await reload('profiles');
+}
+async function setTeam(userId, team){
+  try{ await api.update('profiles', { id: userId }, { team }); toast(t('saved')); }catch(e){ showError(e); }
+  await reload('profiles');
+}
+
+/* =====================================================================
    Members view (admins)
    ===================================================================== */
 function renderMembers(){
@@ -2291,10 +2436,34 @@ function renderMembers(){
     <div class="card">${pending.length ? pending.map(p => row(p, `<div class="toolbar"><button class="btn btn-sm btn-danger" data-action="m-reject" data-id="${p.id}">${t('reject')}</button><button class="btn btn-sm btn-primary" data-action="m-role" data-role="member" data-id="${p.id}">${t('approve')}</button></div>`)).join('') : `<div class="empty-state">${t('noPending')}</div>`}</div>
     <div class="section-title">${t('members')} (${members.length})</div>
     <div class="card">${members.map(p => row(p, `<span class="badge ${p.role==='admin'?'accent':''}">${t(p.role==='admin'?'roleAdmin':'roleMember')}</span>` +
+      clubRolePicker(p) +
       (p.id === state.uid ? '' : `<div class="toolbar">${p.role==='admin'
         ? `<button class="btn btn-sm" data-action="m-role" data-role="member" data-id="${p.id}">${t('makeMember')}</button>`
         : `<button class="btn btn-sm" data-action="m-role" data-role="admin" data-id="${p.id}">${t('makeAdmin')}</button>`}
         <button class="btn btn-sm btn-danger" data-action="m-remove" data-id="${p.id}">${t('removeMember')}</button></div>`))).join('')}</div>`;
+  $('view-members').querySelectorAll('[data-club-role]').forEach(sel => sel.addEventListener('change', () => setClubRole(sel.dataset.clubRole, sel.value)));
+}
+// Admins give any approved member a position or a team-member role.
+function clubRolePicker(p){
+  if(p.id === state.uid && state.me.role !== 'admin') return p.position || p.team ? `<span class="badge">${esc(profileTitle(p))}</span>` : '';
+  const cur = p.position ? 'pos:' + p.position : p.team ? 'team:' + p.team : '';
+  const opt = (v, label) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${esc(label)}</option>`;
+  return `<select class="club-role" data-club-role="${p.id}" aria-label="${esc(t('clubRole'))}">
+    ${opt('', t('noClubRole'))}
+    ${['president','vice_president','head_finance','head_events','head_media'].map(pos => {
+      const h = holderOf(pos);
+      return opt('pos:' + pos, positionLabel(pos) + (h && h.id !== p.id ? ' (' + profileName(h.id) + ')' : ''));
+    }).join('')}
+    ${TEAMS.map(tm => opt('team:' + tm, t('teamOf', { team: teamName(tm) }))).join('')}
+  </select>`;
+}
+async function setClubRole(id, value){
+  const p = state.profiles.find(x => x.id === id);
+  if(!p) return;
+  if(value.startsWith('pos:')) return appoint(value.slice(4), id);
+  const team = value.startsWith('team:') ? value.slice(5) : null;
+  try{ await api.update('profiles', { id }, { position: null, team }); toast(t('saved')); }catch(e){ showError(e); }
+  await reload('profiles');
 }
 async function setRole(id, role){
   try{ await api.update('profiles', { id }, { role }); toast(t('saved')); await reload('profiles'); }
@@ -2465,6 +2634,18 @@ document.addEventListener('click', async e => {
       state.openNoteId = null; state.noteEdit = null; toast(t('deleted'));
       return reloadNotes();
     }
+    // teams
+    case 'team-add': {
+      const sel = document.querySelector(`[data-team-add="${a.dataset.team}"]`);
+      if(sel && sel.value) await setTeam(sel.value, a.dataset.team);
+      return;
+    }
+    case 'team-remove': {
+      const p = state.profiles.find(x => x.id === a.dataset.id);
+      if(!p || !await confirmDialog(t('confirmRemoveTeam', { name: profileName(p.id) }), t('removeFromTeam'))) return;
+      return setTeam(p.id, null);
+    }
+    case 'team-task': return openTaskForm(null, { team: a.dataset.team });
     // members
     case 'm-role': return setRole(a.dataset.id, a.dataset.role);
     case 'm-reject': {

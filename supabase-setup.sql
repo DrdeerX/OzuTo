@@ -5,7 +5,8 @@
 --   * keep Email provider enabled
 --   * turn OFF "Confirm email" (the app uses username-based addresses that cannot receive mail)
 --
--- Then also run supabase-migration-2.sql (notes, tags, repeating tasks).
+-- Then also run supabase-migration-2.sql (notes, tags, repeating tasks)
+-- and supabase-migration-3.sql (positions, teams, team tasks).
 --
 -- After running and after you sign up in the app, make yourself the first admin:
 --   update public.profiles set role = 'admin' where username = 'your-username';
