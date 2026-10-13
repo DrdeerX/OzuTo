@@ -287,11 +287,82 @@
   .toast.error{ background:var(--danger); color:#fffaf1; }
   .demo-banner{ border:1px dashed var(--warn); color:var(--warn); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em; padding:6px 12px; border-radius:var(--radius-sm); margin-bottom:16px; }
 
+  /* Search, member picker, tags */
+  .search-input{ width:100%; padding:7px 11px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg); font-size:13.5px; }
+  .search-input:focus{ outline:none; border-color:var(--rule); }
+  .filters .search-input{ width:220px; }
+  .picker{ border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg); }
+  .picker-search{ width:100%; border:none; border-bottom:1px solid var(--border); background:transparent; padding:7px 10px; font-size:13px; }
+  .picker-search:focus{ outline:none; }
+  .picker-list{ max-height:180px; overflow-y:auto; padding:4px 10px; }
+  .picker-item{ display:flex; padding:4px 0; }
+  .tag-label{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-dim); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0 6px 0 0; overflow:hidden; cursor:pointer; white-space:nowrap; }
+  .tag-label i{ width:4px; align-self:stretch; }
+  .tag-label:hover{ color:var(--text); border-color:var(--rule); }
+  .task-card .t-tags{ display:flex; gap:5px; flex-wrap:wrap; margin-top:7px; }
+  .tbl .tag-label{ margin-left:6px; vertical-align:1px; }
+  .tag-picks{ display:flex; gap:6px; flex-wrap:wrap; }
+  .tag-picks input{ display:none; }
+  .tag-picks span{ display:inline-flex; align-items:center; gap:6px; padding:4px 10px 4px 0; border:1px solid var(--border); border-radius:var(--radius-sm); font-size:12.5px; cursor:pointer; overflow:hidden; }
+  .tag-picks span i{ width:4px; align-self:stretch; }
+  .tag-picks input:checked + span{ background:var(--ink); color:var(--on-ink); border-color:var(--ink); }
+  .tag-row{ display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px dashed var(--border); }
+  .tag-row input{ flex:1; min-width:0; padding:7px 10px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg); }
+  .tag-row.add{ border-bottom:none; margin-top:8px; }
+  .tag-color{ width:22px; height:22px; border-radius:50%; border:none; flex-shrink:0; }
+  .btn.active{ background:var(--ink); color:var(--on-ink); border-color:var(--ink); }
+
+  /* Notes */
+  .notes-layout{ display:grid; grid-template-columns:300px minmax(0,1fr); gap:28px; align-items:start; }
+  .notes-list{ position:sticky; top:20px; }
+  .notes-list .seg{ display:flex; margin:10px 0 6px; }
+  .notes-list .seg button{ flex:1; padding:6px 4px; }
+  .note-item{ display:block; width:100%; text-align:left; background:none; border:none; border-bottom:1px dashed var(--border); padding:10px 6px; }
+  .note-item:hover{ background:var(--bg-soft); }
+  .note-item.active{ background:var(--bg-soft); box-shadow:inset 2px 0 0 var(--accent); }
+  .note-item-title{ display:flex; align-items:center; gap:6px; min-width:0; }
+  .note-item-title svg{ color:var(--text-dim); width:13px; height:13px; }
+  .note-item-title b{ font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .note-item-snippet{ display:block; font-size:12.5px; color:var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:2px; }
+  .note-item-meta{ display:block; font-family:var(--font-mono); font-size:10px; letter-spacing:.04em; color:var(--text-dim); margin-top:3px; }
+  .note-pane{ min-width:0; }
+  .note-toolbar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding-bottom:12px; border-bottom:1px solid var(--border); margin-bottom:16px; }
+  .note-toolbar .grow{ flex:1; }
+  .note-back{ display:none; }
+  .note-title{ font-family:var(--font-display); font-size:30px; font-weight:500; line-height:1.15; margin:0 0 4px; word-break:break-word; }
+  .note-meta{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.04em; color:var(--text-dim); margin-bottom:18px; }
+  .note-body{ font-size:15px; line-height:1.65; max-width:70ch; word-break:break-word; }
+  .note-body h2{ font-family:var(--font-display); font-size:22px; font-weight:500; margin:18px 0 6px; }
+  .note-body h3{ font-family:var(--font-display); font-size:18px; font-weight:500; margin:14px 0 4px; }
+  .note-body p{ margin:0 0 4px; }
+  .note-body ul{ margin:4px 0 8px; padding-left:20px; }
+  .note-body a{ color:var(--accent); }
+  .note-gap{ height:10px; }
+  .note-check{ display:flex; gap:8px; align-items:flex-start; padding:2px 0; }
+  .note-check input{ margin-top:6px; accent-color:var(--accent); }
+  .note-check input:checked + span{ text-decoration:line-through; color:var(--text-dim); }
+  .note-title-input{ width:100%; font-family:var(--font-display); font-size:28px; border:none; border-bottom:1px solid var(--border); background:transparent; padding:4px 0 8px; margin-bottom:12px; }
+  .note-title-input:focus{ outline:none; border-color:var(--rule); }
+  .note-editor{ width:100%; min-height:360px; padding:12px 14px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg-elev); font-family:var(--font-mono); font-size:13.5px; line-height:1.6; resize:vertical; }
+  .note-editor:focus{ outline:none; border-color:var(--rule); }
+  .note-foot{ display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .note-foot .grow{ flex:1; }
+  .note-hint{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-dim); }
+  .note-settings .seg{ flex-wrap:wrap; }
+  .note-settings .check{ margin-top:4px; }
+  .conflict{ border:1px solid var(--danger); color:var(--danger); border-radius:var(--radius-sm); padding:8px 12px; margin-bottom:12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:13px; }
+
   @media (max-width: 860px){
     .kanban{ grid-template-columns:1fr; }
   }
   @media (max-width: 760px){
     #app{ display:block; }
+    .notes-layout{ grid-template-columns:1fr; }
+    .notes-layout.has-open .notes-list{ display:none; }
+    .notes-layout:not(.has-open) .note-pane{ display:none; }
+    .notes-list{ position:static; }
+    .note-back{ display:inline-flex; }
+    .filters .search-input{ width:100%; }
     .topbar{ display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:40; background:var(--bg); color:var(--text); padding:10px 16px; border-bottom:1px solid var(--rule); font-family:var(--font-display); font-size:17px; }
     .topbar button{ background:none; border:none; color:var(--text); padding:4px; }
     .topbar .stamp-mark{ width:28px; height:28px; font-size:9.5px; }
@@ -384,6 +455,7 @@
     <div class="demo-banner" id="demo-banner" hidden data-i18n="demoBanner"></div>
     <section class="view" id="view-schedule"></section>
     <section class="view" id="view-tasks"></section>
+    <section class="view" id="view-notes"></section>
     <section class="view" id="view-members"></section>
   </main>
 </div>
@@ -454,6 +526,20 @@ const I18N = {
     signedUpOn:'Kayıt: {date}', saved:'Kaydedildi', deleted:'Silindi',
     selfTestPass:'Tekrar testleri geçti', selfTestFail:'Tekrar testlerinde hata — konsola bak',
     kTasks:'{n} açık görev', kMembers:'{n} üye',
+    navNotes:'Notlar', newNote:'Yeni not', untitled:'Adsız not', kNotes:'{n} not',
+    nAll:'Tümü', nMine:'Benim', nShared:'Paylaşılan', nHidden:'Gizlenen', searchNotes:'Notlarda ara…',
+    visibility:'Kim görebilir', visPrivate:'Sadece ben', visMembers:'Tüm üyeler', visPeople:'Seçilen kişiler',
+    readersEdit:'Okuyanlar düzenleyebilir', lastEdited:'Son düzenleyen: {name} · {date}',
+    hide:'Gizle', unhide:'Geri getir', noteSettings:'Paylaşım', back:'Geri', view:'Görüntüle',
+    noteConflict:'Bu not {name} tarafından değiştirildi. Metnin burada duruyor; kopyalayıp yeniden yükle.', reload:'Yeniden yükle',
+    noNotes:'Not yok', pickNote:'Bir not seç ya da yeni bir not oluştur', confirmDeleteNote:'Bu not silinsin mi?',
+    formatHelp:'# başlık · - liste · [ ] kutu · **kalın**', discardChanges:'Kaydedilmemiş değişiklikler silinsin mi?', discard:'Değişiklikleri at',
+    people:'Kişiler', searchPeople:'Kişi ara…', tags:'Etiketler', manageTags:'Etiketleri yönet', newTagName:'Yeni etiket adı', add:'Ekle',
+    confirmDeleteTag:'"{name}" etiketi silinsin mi? {n} görevden kaldırılacak.', noTags:'Henüz etiket yok', fAnyTag:'Tüm etiketler',
+    tagExists:'Bu etiket zaten var', searchTasks:'Görevlerde ara…', errRepeatDue:'Tekrarlanan görev için son tarih gerekli',
+    followsEvent:'Etkinlik tarihlerini izler', nextCopy:'Sonraki kopya oluşturuldu: {date}',
+    alsoTask:'Bunu görev olarak da ekle', alsoTaskHelp:'Seçilen kişiler göreve otomatik atanır.', errPickPeople:'En az bir kişi seç',
+    addPerson:'Kişi ekle',
   },
   en: {
     signIn:'Sign in', signInSub:'Sign in with your club account', signUp:'Sign up', createAccount:'Create account',
@@ -502,6 +588,20 @@ const I18N = {
     signedUpOn:'Signed up {date}', saved:'Saved', deleted:'Deleted',
     selfTestPass:'Recurrence self-test passed', selfTestFail:'Recurrence self-test failed — see console',
     kTasks:'{n} open tasks', kMembers:'{n} members',
+    navNotes:'Notes', newNote:'New note', untitled:'Untitled', kNotes:'{n} notes',
+    nAll:'All', nMine:'Mine', nShared:'Shared', nHidden:'Hidden', searchNotes:'Search notes…',
+    visibility:'Who can see it', visPrivate:'Only me', visMembers:'All members', visPeople:'Chosen people',
+    readersEdit:'Readers can edit', lastEdited:'Last edited by {name} · {date}',
+    hide:'Hide', unhide:'Unhide', noteSettings:'Sharing', back:'Back', view:'View',
+    noteConflict:'{name} changed this note. Your text is still here; copy it, then reload.', reload:'Reload',
+    noNotes:'No notes', pickNote:'Pick a note or create a new one', confirmDeleteNote:'Delete this note?',
+    formatHelp:'# heading · - list · [ ] checkbox · **bold**', discardChanges:'Discard unsaved changes?', discard:'Discard',
+    people:'People', searchPeople:'Search people…', tags:'Tags', manageTags:'Manage tags', newTagName:'New tag name', add:'Add',
+    confirmDeleteTag:'Delete tag "{name}"? It will be removed from {n} tasks.', noTags:'No tags yet', fAnyTag:'Any tag',
+    tagExists:'This tag already exists', searchTasks:'Search tasks…', errRepeatDue:'A repeating task needs a due date',
+    followsEvent:'Follows the event dates', nextCopy:'Next copy created: {date}',
+    alsoTask:'Also make a task', alsoTaskHelp:'Chosen people are assigned to the task automatically.', errPickPeople:'Pick at least one person',
+    addPerson:'Add person',
   }
 };
 
@@ -549,6 +649,8 @@ function errMessage(err){
   if(/row-level security|permission|NO_PERMISSION|Only admins|Only the creator|own role/i.test(raw)) return t('errNoPerm');
   return t('errGeneric') + (raw ? ': ' + raw : '');
 }
+// Lower-case and strip accents so "afis" finds "Afiş".
+function norm(s){ return String(s || '').toLocaleLowerCase('tr').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ı/g, 'i'); }
 function showError(err){ console.error(err); toast(errMessage(err), true); }
 const ICONS = {
   calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
@@ -561,6 +663,12 @@ const ICONS = {
   user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
   flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/>',
   trash:'<path d="M3 6h18M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  globe:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/>',
+  eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+  eyeoff:'<path d="M17.94 17.94A10 10 0 0 1 12 20c-7 0-11-8-11-8a18 18 0 0 1 5.06-5.94M9.9 4.24A9 9 0 0 1 12 4c7 0 11 8 11 8a18 18 0 0 1-2.16 3.19M1 1l22 22"/>',
+  note:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>',
+  tag:'<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1"/>',
   link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
 };
 function icon(name){ return `<svg class="icon" viewBox="0 0 24 24">${ICONS[name]||''}</svg>`; }
@@ -754,6 +862,7 @@ function makeSupabaseApi(){
       if(!rows || !rows.length) throw new Error('NO_PERMISSION');
     },
     async upsert(table, row, onConflict){ check(await sb.from(table).upsert(row, { onConflict })); },
+    async rpc(fn, params){ return check(await sb.rpc(fn, params)); },
     subscribe(onChange, onStatus){
       const ch = sb.channel('club-db')
         .on('postgres_changes', { event:'*', schema:'public' }, p => onChange(p.table))
@@ -766,7 +875,7 @@ function makeSupabaseApi(){
 function makeDemoApi(){
   const now = new Date();
   const k0 = todayKey();
-  const db = { profiles:[], events:[], event_exceptions:[], tasks:[], task_claims:[], task_comments:[] };
+  const db = { profiles:[], events:[], event_exceptions:[], tasks:[], task_claims:[], task_comments:[], notes:[], note_shares:[], note_hidden:[], tags:[], task_tags:[] };
   const users = {}; // username -> { id, password }
   let uid = null, listener = () => {};
   const addUser = (username, role) => {
@@ -795,11 +904,26 @@ function makeDemoApi(){
   );
   db.task_claims.push({ task_id:t2, user_id:ayse, claimed_at:now.toISOString() });
   db.task_comments.push({ id:uuid(), task_id:t2, user_id:ayse, body:'İki firmayı aradım, yarın dönecekler.', created_at:now.toISOString() });
+  const tagSocial = uuid(), tagTrip = uuid();
+  db.tags.push({ id:tagSocial, name:'Sosyal medya', color:'blue', created_at:now.toISOString() }, { id:tagTrip, name:'Gezi', color:'orange', created_at:now.toISOString() });
+  db.task_tags.push({ task_id:t1, tag_id:tagSocial }, { task_id:t1, tag_id:tagTrip }, { task_id:t2, tag_id:tagTrip });
+  const t4 = uuid();
+  db.tasks.push({ id:t4, title:'Haftalık Instagram paylaşımı', description:'', due_date:addDays(k0,1), priority:'medium', status:'todo', slots:1, event_id:null, event_date:null, position:2, created_by:admin, created_at:now.toISOString(),
+    repeat:{ freq:'weekly', interval:1, byweekday:[weekdayOf(addDays(k0,1))], end:{ type:'never' } }, series_id:t4, occurrence:1 });
+  db.task_claims.push({ task_id:t4, user_id:admin, claimed_at:now.toISOString() });
+  db.task_tags.push({ task_id:t4, tag_id:tagSocial });
+  const iso = now.toISOString();
+  db.notes.push(
+    { id:uuid(), title:'Gezi hazırlık listesi', body:'# Kapadokya\n- Otobüs\n- Otel\n[x] Tarih seçildi\n[ ] Bütçe\n\n**Not:** depozito cuma günü.\nhttps://example.com', visibility:'members', readers_can_edit:true, author_id:ayse, updated_by:ayse, created_at:iso, updated_at:iso },
+    { id:uuid(), title:'Ayşe özel not', body:'Bunu sadece Ayşe görür.', visibility:'private', readers_can_edit:false, author_id:ayse, updated_by:ayse, created_at:iso, updated_at:iso },
+    { id:uuid(), title:'Yönetim fikirleri', body:'Sadece benim.', visibility:'private', readers_can_edit:false, author_id:admin, updated_by:admin, created_at:iso, updated_at:iso },
+  );
 
   const matches = (row, match) => Object.keys(match||{}).every(k => row[k] === match[k]);
   const me = () => db.profiles.find(p => p.id === uid);
   const isAdmin = () => me() && me().role === 'admin';
   const changed = table => setTimeout(() => listener(table), 0);
+  const canReadNote = n => n.author_id === uid || n.visibility === 'members' || (n.visibility === 'people' && db.note_shares.some(s => s.note_id === n.id && s.user_id === uid));
   const delay = () => new Promise(r => setTimeout(r, 60));
   return {
     async signIn(username, password){
@@ -820,7 +944,11 @@ function makeDemoApi(){
       const p = me();
       if(table === 'profiles' && p && p.role === 'pending') return db.profiles.filter(r => r.id === uid && matches(r, match)).map(r => ({...r}));
       if(!p || p.role === 'pending') return [];
-      return db[table].filter(r => matches(r, match)).map(r => ({...r}));
+      let rows = db[table];
+      if(table === 'notes') rows = rows.filter(canReadNote);
+      if(table === 'note_shares') rows = rows.filter(s => s.user_id === uid || db.notes.some(n => n.id === s.note_id && n.author_id === uid));
+      if(table === 'note_hidden') rows = rows.filter(x => x.user_id === uid);
+      return rows.filter(r => matches(r, match)).map(r => ({...r}));
     },
     async insert(table, row){
       await delay();
@@ -836,9 +964,11 @@ function makeDemoApi(){
     async update(table, match, patch){
       await delay();
       if(table === 'profiles' && 'role' in patch && (!isAdmin() || match.id === uid)) throw new Error('NO_PERMISSION');
-      const rows = db[table].filter(r => matches(r, match));
+      let rows = db[table].filter(r => matches(r, match));
+      if(table === 'notes') rows = rows.filter(n => canReadNote(n) && (n.author_id === uid || n.readers_can_edit));
       if(!rows.length) throw new Error('NO_PERMISSION');
-      rows.forEach(r => Object.assign(r, patch)); changed(table);
+      if(table === 'notes' && rows.some(n => n.author_id !== uid) && ('visibility' in patch || 'readers_can_edit' in patch)) throw new Error('NO_PERMISSION');
+      rows.forEach(r => Object.assign(r, patch, table === 'notes' ? { updated_at: new Date().toISOString(), updated_by: uid } : {})); changed(table);
     },
     async remove(table, match){
       await delay();
@@ -855,8 +985,11 @@ function makeDemoApi(){
         const ids = new Set(db.tasks.map(x => x.id));
         db.task_claims = db.task_claims.filter(c => ids.has(c.task_id));
         db.task_comments = db.task_comments.filter(c => ids.has(c.task_id));
+        db.task_tags = db.task_tags.filter(c => ids.has(c.task_id)); changed('task_tags');
         changed('task_claims');
       }
+      if(table === 'tags'){ const ids = new Set(db.tags.map(x => x.id)); db.task_tags = db.task_tags.filter(x => ids.has(x.tag_id)); changed('task_tags'); }
+      if(table === 'notes'){ const ids = new Set(db.notes.map(x => x.id)); db.note_shares = db.note_shares.filter(x => ids.has(x.note_id)); db.note_hidden = db.note_hidden.filter(x => ids.has(x.note_id)); }
       if(table === 'profiles'){
         const u = Object.keys(users).find(n => users[n].id === match.id); if(u) delete users[u];
       }
@@ -868,6 +1001,22 @@ function makeDemoApi(){
       const existing = db[table].find(r => cols.every(c => r[c] === row[c]));
       if(existing) Object.assign(existing, row); else db[table].push({ ...row });
       changed(table);
+    },
+    async rpc(fn, params){
+      await delay();
+      if(fn !== 'create_next_task_copy') throw new Error('unknown function');
+      const src = db.tasks.find(x => x.id === params.p_task_id);
+      if(!src || !src.repeat) return null;
+      const series = src.series_id || src.id;
+      if(src.status !== 'done' || !params.p_due || params.p_due <= src.due_date) throw new Error('INVALID_NEXT_COPY');
+      if(db.tasks.some(x => (x.series_id || x.id) === series && (x.due_date === params.p_due || x.occurrence === (src.occurrence || 1) + 1))) return null;
+      const id = uuid();
+      const maxPos = db.tasks.filter(x => x.status === 'todo').reduce((m, x) => Math.max(m, x.position), 0);
+      db.tasks.push({ ...src, id, status:'todo', due_date: params.p_due, event_date: params.p_event_date, position: maxPos + 1, series_id: series, occurrence: (src.occurrence || 1) + 1, created_at: new Date().toISOString() });
+      db.task_tags.filter(x => x.task_id === src.id).forEach(x => db.task_tags.push({ task_id:id, tag_id:x.tag_id }));
+      db.task_claims.filter(x => x.task_id === src.id).slice(0, src.slots).forEach(x => db.task_claims.push({ task_id:id, user_id:x.user_id, claimed_at:new Date().toISOString() }));
+      ['tasks','task_tags','task_claims'].forEach(changed);
+      return id;
     },
     subscribe(onChange, onStatus){ listener = onChange; onStatus(true); return () => { listener = () => {}; }; },
   };
@@ -884,8 +1033,10 @@ const state = {
   profiles: [], events: [], event_exceptions: [], tasks: [], task_claims: [],
   view: 'schedule',
   calView: window.innerWidth < 640 ? 'list' : 'month', calCursor: todayKey(),
-  taskView: 'board', taskFilter: { mine:false, open:false, priority:'', event:'' }, taskSort: { key:'due_date', dir:1 },
+  tags: [], task_tags: [], notes: [], note_shares: [], note_hidden: [],
+  taskView: 'board', taskFilter: { mine:false, open:false, priority:'', event:'', tag:'', q:'' }, taskSort: { key:'due_date', dir:1 },
   openTaskId: null, comments: [],
+  notesLoaded: false, notesLoading: false, openNoteId: null, noteEdit: null, noteSettings: false, noteFilter: 'all', noteSearch: '',
 };
 let unsubscribe = null;
 
@@ -949,7 +1100,8 @@ async function doSignUp(){
 async function doSignOut(){
   if(unsubscribe){ unsubscribe(); unsubscribe = null; }
   await api.signOut();
-  Object.assign(state, { uid:null, me:null, profiles:[], events:[], event_exceptions:[], tasks:[], task_claims:[] });
+  Object.assign(state, { uid:null, me:null, profiles:[], events:[], event_exceptions:[], tasks:[], task_claims:[],
+    tags:[], task_tags:[], notes:[], note_shares:[], note_hidden:[], notesLoaded:false, notesLoading:false, openNoteId:null, noteEdit:null });
   closeAllModals();
   showAuthBox('signin');
 }
@@ -972,7 +1124,7 @@ async function enterApp(){
   renderAll();
 }
 async function loadAll(){
-  const tables = ['profiles','events','event_exceptions','tasks','task_claims'];
+  const tables = ['profiles','events','event_exceptions','tasks','task_claims','tags','task_tags'];
   try{
     const results = await Promise.all(tables.map(tb => api.list(tb)));
     tables.forEach((tb, i) => { state[tb] = results[i]; });
@@ -1004,6 +1156,7 @@ async function flushRefetch(){
     for(const tb of tables){
       if(tb === 'task_comments'){ if(state.openTaskId) await loadComments(state.openTaskId); continue; }
       if(!(tb in state)) continue;
+      if(NOTE_TABLES.includes(tb) && !state.notesLoaded) continue;
       state[tb] = await api.list(tb);
     }
   }catch(e){ showError(e); return; }
@@ -1025,16 +1178,18 @@ async function reload(...tables){
 function renderAll(){
   applyStaticI18n();
   renderNav();
-  for(const v of ['schedule','tasks','members']) $('view-'+v).classList.toggle('active', state.view === v);
+  for(const v of ['schedule','tasks','notes','members']) $('view-'+v).classList.toggle('active', state.view === v);
   if(state.view === 'schedule') renderSchedule();
   if(state.view === 'tasks') renderTasks();
+  if(state.view === 'notes') renderNotes();
+  if($('tag-manager')) renderTagManager();
   if(state.view === 'members') renderMembers();
   if(state.openTaskId) refreshTaskDetail();
 }
 function renderNav(){
   if(state.view === 'members' && !isAdmin()) state.view = 'schedule';
   const pendingCount = state.profiles.filter(p => p.role === 'pending').length;
-  const items = [['schedule','calendar','navSchedule'], ['tasks','tasks','navTasks']];
+  const items = [['schedule','calendar','navSchedule'], ['tasks','tasks','navTasks'], ['notes','note','navNotes']];
   if(isAdmin()) items.push(['members','users','navMembers']);
   $('nav').innerHTML = items.map(([v, ic, label]) =>
     `<button class="nav-item ${state.view===v?'active':''}" data-action="nav" data-view="${v}">${icon(ic)}<span>${t(label)}</span>${v==='members' && pendingCount ? `<span class="nav-badge">${pendingCount}</span>` : ''}</button>`).join('');
@@ -1254,6 +1409,93 @@ function openDayList(key){
     `<div class="modal-actions"><button class="btn btn-primary" data-action="new-event-day" data-day="${key}">${icon('plus')}${t('newEvent')}</button></div>`);
 }
 
+/* ---------- Repeat controls (shared by the event and task forms) ---------- */
+function repeatSectionHtml(p, r, startKey){
+  const freq = r && r.freq ? r.freq : 'none';
+  const end = (r && r.end) || { type:'never' };
+  const byWd = r && r.byweekday && r.byweekday.length ? r.byweekday : [weekdayOf(startKey)];
+  return `<div class="repeat-box">
+      <div class="field"><label>${t('repeat')}</label>
+        <select id="${p}-freq">${['none','daily','weekly','monthly','yearly'].map(f => `<option value="${f}" ${freq===f?'selected':''}>${t({none:'rNone',daily:'rDaily',weekly:'rWeekly',monthly:'rMonthly',yearly:'rYearly'}[f])}</option>`).join('')}</select>
+      </div>
+      <div class="field ${p}-rep-only"><div class="inline"><span>${t('every')}</span><input type="number" id="${p}-interval" min="1" max="99" value="${r && r.interval ? r.interval : 1}"><span id="${p}-unit"></span></div></div>
+      <div class="field ${p}-rep-weekly"><span class="field-label">${t('onDays')}</span><div class="wd-picks">${[0,1,2,3,4,5,6].map(i => `<label><input type="checkbox" name="${p}-wd" value="${i}" ${byWd.includes(i)?'checked':''}><span>${esc(weekdayShort(i))}</span></label>`).join('')}</div></div>
+      <div class="field ${p}-rep-monthly" id="${p}-mmode-wrap"></div>
+      <div class="field ${p}-rep-only"><span class="field-label">${t('repeatEnds')}</span>
+        <div class="inline">
+          <select id="${p}-endtype" style="width:auto">${['never','until','count'].map(x => `<option value="${x}" ${end.type===x?'selected':''}>${t({never:'endNever',until:'endUntil',count:'endCount'}[x])}</option>`).join('')}</select>
+          <input type="date" id="${p}-until" value="${end.date || addDays(startKey, 90)}" style="width:auto">
+          <span id="${p}-count-wrap" class="inline"><input type="number" id="${p}-count" min="1" max="999" value="${end.count || 10}"><span>${t('times')}</span></span>
+        </div>
+      </div>
+    </div>`;
+}
+// Shows/hides the repeat fields; returns a refresh function to call when the start date changes.
+function wireRepeat(el, p, r, getStartKey){
+  const q = sel => el.querySelector(sel);
+  const mmode = r && r.freq==='monthly' ? (r.monthlyMode==='nth' ? (Number(r.nth)===-1 ? 'last' : 'nth') : 'day') : 'day';
+  function refresh(){
+    const f = q(`#${p}-freq`).value, sk = getStartKey();
+    el.querySelectorAll(`.${p}-rep-only`).forEach(x => x.hidden = f==='none');
+    el.querySelectorAll(`.${p}-rep-weekly`).forEach(x => x.hidden = f!=='weekly');
+    el.querySelectorAll(`.${p}-rep-monthly`).forEach(x => x.hidden = f!=='monthly');
+    q(`#${p}-unit`).textContent = t({daily:'uDays',weekly:'uWeeks',monthly:'uMonths',yearly:'uYears'}[f] || 'uDays');
+    const et = q(`#${p}-endtype`).value;
+    q(`#${p}-until`).hidden = et !== 'until'; q(`#${p}-count-wrap`).hidden = et !== 'count';
+    // monthly options depend on the start date
+    const pp = keyParts(sk), wd = weekdayOf(sk), nth = Math.ceil(pp.d/7), isLast = pp.d + 7 > daysInMonth(pp.y, pp.m0);
+    const cur = (el.querySelector(`input[name=${p}-mm]:checked`) || {}).value || mmode;
+    const opts = [['day', t('monthlyDay',{d:pp.d})]];
+    if(nth <= 4) opts.push(['nth', t('monthlyNth',{nth:nthLabel(nth), wd:weekdayLong(wd)})]);
+    if(isLast) opts.push(['last', t('monthlyNth',{nth:nthLabel(-1), wd:weekdayLong(wd)})]);
+    const sel = opts.some(o => o[0]===cur) ? cur : 'day';
+    q(`#${p}-mmode-wrap`).innerHTML = opts.map(([v,l]) => `<label class="check" style="display:flex;margin-bottom:4px"><input type="radio" name="${p}-mm" value="${v}" ${v===sel?'checked':''}> ${esc(l)}</label>`).join('');
+  }
+  [`#${p}-freq`, `#${p}-endtype`].forEach(s => q(s).addEventListener('change', refresh));
+  refresh();
+  return refresh;
+}
+function readRepeat(el, p, startKey){
+  const q = sel => el.querySelector(sel);
+  const f = q(`#${p}-freq`).value;
+  if(f === 'none') return { rrule: null };
+  const rrule = { freq: f, interval: Math.min(99, Math.max(1, parseInt(q(`#${p}-interval`).value,10) || 1)) };
+  if(f === 'weekly'){
+    rrule.byweekday = [...el.querySelectorAll(`input[name=${p}-wd]:checked`)].map(x => Number(x.value));
+    if(!rrule.byweekday.length) return { error: t('errWeekdays') };
+  }
+  if(f === 'monthly'){
+    const mm = (el.querySelector(`input[name=${p}-mm]:checked`) || {}).value || 'day';
+    rrule.monthlyMode = mm === 'day' ? 'day' : 'nth';
+    if(mm === 'nth') rrule.nth = Math.ceil(keyParts(startKey).d / 7);
+    if(mm === 'last') rrule.nth = -1;
+  }
+  const et = q(`#${p}-endtype`).value;
+  if(et === 'until'){
+    const d = q(`#${p}-until`).value;
+    if(!d || d < startKey) return { error: t('errUntil') };
+    rrule.end = { type:'until', date:d };
+  }else if(et === 'count'){
+    rrule.end = { type:'count', count: Math.min(999, Math.max(1, parseInt(q(`#${p}-count`).value,10) || 1)) };
+  }else rrule.end = { type:'never' };
+  return { rrule };
+}
+
+/* ---------- Member picker ---------- */
+function memberPickerHtml(name, selected, excludeSelf){
+  const people = state.profiles.filter(p => p.role !== 'pending' && !(excludeSelf && p.id === state.uid))
+    .sort((a,b) => (a.display_name||a.username).localeCompare(b.display_name||b.username, locale()));
+  return `<div class="picker"><input type="text" class="picker-search" placeholder="${t('searchPeople')}">
+    <div class="picker-list">${people.map(p => `<label class="check picker-item" data-name="${esc(norm((p.display_name||'') + ' ' + p.username))}"><input type="checkbox" name="${name}" value="${p.id}" ${selected.includes(p.id)?'checked':''}> ${esc(p.display_name||p.username)}${p.id===state.uid ? ' '+t('you') : ''}</label>`).join('')}</div></div>`;
+}
+function wirePicker(root){
+  root.querySelectorAll('.picker-search').forEach(inp => inp.addEventListener('input', () => {
+    const q = norm(inp.value);
+    inp.parentElement.querySelectorAll('.picker-item').forEach(it => { it.hidden = !!q && !it.dataset.name.includes(q); });
+  }));
+}
+function pickedIds(root, name){ return [...root.querySelectorAll(`input[name="${name}"]:checked`)].map(x => x.value); }
+
 /* ---------- Event form ---------- */
 // ctx: { occ } when editing an existing occurrence; { day, hour } for a new event.
 function openEventForm(ctx){
@@ -1287,57 +1529,40 @@ function openEventForm(ctx){
       <div class="field"><label>${t('endDate')}</label><input type="date" id="ef-edate" value="${eKey}"></div>
       <div class="field ef-time"><label>${t('endTime')}</label><input type="time" id="ef-etime" value="${eTime}"></div>
     </div>
-    <div class="repeat-box">
-      <div class="field"><label>${t('repeat')}</label>
-        <select id="ef-freq">${['none','daily','weekly','monthly','yearly'].map(f => `<option value="${f}" ${freq===f?'selected':''}>${t({none:'rNone',daily:'rDaily',weekly:'rWeekly',monthly:'rMonthly',yearly:'rYearly'}[f])}</option>`).join('')}</select>
-      </div>
-      <div class="field rep-only"><div class="inline"><span>${t('every')}</span><input type="number" id="ef-interval" min="1" max="99" value="${r ? (r.interval||1) : 1}"><span id="ef-unit"></span></div></div>
-      <div class="field rep-weekly"><span class="field-label">${t('onDays')}</span><div class="wd-picks">${[0,1,2,3,4,5,6].map(i => `<label><input type="checkbox" name="ef-wd" value="${i}" ${byWd.includes(i)?'checked':''}><span>${esc(weekdayShort(i))}</span></label>`).join('')}</div></div>
-      <div class="field rep-monthly" id="ef-mmode-wrap"></div>
-      <div class="field rep-only"><span class="field-label">${t('repeatEnds')}</span>
-        <div class="inline">
-          <select id="ef-endtype" style="width:auto">${['never','until','count'].map(x => `<option value="${x}" ${end.type===x?'selected':''}>${t({never:'endNever',until:'endUntil',count:'endCount'}[x])}</option>`).join('')}</select>
-          <input type="date" id="ef-until" value="${end.date || addDays(sKey, 90)}" style="width:auto">
-          <span id="ef-count-wrap" class="inline"><input type="number" id="ef-count" min="1" max="999" value="${end.count || 10}"><span>${t('times')}</span></span>
-        </div>
-      </div>
-    </div>
+    ${repeatSectionHtml('ef', r, sKey)}
     <div class="field"><label>${t('location')}</label><input type="text" id="ef-loc" maxlength="200" value="${esc(occ ? occ.location || '' : '')}"></div>
     <div class="field"><label>${t('description')}</label><textarea id="ef-desc" maxlength="5000">${esc(occ ? occ.description || '' : '')}</textarea></div>
     <div class="field"><span class="field-label">${t('color')}</span><div class="swatches">${Object.keys(COLORS).map(c => `<label><input type="radio" name="ef-color" value="${c}" ${c===color?'checked':''}><span style="background:${COLORS[c]}"></span></label>`).join('')}</div></div>
+    ${ev ? '' : `<div class="repeat-box"><label class="check"><input type="checkbox" id="ef-mktask"> ${t('alsoTask')}</label>
+      <div id="ef-task-opts" hidden style="margin-top:10px"><p class="muted small" style="margin:0 0 8px">${t('alsoTaskHelp')}</p>
+        <div class="field"><span class="field-label">${t('people')}</span>${memberPickerHtml('ef-people', [state.uid])}</div>
+        <div class="field"><label>${t('priority')}</label><select id="ef-tprio">${['low','medium','high'].map(p => `<option value="${p}" ${p==='medium'?'selected':''}>${t(priorityKey(p))}</option>`).join('')}</select></div>
+      </div></div>`}
     <div class="lock-error" id="ef-error" style="text-align:left"></div>
     <div class="modal-actions"><button class="btn" data-action="close-modal">${t('cancel')}</button><button class="btn btn-primary" id="ef-save">${t('save')}</button></div>
   `, { wide:true });
   const q = sel => el.querySelector(sel);
-  const mmode = r && r.freq==='monthly' ? (r.monthlyMode==='nth' ? (Number(r.nth)===-1 ? 'last' : 'nth') : 'day') : 'day';
-  function refresh(){
-    const f = q('#ef-freq').value, ad = q('#ef-allday').checked, sk = q('#ef-sdate').value || sKey;
-    el.querySelectorAll('.ef-time').forEach(x => x.hidden = ad);
-    el.querySelectorAll('.rep-only').forEach(x => x.hidden = f==='none');
-    el.querySelectorAll('.rep-weekly').forEach(x => x.hidden = f!=='weekly');
-    el.querySelectorAll('.rep-monthly').forEach(x => x.hidden = f!=='monthly');
-    q('#ef-unit').textContent = t({daily:'uDays',weekly:'uWeeks',monthly:'uMonths',yearly:'uYears'}[f] || 'uDays');
-    const et = q('#ef-endtype').value;
-    q('#ef-until').hidden = et !== 'until'; q('#ef-count-wrap').hidden = et !== 'count';
-    // monthly options depend on the start date
-    const p = keyParts(sk), wd = weekdayOf(sk), nth = Math.ceil(p.d/7), isLast = p.d + 7 > daysInMonth(p.y, p.m0);
-    const cur = (el.querySelector('input[name=ef-mm]:checked') || {}).value || mmode;
-    const opts = [['day', t('monthlyDay',{d:p.d})]];
-    if(nth <= 4) opts.push(['nth', t('monthlyNth',{nth:nthLabel(nth), wd:weekdayLong(wd)})]);
-    if(isLast) opts.push(['last', t('monthlyNth',{nth:nthLabel(-1), wd:weekdayLong(wd)})]);
-    const sel = opts.some(o => o[0]===cur) ? cur : 'day';
-    q('#ef-mmode-wrap').innerHTML = opts.map(([v,l]) => `<label class="check" style="display:flex;margin-bottom:4px"><input type="radio" name="ef-mm" value="${v}" ${v===sel?'checked':''}> ${esc(l)}</label>`).join('');
-  }
-  ['#ef-freq','#ef-allday','#ef-sdate','#ef-endtype'].forEach(s => q(s).addEventListener('change', refresh));
+  const refreshRepeat = wireRepeat(el, 'ef', r, () => q('#ef-sdate').value || sKey);
+  const refreshTimes = () => el.querySelectorAll('.ef-time').forEach(x => x.hidden = q('#ef-allday').checked);
+  q('#ef-allday').addEventListener('change', refreshTimes);
+  q('#ef-sdate').addEventListener('change', refreshRepeat);
   q('#ef-sdate').addEventListener('change', () => { if(q('#ef-edate').value < q('#ef-sdate').value) q('#ef-edate').value = q('#ef-sdate').value; });
-  refresh();
+  refreshTimes();
+  wirePicker(el);
+  if(!ev) q('#ef-mktask').addEventListener('change', () => { q('#ef-task-opts').hidden = !q('#ef-mktask').checked; });
   q('#ef-save').addEventListener('click', async () => {
     const err = q('#ef-error'); err.textContent = '';
     const v = readEventForm(el);
     if(v.error){ err.textContent = v.error; return; }
+    let taskOpts = null;
+    if(!ev && q('#ef-mktask').checked){
+      const people = pickedIds(el, 'ef-people');
+      if(!people.length){ err.textContent = t('errPickPeople'); return; }
+      taskOpts = { people, priority: q('#ef-tprio').value };
+    }
     q('#ef-save').disabled = true;
     try{
-      const done = ev ? await saveEventEdit(occ, v) : await createEvent(v);
+      const done = ev ? await saveEventEdit(occ, v) : await createEvent(v, taskOpts);
       if(done !== false){ closeModal(el); closeModalsOfKind('event'); toast(t('saved')); }
     }catch(e){ showError(e); }
     finally{ q('#ef-save').disabled = false; }
@@ -1360,29 +1585,9 @@ function readEventForm(el){
     start = istToIso(sk, sh, sm); end = istToIso(ek, eh, em);
   }
   if(new Date(end) <= new Date(start)) return { error: t('errEndBeforeStart') };
-  const f = q('#ef-freq').value;
-  let rrule = null;
-  if(f !== 'none'){
-    rrule = { freq: f, interval: Math.min(99, Math.max(1, parseInt(q('#ef-interval').value,10) || 1)) };
-    if(f === 'weekly'){
-      rrule.byweekday = [...el.querySelectorAll('input[name=ef-wd]:checked')].map(x => Number(x.value));
-      if(!rrule.byweekday.length) return { error: t('errWeekdays') };
-    }
-    if(f === 'monthly'){
-      const mm = (el.querySelector('input[name=ef-mm]:checked') || {}).value || 'day';
-      rrule.monthlyMode = mm === 'day' ? 'day' : 'nth';
-      if(mm === 'nth') rrule.nth = Math.ceil(keyParts(sk).d / 7);
-      if(mm === 'last') rrule.nth = -1;
-    }
-    const et = q('#ef-endtype').value;
-    if(et === 'until'){
-      const d = q('#ef-until').value;
-      if(!d || d < sk) return { error: t('errUntil') };
-      rrule.end = { type:'until', date:d };
-    }else if(et === 'count'){
-      rrule.end = { type:'count', count: Math.min(999, Math.max(1, parseInt(q('#ef-count').value,10) || 1)) };
-    }else rrule.end = { type:'never' };
-  }
+  const rep = readRepeat(el, 'ef', sk);
+  if(rep.error) return { error: rep.error };
+  const rrule = rep.rrule;
   return {
     title, allDay, start, end, rrule,
     location: q('#ef-loc').value.trim() || null,
@@ -1393,8 +1598,22 @@ function readEventForm(el){
 function eventRow(v){
   return { title:v.title, description:v.description, location:v.location, color:v.color, all_day:v.allDay, start_at:v.start, end_at:v.end, rrule:v.rrule };
 }
-async function createEvent(v){
-  await api.insert('events', { id: uuid(), ...eventRow(v), created_by: state.uid });
+async function createEvent(v, taskOpts){
+  const evId = uuid();
+  await api.insert('events', { id: evId, ...eventRow(v), created_by: state.uid });
+  if(taskOpts){
+    // meeting task: chosen people are claimed; a repeating event's task follows the event dates
+    const sk = istKey(v.start);
+    const first = v.rrule ? (ruleDates(sk, v.rrule, addDays(sk, 400))[0] || sk) : sk;
+    const taskId = uuid();
+    await api.insert('tasks', { id: taskId, title: v.title, description: v.description, due_date: first, priority: taskOpts.priority,
+      status: 'todo', slots: Math.max(1, taskOpts.people.length), event_id: evId, event_date: v.rrule ? first : null,
+      position: nextPosition('todo'), created_by: state.uid,
+      repeat: v.rrule ? { followEvent: true } : null, series_id: v.rrule ? taskId : null, occurrence: 1 });
+    for(const id of taskOpts.people) await api.insert('task_claims', { task_id: taskId, user_id: id });
+    await reload('events', 'tasks', 'task_claims');
+    return;
+  }
   await reload('events');
 }
 const sameRule = (a, b) => JSON.stringify(a || null) === JSON.stringify(b || null);
@@ -1510,48 +1729,70 @@ function taskEventLabel(tk){
   if(!ev) return '';
   return ev.title + (tk.event_date ? ' · ' + fmtDateShort(tk.event_date) : '');
 }
+function tagsOf(taskId){
+  const ids = new Set(state.task_tags.filter(x => x.task_id === taskId).map(x => x.tag_id));
+  return state.tags.filter(tg => ids.has(tg.id)).sort((a,b) => a.name.localeCompare(b.name, locale()));
+}
+function tagLabels(taskId){
+  return tagsOf(taskId).map(tg => `<span class="tag-label" data-action="tag-filter" data-id="${tg.id}"><i style="background:${colorOf(tg.color)}"></i>${esc(tg.name)}</span>`).join('');
+}
 function filteredTasks(){
-  const f = state.taskFilter;
+  const f = state.taskFilter, q = norm(f.q.trim());
   return state.tasks.filter(tk => {
     if(f.mine && !hasClaimed(tk.id) && tk.created_by !== state.uid) return false;
     if(f.open && claimsOf(tk.id).length >= tk.slots) return false;
     if(f.priority && tk.priority !== f.priority) return false;
     if(f.event && tk.event_id !== f.event) return false;
+    if(f.tag && !state.task_tags.some(x => x.task_id === tk.id && x.tag_id === f.tag)) return false;
+    if(q && !norm([tk.title, tk.description, ...tagsOf(tk.id).map(x => x.name)].join(' ')).includes(q)) return false;
     return true;
   });
 }
 function renderTasks(){
   const f = state.taskFilter;
   const evOpts = state.events.filter(ev => state.tasks.some(tk => tk.event_id === ev.id));
+  if(f.tag && !state.tags.some(x => x.id === f.tag)) f.tag = '';
+  const hadFocus = document.activeElement && document.activeElement.id === 'tf-search';
   $('view-tasks').innerHTML = `
     <div class="page-header rule">
       <div><span class="kicker">${esc(t('kTasks',{n: state.tasks.filter(x => x.status !== 'done').length}))}</span><h1>${t('navTasks')}</h1></div>
       <div class="toolbar">
+        ${isAdmin() ? `<button class="btn" data-action="manage-tags">${icon('tag')}${t('manageTags')}</button>` : ''}
         <div class="seg"><button class="${state.taskView==='board'?'active':''}" data-action="task-view" data-v="board">${t('board')}</button><button class="${state.taskView==='list'?'active':''}" data-action="task-view" data-v="list">${t('list')}</button></div>
         <button class="btn btn-primary" data-action="new-task">${icon('plus')}${t('newTask')}</button>
       </div>
     </div>
     <div class="filters">
+      <input type="search" class="search-input" id="tf-search" placeholder="${t('searchTasks')}" value="${esc(f.q)}">
       <button class="chip ${f.mine?'active':''}" data-action="tf-toggle" data-f="mine">${t('fMine')}</button>
       <button class="chip ${f.open?'active':''}" data-action="tf-toggle" data-f="open">${t('fOpen')}</button>
+      <select class="chip" id="tf-tag"><option value="">${t('fAnyTag')}</option>${state.tags.slice().sort((a,b) => a.name.localeCompare(b.name, locale())).map(tg => `<option value="${tg.id}" ${f.tag===tg.id?'selected':''}>${esc(tg.name)}</option>`).join('')}</select>
       <select class="chip" id="tf-priority"><option value="">${t('fAnyPriority')}</option>${['high','medium','low'].map(p => `<option value="${p}" ${f.priority===p?'selected':''}>${t(priorityKey(p))}</option>`).join('')}</select>
       <select class="chip" id="tf-event"><option value="">${t('fAnyEvent')}</option>${evOpts.map(ev => `<option value="${ev.id}" ${f.event===ev.id?'selected':''}>${esc(ev.title)}</option>`).join('')}</select>
     </div>
-    ${state.taskView === 'board' ? renderBoard() : renderTaskList()}`;
+    <div id="task-body">${renderTaskBody()}</div>`;
+  const search = $('tf-search');
+  search.addEventListener('input', () => { f.q = search.value; $('task-body').innerHTML = renderTaskBody(); });
+  if(hadFocus){ search.focus(); search.setSelectionRange(search.value.length, search.value.length); }
+  $('tf-tag').addEventListener('change', e => { f.tag = e.target.value; renderTasks(); });
   $('tf-priority').addEventListener('change', e => { f.priority = e.target.value; renderTasks(); });
   $('tf-event').addEventListener('change', e => { f.event = e.target.value; renderTasks(); });
 }
+function renderTaskBody(){ return state.taskView === 'board' ? renderBoard() : renderTaskList(); }
 function taskCard(tk){
   const claims = claimsOf(tk.id), full = claims.length >= tk.slots;
   const overdue = tk.due_date && tk.status !== 'done' && tk.due_date < todayKey();
   const evLabel = taskEventLabel(tk);
+  const tags = tagLabels(tk.id);
   return `<div class="task-card" draggable="${canMoveTask(tk)}" data-task="${tk.id}">
     <div class="t-kicker p-${tk.priority}">${t(priorityKey(tk.priority))}</div>
     <div class="t-title">${esc(tk.title)}</div>
     <div class="t-meta">
       ${tk.due_date ? `<span class="${overdue?'overdue':''}">${icon('clock')} ${esc(fmtDateShort(tk.due_date))}</span>` : ''}
+      ${tk.repeat ? `<span>${icon('repeat')}</span>` : ''}
       ${evLabel ? `<span>${icon('link')} ${esc(evLabel)}</span>` : ''}
     </div>
+    ${tags ? `<div class="t-tags">${tags}</div>` : ''}
     <div class="t-foot">
       <span class="avatars">${claims.map(c => `<span class="avatar" title="${esc(profileName(c.user_id))}">${esc(initials(profileName(c.user_id)))}</span>`).join('')}</span>
       <span class="badge ${full?'full':''}">${t('spots',{n:claims.length, m:tk.slots})}</span>
@@ -1573,10 +1814,46 @@ function renderTaskList(){
   const th = (k, label) => `<th data-action="task-sort" data-k="${k}">${t(label)}${s.key===k ? (s.dir>0?' ▲':' ▼') : ''}</th>`;
   return `<div class="table-wrap"><table class="tbl"><thead><tr>${th('title','title')}${th('status','status')}${th('priority','priority')}${th('due_date','dueDate')}${th('slots','slots')}${th('event','linkedEvent')}</tr></thead><tbody>
     ${list.map(tk => { const c = claimsOf(tk.id).length; return `<tr class="row-link" data-action="open-task" data-id="${tk.id}">
-      <td class="wrap">${esc(tk.title)}</td><td>${t(statusKey(tk.status))}</td><td><span class="badge p-${tk.priority}">${t(priorityKey(tk.priority))}</span></td>
+      <td class="wrap">${esc(tk.title)}${tk.repeat ? ` <span class="muted">${icon('repeat')}</span>` : ''}${tagLabels(tk.id)}</td><td>${t(statusKey(tk.status))}</td><td><span class="badge p-${tk.priority}">${t(priorityKey(tk.priority))}</span></td>
       <td class="${tk.due_date && tk.status!=='done' && tk.due_date < todayKey() ? 'overdue':''}">${tk.due_date ? esc(fmtDateShort(tk.due_date)) : ''}</td>
       <td><span class="badge ${c>=tk.slots?'full':''}">${t('spots',{n:c,m:tk.slots})}</span></td><td>${esc(taskEventLabel(tk))}</td></tr>`; }).join('')}
   </tbody></table></div>`;
+}
+
+/* ---------- Tag manager (admins) ---------- */
+function openTagManager(){
+  const el = openModal('<div id="tag-manager"></div>');
+  el.dataset.kind = 'tags';
+  renderTagManager();
+}
+function renderTagManager(){
+  const box = $('tag-manager');
+  if(!box) return;
+  const count = id => state.task_tags.filter(x => x.tag_id === id).length;
+  const draft = $('tag-new') ? $('tag-new').value : '';
+  box.innerHTML = modalHeader(t('manageTags')) +
+    (state.tags.length ? state.tags.slice().sort((a,b) => a.name.localeCompare(b.name, locale())).map(tg => `<div class="tag-row">
+      <button class="tag-color" style="background:${colorOf(tg.color)}" data-action="tag-color" data-id="${tg.id}" aria-label="${t('color')}"></button>
+      <input type="text" value="${esc(tg.name)}" maxlength="30" data-tag-name="${tg.id}">
+      <span class="note-hint">${count(tg.id)}</span>
+      <button class="modal-close" data-action="tag-delete" data-id="${tg.id}" aria-label="${t('delete')}">${icon('trash')}</button>
+    </div>`).join('') : `<div class="muted small">${t('noTags')}</div>`) +
+    `<div class="tag-row add"><input type="text" id="tag-new" maxlength="30" placeholder="${t('newTagName')}" value="${esc(draft)}"><button class="btn btn-primary btn-sm" data-action="tag-add">${t('add')}</button></div>`;
+  box.querySelectorAll('[data-tag-name]').forEach(inp => inp.addEventListener('change', async () => {
+    const name = inp.value.trim();
+    if(!name) return;
+    if(state.tags.some(x => x.id !== inp.dataset.tagName && norm(x.name) === norm(name))){ toast(t('tagExists'), true); return; }
+    try{ await api.update('tags', { id: inp.dataset.tagName }, { name }); }catch(e){ showError(e); }
+    await reload('tags');
+  }));
+  $('tag-new').addEventListener('keydown', e => { if(e.key === 'Enter') addTag(); });
+}
+async function addTag(){
+  const inp = $('tag-new'); const name = inp.value.trim();
+  if(!name) return;
+  if(state.tags.some(x => norm(x.name) === norm(name))){ toast(t('tagExists'), true); return; }
+  try{ await api.insert('tags', { id: uuid(), name, color: 'violet' }); inp.value = ''; }catch(e){ showError(e); }
+  await reload('tags');
 }
 
 /* ---------- Task form ---------- */
@@ -1595,26 +1872,36 @@ function eventOptionsForTask(selected){
 function openTaskForm(tk, preset){
   preset = preset || {};
   const sel = tk ? (tk.event_id ? tk.event_id + '|' + (tk.event_date || '') : '') : (preset.eventValue || '');
+  const follow = !!(tk && tk.repeat && tk.repeat.followEvent);
+  const myTags = tk ? tagsOf(tk.id).map(x => x.id) : [];
+  const due = tk && tk.due_date ? tk.due_date : (preset.due || '');
   const el = openModal(`
     ${modalHeader(tk ? t('editTask') : t('newTask'))}
     <div class="field"><label>${t('title')}</label><input type="text" id="tf-title" maxlength="200" value="${esc(tk ? tk.title : '')}" autofocus></div>
     <div class="field"><label>${t('description')}</label><textarea id="tf-desc" maxlength="5000">${esc(tk ? tk.description || '' : '')}</textarea></div>
     <div class="row2">
-      <div class="field"><label>${t('dueDate')}</label><input type="date" id="tf-due" value="${tk && tk.due_date ? tk.due_date : (preset.due || '')}"></div>
+      <div class="field"><label>${t('dueDate')}</label><input type="date" id="tf-due" value="${due}"></div>
       <div class="field"><label>${t('priority')}</label><select id="tf-prio">${['low','medium','high'].map(p => `<option value="${p}" ${(tk ? tk.priority : 'medium')===p?'selected':''}>${t(priorityKey(p))}</option>`).join('')}</select></div>
     </div>
     <div class="row2">
       <div class="field"><label>${t('slots')}</label><input type="number" id="tf-slots" min="1" max="50" value="${tk ? tk.slots : 1}"></div>
       <div class="field"><label>${t('status')}</label><select id="tf-status">${STATUSES.map(s => `<option value="${s}" ${(tk ? tk.status : 'todo')===s?'selected':''}>${t(statusKey(s))}</option>`).join('')}</select></div>
     </div>
+    <div class="field"><span class="field-label">${t('tags')}</span>${state.tags.length ? `<div class="tag-picks">${state.tags.slice().sort((a,b) => a.name.localeCompare(b.name, locale())).map(tg => `<label><input type="checkbox" name="tf-tag" value="${tg.id}" ${myTags.includes(tg.id)?'checked':''}><span><i style="background:${colorOf(tg.color)}"></i>${esc(tg.name)}</span></label>`).join('')}</div>` : `<div class="muted small">${t('noTags')}</div>`}</div>
+    ${follow ? `<div class="repeat-box small">${icon('repeat')} ${t('followsEvent')}</div>` : repeatSectionHtml('tr', tk && tk.repeat, due || todayKey())}
     <div class="field"><label>${t('linkedEvent')}</label><select id="tf-event">${eventOptionsForTask(sel)}</select></div>
     <div class="lock-error" id="tf-error" style="text-align:left"></div>
     <div class="modal-actions"><button class="btn" data-action="close-modal">${t('cancel')}</button><button class="btn btn-primary" id="tf-save">${t('save')}</button></div>
   `);
-  el.querySelector('#tf-save').addEventListener('click', async () => {
-    const q = s => el.querySelector(s);
+  const q = s => el.querySelector(s);
+  if(!follow){
+    const refreshRepeat = wireRepeat(el, 'tr', tk && tk.repeat, () => q('#tf-due').value || todayKey());
+    q('#tf-due').addEventListener('change', refreshRepeat);
+  }
+  q('#tf-save').addEventListener('click', async () => {
+    const err = q('#tf-error'); err.textContent = '';
     const title = q('#tf-title').value.trim();
-    if(!title){ q('#tf-error').textContent = t('errTitle'); return; }
+    if(!title){ err.textContent = t('errTitle'); return; }
     const [eventId, eventDate] = (q('#tf-event').value || '|').split('|');
     const status = q('#tf-status').value;
     const row = {
@@ -1622,16 +1909,32 @@ function openTaskForm(tk, preset){
       priority: q('#tf-prio').value, slots: Math.min(50, Math.max(1, parseInt(q('#tf-slots').value,10) || 1)),
       status, event_id: eventId || null, event_date: eventDate || null,
     };
+    if(follow) row.repeat = tk.repeat;
+    else{
+      const rep = readRepeat(el, 'tr', row.due_date || todayKey());
+      if(rep.error){ err.textContent = rep.error; return; }
+      if(rep.rrule && !row.due_date){ err.textContent = t('errRepeatDue'); return; }
+      row.repeat = rep.rrule;
+    }
     q('#tf-save').disabled = true;
     try{
+      let taskId;
       if(tk){
+        taskId = tk.id;
         if(status !== tk.status) row.position = nextPosition(status);
+        if(row.repeat && !tk.series_id) row.series_id = tk.id;
         await api.update('tasks', { id: tk.id }, row);
       }else{
-        await api.insert('tasks', { id: uuid(), ...row, position: nextPosition(status), created_by: state.uid });
+        taskId = uuid();
+        await api.insert('tasks', { id: taskId, ...row, position: nextPosition(status), created_by: state.uid,
+          series_id: row.repeat ? taskId : null, occurrence: 1 });
       }
+      const want = pickedIds(el, 'tf-tag'), have = myTags;
+      for(const id of want.filter(x => !have.includes(x))) await api.insert('task_tags', { task_id: taskId, tag_id: id });
+      for(const id of have.filter(x => !want.includes(x))) await api.remove('task_tags', { task_id: taskId, tag_id: id });
       closeModal(el); toast(t('saved'));
-      await reload('tasks');
+      await reload('tasks', 'task_tags');
+      if(tk && status === 'done' && tk.status !== 'done' && row.repeat) await createNextCopy(state.tasks.find(x => x.id === tk.id));
     }catch(e){ showError(e); q('#tf-save').disabled = false; }
   });
 }
@@ -1671,16 +1974,19 @@ function refreshTaskDetail(){
       ${canMoveTask(tk) ? `<select id="td-status" class="chip">${STATUSES.map(s => `<option value="${s}" ${tk.status===s?'selected':''}>${t(statusKey(s))}</option>`).join('')}</select>` : `<span class="badge">${t(statusKey(tk.status))}</span>`}
       ${tk.due_date ? `<span class="badge ${tk.status!=='done' && tk.due_date < todayKey() ? 'p-high':''}">${icon('clock')} ${esc(fmtDateShort(tk.due_date))}</span>` : ''}
     </div>
+    ${tagsOf(tk.id).length ? `<div class="detail-line">${icon('tag')}<span class="inline">${tagLabels(tk.id)}</span></div>` : ''}
+    ${tk.repeat ? `<div class="detail-line">${icon('repeat')}<span>${esc(tk.repeat.followEvent ? t('followsEvent') : ruleText(tk.repeat, tk.due_date || todayKey()))}</span></div>` : ''}
     ${evLabel ? `<div class="detail-line">${icon('link')}<a href="#" data-action="task-goto-event" data-id="${tk.id}">${esc(evLabel)}</a></div>` : ''}
     <div class="detail-line">${icon('user')}<span class="muted">${esc(t('createdBy', { name: profileName(tk.created_by) }))}</span></div>
     ${tk.description ? `<div class="detail-desc">${esc(tk.description)}</div>` : ''}
     <div class="section-title" style="margin-top:16px">${t('claimedBy')} · ${t('spots',{n:claims.length, m:tk.slots})}</div>
     ${claims.length ? claims.map(c => `<div class="claimer"><span class="avatar">${esc(initials(profileName(c.user_id)))}</span><span class="grow">${esc(profileName(c.user_id))}${c.user_id===state.uid ? ' '+t('you') : ''}</span>
-      ${isAdmin() && c.user_id !== state.uid ? `<button class="btn btn-sm btn-danger" data-action="unclaim-user" data-task="${tk.id}" data-user="${c.user_id}">${t('remove')}</button>` : ''}</div>`).join('') : `<div class="muted small">${t('nobodyYet')}</div>`}
+      ${canEditTask(tk) && c.user_id !== state.uid ? `<button class="btn btn-sm btn-danger" data-action="unclaim-user" data-task="${tk.id}" data-user="${c.user_id}">${t('remove')}</button>` : ''}</div>`).join('') : `<div class="muted small">${t('nobodyYet')}</div>`}
     <div style="margin-top:10px">
       ${mine ? `<button class="btn" data-action="unclaim" data-id="${tk.id}">${t('unclaim')}</button>`
              : `<button class="btn btn-primary" data-action="claim" data-id="${tk.id}" ${full?'disabled':''}>${full ? t('full') : t('claim')}</button>`}
     </div>
+    ${canEditTask(tk) && !full ? `<div class="inline" style="margin-top:10px"><select id="td-add-person" class="chip">${state.profiles.filter(p => p.role !== 'pending' && !claims.some(c => c.user_id === p.id)).map(p => `<option value="${p.id}">${esc(p.display_name || p.username)}</option>`).join('')}</select><button class="btn btn-sm" data-action="add-person" data-id="${tk.id}">${icon('plus')}${t('addPerson')}</button></div>` : ''}
     <div class="section-title" style="margin-top:20px">${t('comments')}</div>
     <div class="comments">${state.comments.length ? state.comments.map(c => `<div class="comment"><div class="comment-head"><span class="avatar">${esc(initials(profileName(c.user_id)))}</span><b class="grow">${esc(profileName(c.user_id))} <span class="when">${esc(fmtDateShort(istKey(c.created_at)))} ${hhmm(c.created_at)}</span></b>
       ${c.user_id === state.uid || isAdmin() ? `<button class="modal-close" data-action="delete-comment" data-id="${c.id}" aria-label="${t('delete')}">${icon('trash')}</button>` : ''}</div><div class="comment-body">${esc(c.body)}</div></div>`).join('') : `<div class="muted small">${t('noComments')}</div>`}</div>
@@ -1696,7 +2002,34 @@ async function moveTask(taskId, status, position){
   const prev = { status: tk.status, position: tk.position };
   Object.assign(tk, { status, position: pos }); renderAll(); // optimistic
   try{ await api.update('tasks', { id: taskId }, { status, position: pos }); }
-  catch(e){ Object.assign(tk, prev); renderAll(); showError(e); }
+  catch(e){ Object.assign(tk, prev); renderAll(); showError(e); return; }
+  if(status === 'done' && prev.status !== 'done' && tk.repeat) await createNextCopy(tk);
+}
+// Next due date (and event date) for a repeating task, or null when the rule has ended.
+function nextTaskDates(tk){
+  if(!tk || !tk.repeat || !tk.due_date) return null;
+  if(tk.repeat.followEvent){
+    const ev = state.events.find(e => e.id === tk.event_id);
+    if(!ev) return null;
+    const after = tk.event_date || tk.due_date;
+    const occs = expandEvent(ev, exceptionsOf(ev.id), istToIso(after, 0, 0), istToIso(addDays(after, 800), 0, 0));
+    const o = occs.find(x => x.originalDate > after);
+    return o ? { due: istKey(o.start), eventDate: o.originalDate } : null;
+  }
+  const r = tk.repeat, end = r.end || {};
+  if(end.type === 'count' && (tk.occurrence || 1) >= end.count) return null;
+  const open = { ...r, end: end.type === 'until' ? end : { type:'never' } };
+  const next = ruleDates(tk.due_date, open, addDays(tk.due_date, 800)).find(d => d > tk.due_date);
+  return next ? { due: next, eventDate: tk.event_date || null } : null;
+}
+async function createNextCopy(tk){
+  const n = nextTaskDates(tk);
+  if(!n) return;
+  try{
+    const id = await api.rpc('create_next_task_copy', { p_task_id: tk.id, p_due: n.due, p_event_date: n.eventDate });
+    if(id) toast(t('nextCopy', { date: fmtDateShort(n.due) }));
+  }catch(e){ showError(e); }
+  await reload('tasks', 'task_claims', 'task_tags');
 }
 function openMoveMenu(taskId){
   const tk = state.tasks.find(x => x.id === taskId);
@@ -1758,6 +2091,186 @@ document.addEventListener('touchstart', e => {
   pressTimer = setTimeout(() => { pressFired = true; openMoveMenu(card.dataset.task); }, 550);
 }, { passive:true });
 ['touchend','touchmove','touchcancel'].forEach(ev => document.addEventListener(ev, () => clearTimeout(pressTimer), { passive:true }));
+
+/* =====================================================================
+   Notes view
+   ===================================================================== */
+const NOTE_TABLES = ['notes','note_shares','note_hidden'];
+async function loadNotes(){
+  if(state.notesLoading) return;
+  state.notesLoading = true;
+  try{
+    const [n, s, hd] = await Promise.all(NOTE_TABLES.map(tb => api.list(tb)));
+    Object.assign(state, { notes: n, note_shares: s, note_hidden: hd, notesLoaded: true });
+  }catch(e){ showError(e); }
+  state.notesLoading = false;
+  if(state.notesLoaded) renderNotes(true);
+}
+async function reloadNotes(){
+  try{ for(const tb of NOTE_TABLES) state[tb] = await api.list(tb); }catch(e){ showError(e); }
+  renderNotes(true);
+}
+function hiddenNoteIds(){ return new Set(state.note_hidden.filter(x => x.user_id === state.uid).map(x => x.note_id)); }
+function canEditNote(n){ return n.author_id === state.uid || n.readers_can_edit; }
+function canDeleteNote(n){ return n.author_id === state.uid || (isAdmin() && n.visibility === 'members'); }
+function noteTitle(n){ return (n.title || '').trim() || t('untitled'); }
+function sharesOf(noteId){ return state.note_shares.filter(s => s.note_id === noteId).map(s => s.user_id); }
+function visIcon(v){ return icon(v === 'private' ? 'lock' : v === 'members' ? 'globe' : 'users'); }
+function visLabel(v){ return t({ private:'visPrivate', members:'visMembers', people:'visPeople' }[v]); }
+function stamp(iso){ return `${fmtDateShort(istKey(iso))} ${hhmm(iso)}`; }
+function visibleNotes(){
+  const f = state.noteFilter, q = norm(state.noteSearch.trim()), hidden = hiddenNoteIds();
+  return state.notes.filter(n => {
+    if(f === 'hidden' ? !hidden.has(n.id) : hidden.has(n.id)) return false;
+    if(f === 'mine' && n.author_id !== state.uid) return false;
+    if(f === 'shared' && n.author_id === state.uid) return false;
+    if(q && !norm(n.title + ' ' + n.body).includes(q)) return false;
+    return true;
+  }).sort((a,b) => String(b.updated_at).localeCompare(String(a.updated_at)));
+}
+// Keeps an open editor untouched on live updates unless force is set.
+function renderNotes(force){
+  const view = $('view-notes');
+  if(!state.notesLoaded){ view.innerHTML = `<div class="empty-state">…</div>`; loadNotes(); return; }
+  if(!force && state.noteEdit && $('ne-body') && view.dataset.editing === state.noteEdit.id){
+    $('notes-items').innerHTML = renderNoteItems();
+    updateConflictBanner();
+    return;
+  }
+  if(state.noteEdit && $('ne-body')){ state.noteEdit.title = $('ne-title').value; state.noteEdit.body = $('ne-body').value; }
+  const open = state.notes.find(n => n.id === state.openNoteId);
+  if(!open){ state.openNoteId = null; state.noteEdit = null; }
+  view.dataset.editing = state.noteEdit ? state.noteEdit.id : '';
+  view.innerHTML = `
+    <div class="page-header rule">
+      <div><span class="kicker">${esc(t('kNotes', { n: state.notes.length }))}</span><h1>${t('navNotes')}</h1></div>
+      <button class="btn btn-primary" data-action="new-note">${icon('plus')}${t('newNote')}</button>
+    </div>
+    <div class="notes-layout ${open ? 'has-open' : ''}">
+      <aside class="notes-list">
+        <input type="search" id="nf-search" class="search-input" placeholder="${t('searchNotes')}" value="${esc(state.noteSearch)}">
+        <div class="seg">${['all','mine','shared','hidden'].map(x => `<button class="${state.noteFilter===x?'active':''}" data-action="note-filter" data-f="${x}">${t({all:'nAll',mine:'nMine',shared:'nShared',hidden:'nHidden'}[x])}</button>`).join('')}</div>
+        <div id="notes-items">${renderNoteItems()}</div>
+      </aside>
+      <section class="note-pane">${open ? renderNotePane(open) : `<div class="empty-state">${t('pickNote')}</div>`}</section>
+    </div>`;
+  $('nf-search').addEventListener('input', e => { state.noteSearch = e.target.value; $('notes-items').innerHTML = renderNoteItems(); });
+  wirePicker(view);
+  const ne = $('ns-edit');
+  if(ne) ne.addEventListener('change', () => updateNoteSettings({ readers_can_edit: ne.checked }));
+  updateConflictBanner();
+}
+function renderNoteItems(){
+  const list = visibleNotes();
+  if(!list.length) return `<div class="muted small" style="padding:12px 4px">${t('noNotes')}</div>`;
+  return list.map(n => `<button class="note-item ${n.id===state.openNoteId?'active':''}" data-action="open-note" data-id="${n.id}">
+    <span class="note-item-title">${visIcon(n.visibility)}<b>${esc(noteTitle(n))}</b></span>
+    <span class="note-item-snippet">${esc((n.body.split('\n').find(l => l.trim()) || '').replace(/^#+\s*|^\s*[-*]\s+|^\s*\[[ xX]\]\s*/g, ''))}</span>
+    <span class="note-item-meta">${esc(profileName(n.author_id))} · ${esc(stamp(n.updated_at))}</span>
+  </button>`).join('');
+}
+function renderNotePane(n){
+  const mine = n.author_id === state.uid, editing = !!(state.noteEdit && state.noteEdit.id === n.id);
+  const hidden = hiddenNoteIds().has(n.id);
+  const head = `<div class="note-toolbar">
+      <button class="btn btn-sm note-back" data-action="close-note">${icon('left')}${t('back')}</button>
+      <span class="badge">${visIcon(n.visibility)} ${esc(visLabel(n.visibility))}${n.readers_can_edit && n.visibility !== 'private' ? ' · ' + esc(t('readersEdit')) : ''}</span>
+      <span class="grow"></span>
+      ${canEditNote(n) ? `<div class="seg"><button class="${editing?'':'active'}" data-action="note-view">${t('view')}</button><button class="${editing?'active':''}" data-action="note-edit">${t('edit')}</button></div>` : ''}
+      <button class="btn btn-sm" data-action="note-hide" data-id="${n.id}">${icon(hidden ? 'eye' : 'eyeoff')}${t(hidden ? 'unhide' : 'hide')}</button>
+      ${mine ? `<button class="btn btn-sm ${state.noteSettings?'active':''}" data-action="note-settings">${icon('users')}${t('noteSettings')}</button>` : ''}
+    </div>
+    ${mine && state.noteSettings ? renderNoteSettings(n) : ''}
+    <div id="ne-conflict"></div>`;
+  if(editing){
+    return head + `<input type="text" id="ne-title" class="note-title-input" maxlength="200" placeholder="${t('untitled')}" value="${esc(state.noteEdit.title)}">
+      <textarea id="ne-body" class="note-editor" maxlength="50000">${esc(state.noteEdit.body)}</textarea>
+      <div class="note-foot"><span class="note-hint">${esc(t('formatHelp'))}</span><span class="grow"></span>
+        <button class="btn" data-action="note-view">${t('cancel')}</button><button class="btn btn-primary" data-action="note-save">${t('save')}</button></div>`;
+  }
+  return head + `<h2 class="note-title">${esc(noteTitle(n))}</h2>
+    <div class="note-meta">${esc(t('lastEdited', { name: profileName(n.updated_by || n.author_id), date: stamp(n.updated_at) }))}</div>
+    <div class="note-body">${renderNoteBody(n.body, canEditNote(n)) || '<p class="muted">—</p>'}</div>
+    ${canDeleteNote(n) ? `<div class="modal-actions"><button class="btn btn-danger" data-action="note-delete" data-id="${n.id}">${t('delete')}</button></div>` : ''}`;
+}
+function renderNoteSettings(n){
+  return `<div class="repeat-box note-settings">
+    <div class="field"><span class="field-label">${t('visibility')}</span>
+      <div class="seg">${['private','members','people'].map(v => `<button class="${n.visibility===v?'active':''}" data-action="note-vis" data-v="${v}">${esc(visLabel(v))}</button>`).join('')}</div></div>
+    ${n.visibility === 'people' ? `<div class="field"><span class="field-label">${t('people')}</span>${memberPickerHtml('ns-people', sharesOf(n.id), true)}<button class="btn btn-sm" style="margin-top:8px" data-action="note-shares-save">${t('save')}</button></div>` : ''}
+    ${n.visibility !== 'private' ? `<label class="check"><input type="checkbox" id="ns-edit" ${n.readers_can_edit?'checked':''}> ${t('readersEdit')}</label>` : ''}
+  </div>`;
+}
+// Escape first, then apply a few line-based marks. No HTML from the note ever reaches the page.
+function noteInline(s){
+  return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+    .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+}
+function renderNoteBody(body, canEdit){
+  let html = '', inList = false;
+  body.split('\n').forEach((ln, i) => {
+    const chk = ln.match(/^\s*\[( |x|X)\]\s?(.*)$/);
+    const bullet = !chk && ln.match(/^\s*[-*]\s+(.*)$/);
+    if(bullet){ if(!inList){ html += '<ul>'; inList = true; } html += `<li>${noteInline(bullet[1])}</li>`; return; }
+    if(inList){ html += '</ul>'; inList = false; }
+    let m;
+    if(chk) html += `<label class="note-check"><input type="checkbox" data-action="note-check" data-line="${i}" ${chk[1] !== ' ' ? 'checked' : ''} ${canEdit ? '' : 'disabled'}><span>${noteInline(chk[2])}</span></label>`;
+    else if((m = ln.match(/^##\s+(.*)$/))) html += `<h3>${noteInline(m[1])}</h3>`;
+    else if((m = ln.match(/^#\s+(.*)$/))) html += `<h2>${noteInline(m[1])}</h2>`;
+    else if(!ln.trim()) html += '<div class="note-gap"></div>';
+    else html += `<p>${noteInline(ln)}</p>`;
+  });
+  if(inList) html += '</ul>';
+  return html;
+}
+function noteDirty(){
+  const ed = state.noteEdit; if(!ed || !$('ne-body')) return false;
+  const n = state.notes.find(x => x.id === ed.id);
+  return !n || $('ne-title').value !== n.title || $('ne-body').value !== n.body;
+}
+async function leaveNoteEditor(){
+  if(noteDirty() && !await confirmDialog(t('discardChanges'), t('discard'))) return false;
+  state.noteEdit = null;
+  return true;
+}
+function startNoteEdit(n){ state.noteEdit = { id: n.id, title: n.title, body: n.body, base: n.updated_at }; renderNotes(true); const b = $('ne-body'); if(b) b.focus(); }
+function updateConflictBanner(){
+  const box = $('ne-conflict');
+  if(!box || !state.noteEdit) return;
+  const n = state.notes.find(x => x.id === state.noteEdit.id);
+  const changed = !n || n.updated_at !== state.noteEdit.base;
+  box.innerHTML = changed ? `<div class="conflict">${esc(t('noteConflict', { name: n ? profileName(n.updated_by) : '—' }))} <button class="btn btn-sm" data-action="note-reload">${t('reload')}</button></div>` : '';
+}
+async function saveNote(){
+  const ed = state.noteEdit;
+  if(!ed || !$('ne-body')) return;
+  ed.title = $('ne-title').value; ed.body = $('ne-body').value;
+  try{
+    // only saves if nobody changed the note since it was opened
+    await api.update('notes', { id: ed.id, updated_at: ed.base }, { title: ed.title, body: ed.body });
+    state.noteEdit = null; toast(t('saved'));
+    await reloadNotes();
+  }catch(e){
+    if(/NO_PERMISSION/.test(String(e && e.message))){
+      for(const tb of NOTE_TABLES) state[tb] = await api.list(tb);
+      const n = state.notes.find(x => x.id === ed.id);
+      if(n && n.updated_at !== ed.base){ renderNotes(); return; }
+    }
+    showError(e);
+  }
+}
+async function toggleNoteCheck(line){
+  const n = state.notes.find(x => x.id === state.openNoteId);
+  if(!n || !canEditNote(n)) return;
+  const lines = n.body.split('\n');
+  lines[line] = lines[line].replace(/\[( |x|X)\]/, m => m === '[ ]' ? '[x]' : '[ ]');
+  try{ await api.update('notes', { id: n.id, updated_at: n.updated_at }, { body: lines.join('\n') }); }catch(e){ showError(e); }
+  await reloadNotes();
+}
+async function updateNoteSettings(patch){
+  try{ await api.update('notes', { id: state.openNoteId }, patch); }catch(e){ showError(e); }
+  await reloadNotes();
+}
 
 /* =====================================================================
    Members view (admins)
@@ -1871,6 +2384,83 @@ document.addEventListener('click', async e => {
       openEventDetail(ev.id + '|' + day);
       return;
     }
+    case 'add-person': {
+      const sel = $('td-add-person'); if(!sel || !sel.value) return;
+      try{ await api.insert('task_claims', { task_id: a.dataset.id, user_id: sel.value }); }catch(err){ showError(err); }
+      return reload('task_claims');
+    }
+    case 'tag-filter':
+      e.stopPropagation();
+      state.taskFilter.tag = a.dataset.id; closeAllModals();
+      if(state.view !== 'tasks') return setView('tasks');
+      return renderTasks();
+    case 'manage-tags': return openTagManager();
+    case 'tag-add': return addTag();
+    case 'tag-color': {
+      const tg = state.tags.find(x => x.id === a.dataset.id); if(!tg) return;
+      const keys = Object.keys(COLORS), next = keys[(keys.indexOf(tg.color) + 1) % keys.length];
+      try{ await api.update('tags', { id: tg.id }, { color: next }); }catch(err){ showError(err); }
+      return reload('tags');
+    }
+    case 'tag-delete': {
+      const tg = state.tags.find(x => x.id === a.dataset.id); if(!tg) return;
+      const n = state.task_tags.filter(x => x.tag_id === tg.id).length;
+      if(!await confirmDialog(t('confirmDeleteTag', { name: tg.name, n }))) return;
+      try{ await api.remove('tags', { id: tg.id }); }catch(err){ showError(err); }
+      return reload('tags', 'task_tags');
+    }
+    // notes
+    case 'new-note': {
+      if(!await leaveNoteEditor()) return;
+      const id = uuid();
+      try{ await api.insert('notes', { id, title: '', body: '', visibility: 'private', readers_can_edit: false, author_id: state.uid }); }
+      catch(err){ return showError(err); }
+      for(const tb of NOTE_TABLES) state[tb] = await api.list(tb);
+      state.openNoteId = id; state.noteSettings = false;
+      const n = state.notes.find(x => x.id === id);
+      return n ? startNoteEdit(n) : renderNotes(true);
+    }
+    case 'open-note':
+      if(a.dataset.id === state.openNoteId) return;
+      if(!await leaveNoteEditor()) return;
+      state.openNoteId = a.dataset.id; state.noteSettings = false;
+      return renderNotes(true);
+    case 'close-note':
+      if(!await leaveNoteEditor()) return;
+      state.openNoteId = null; return renderNotes(true);
+    case 'note-filter': state.noteFilter = a.dataset.f; return renderNotes(true);
+    case 'note-edit': { const n = state.notes.find(x => x.id === state.openNoteId); if(n && !state.noteEdit) startNoteEdit(n); return; }
+    case 'note-view': if(await leaveNoteEditor()) renderNotes(true); return;
+    case 'note-save': return saveNote();
+    case 'note-reload': state.noteEdit = null; return reloadNotes();
+    case 'note-settings': state.noteSettings = !state.noteSettings; return renderNotes(true);
+    case 'note-vis': return updateNoteSettings(a.dataset.v === 'private' ? { visibility: 'private', readers_can_edit: false } : { visibility: a.dataset.v });
+    case 'note-shares-save': {
+      const id = state.openNoteId, want = pickedIds($('view-notes'), 'ns-people'), have = sharesOf(id);
+      try{
+        for(const u of want.filter(x => !have.includes(x))) await api.insert('note_shares', { note_id: id, user_id: u });
+        for(const u of have.filter(x => !want.includes(x))) await api.remove('note_shares', { note_id: id, user_id: u });
+        toast(t('saved'));
+      }catch(err){ showError(err); }
+      return reloadNotes();
+    }
+    case 'note-hide': {
+      const id = a.dataset.id, hidden = hiddenNoteIds().has(id);
+      if(!hidden && !await leaveNoteEditor()) return;
+      try{
+        if(hidden) await api.remove('note_hidden', { note_id: id, user_id: state.uid });
+        else await api.insert('note_hidden', { note_id: id, user_id: state.uid });
+      }catch(err){ return showError(err); }
+      if(!hidden && state.noteFilter !== 'hidden') state.openNoteId = null;
+      return reloadNotes();
+    }
+    case 'note-check': return toggleNoteCheck(Number(a.dataset.line));
+    case 'note-delete': {
+      if(!await confirmDialog(t('confirmDeleteNote'))) return;
+      try{ await api.remove('notes', { id: a.dataset.id }); }catch(err){ return showError(err); }
+      state.openNoteId = null; state.noteEdit = null; toast(t('deleted'));
+      return reloadNotes();
+    }
     // members
     case 'm-role': return setRole(a.dataset.id, a.dataset.role);
     case 'm-reject': {
@@ -1888,6 +2478,7 @@ document.addEventListener('click', async e => {
 });
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape' && modalStack.length){ closeModal(); return; }
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's' && state.noteEdit && $('ne-body')){ e.preventDefault(); saveNote(); return; }
   if(e.key !== 'Enter') return;
   const id = e.target.id;
   if(id === 'si-user' || id === 'si-pass') doSignIn();
