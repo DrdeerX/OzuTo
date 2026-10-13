@@ -2,7 +2,10 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ÖzüTo">
 <title>ÖzüTo</title>
 <meta name="theme-color" content="#f3ece0">
 <link rel="icon" type="image/png" href="favicon.png">
@@ -44,6 +47,11 @@
   }
   *{box-sizing:border-box;}
   html,body{height:100%;}
+  .fp-done{ border:1px dashed var(--accent); padding:12px 14px; color:var(--text); }
+  .fp-code{ font-family:var(--font-mono); font-size:26px; letter-spacing:.18em; text-align:center; color:var(--accent); user-select:all; }
+  .reset-hint{ font-size:12.5px; color:var(--text-dim); margin:4px 0 8px; }
+  html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+  button, a, select, input, textarea, label{ touch-action:manipulation; }
   body{ margin:0; background:var(--bg); color:var(--text); font-family:var(--font-body); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; }
   [hidden]{ display:none !important; }
   button, input, select, textarea{ font:inherit; color:inherit; }
@@ -183,7 +191,7 @@
   .week-ev b{ display:block; font-family:var(--font-body); font-weight:500; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
   /* Schedule: list — timetable rows */
-  .agenda-day{ display:grid; grid-template-columns:76px 1fr; gap:16px; border-top:1px solid var(--rule); padding:12px 0 6px; }
+  .agenda-day{ display:grid; grid-template-columns:76px minmax(0,1fr); gap:16px; border-top:1px solid var(--rule); padding:12px 0 6px; }
   .agenda-day:last-child{ border-bottom:1px solid var(--rule); }
   .agenda-date{ line-height:1.1; }
   .agenda-date .dnum{ display:block; font-family:var(--font-display); font-size:34px; font-weight:500; }
@@ -401,12 +409,27 @@
     .ev-chip.timed .ev-dot, .ev-chip.timed .ev-time{ display:none; }
     .month-head{ padding:6px 2px; font-size:9.5px; text-align:center; letter-spacing:.04em; }
     .week-head div{ font-size:9.5px; padding:6px 1px; letter-spacing:0; }
-    .agenda-day{ grid-template-columns:54px 1fr; gap:10px; }
+    .agenda-day{ grid-template-columns:54px minmax(0,1fr); gap:10px; }
     .agenda-date .dnum{ font-size:28px; }
     .agenda-time{ width:72px; }
     .modal{ padding:0; }
     .modal-box{ margin-top:0; max-width:100%; min-height:100%; border-radius:0; border:none; padding:18px 16px; }
     .row2{ grid-template-columns:1fr; }
+    /* phones: no zoom-in when a field is tapped, bigger tap targets, room for the notch */
+    input, select, textarea{ font-size:16px !important; }
+    .btn{ min-height:40px; }
+    .btn-sm{ min-height:34px; padding:6px 11px; }
+    .btn-icon{ min-width:40px; }
+    .seg button{ padding:10px 12px; }
+    .lang-switch button{ min-height:34px; min-width:40px; }
+    .modal-close{ min-width:40px; min-height:40px; }
+    .agenda-main b{ white-space:normal; }
+    .topbar{ padding-top:max(10px, env(safe-area-inset-top)); padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right)); }
+    .main{ padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right)); padding-bottom:calc(60px + env(safe-area-inset-bottom)); }
+    .modal-box{ padding-bottom:calc(18px + env(safe-area-inset-bottom)); }
+    .sidebar{ padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom); }
+    .week-allday .ev-chip.due{ font-size:0; padding:1px 2px; text-align:center; }
+    .week-allday .ev-chip.due .icon{ margin:0; }
   }
 </style>
 </head>
@@ -425,6 +448,21 @@
       <button class="lock-btn" id="si-btn" data-action="signin" data-i18n="signIn"></button>
       <div class="lock-error" id="si-error"></div>
       <div class="lock-switch"><span data-i18n="noAccount"></span> <a data-action="show-signup" data-i18n="signUp"></a></div>
+      <div class="lock-switch"><a data-action="show-forgot" data-i18n="forgotPassword"></a></div>
+    </div>
+
+    <div id="forgot-box" hidden>
+      <h1 data-i18n="forgotTitle"></h1>
+      <p data-i18n="forgotSub"></p>
+      <div id="fp-form">
+        <input type="text" id="fp-user" autocomplete="username" data-i18n-ph="username" autocapitalize="off" autocorrect="off" spellcheck="false">
+        <input type="password" id="fp-pass" autocomplete="new-password" data-i18n-ph="newPassword">
+        <input type="password" id="fp-pass2" autocomplete="new-password" data-i18n-ph="repeatPassword">
+        <button class="lock-btn" id="fp-btn" data-action="forgot" data-i18n="sendRequest"></button>
+        <div class="lock-error" id="fp-error"></div>
+      </div>
+      <div id="fp-done" class="fp-done" hidden><p data-i18n="forgotDone" style="margin:0 0 8px"></p><div class="fp-code" id="fp-code"></div></div>
+      <div class="lock-switch"><a data-action="show-signin" data-i18n="backToSignIn"></a></div>
     </div>
 
     <div id="signup-box" hidden>
@@ -513,7 +551,7 @@ const I18N = {
     setupTitle:'Supabase ayarlanmadı', setupText:'index.html içindeki SUPABASE_URL ve SUPABASE_ANON_KEY değerlerini kulübün Supabase projesine göre ayarla.',
     demoBanner:'Demo modu — veriler sadece bu sekmede tutulur ve kaydedilmez.',
     errFill:'Kullanıcı adı ve şifre gir', errUserRule:'Kullanıcı adı: en az 3 karakter, sadece harf, rakam ve . _ -',
-    errPassLen:'Şifre en az 6 karakter olmalı', errPassMatch:'Şifreler eşleşmiyor', errTaken:'Bu kullanıcı adı alınmış',
+    errPassLen:'Şifre en az 6 karakter olmalı', forgotPassword:'Şifremi unuttum', forgotTitle:'Şifre sıfırlama', forgotSub:'Kullanıcı adını ve yeni şifreni yaz. Bir yönetici onaylayınca yeni şifren geçerli olur.', newPassword:'Yeni şifre', sendRequest:'İstek gönder', backToSignIn:'Girişe dön', forgotDone:'İsteğin gönderildi. Bu kodu bir yöneticiye kendin söyle (yüz yüze veya mesajla). Yönetici kodu girip onaylayınca yeni şifrenle giriş yapabilirsin.', resetCode:'Kişinin kodu', wrongCode:'Kod yanlış. İstek değişmedi.', resetRequests:'Şifre sıfırlama istekleri', resetHint:'Onaylamak için kişiden ekranında gördüğü kodu iste. Kodu yalnızca isteği gönderen kişi bilir.', requestedOn:'İstek: {date}', confirmResetApprove:'{name} için yeni şifreyi onaylamak üzere kişinin kodunu gir. Diğer oturumlarından çıkış yapılacak.', resetApproved:'Şifre değiştirildi', resetRejected:'İstek reddedildi', errPassMatch:'Şifreler eşleşmiyor', errTaken:'Bu kullanıcı adı alınmış',
     errBadLogin:'Kullanıcı adı veya şifre hatalı', errNoPerm:'Bunu yapma yetkin yok', errTaskFull:'Bu görev zaten dolu',
     errGeneric:'Bir hata oluştu', errTitle:'Başlık gerekli', errEndBeforeStart:'Bitiş, başlangıçtan sonra olmalı',
     errWeekdays:'En az bir gün seç', errUntil:'Bitiş tarihi başlangıçtan önce olamaz',
@@ -583,7 +621,7 @@ const I18N = {
     setupTitle:'Supabase is not configured', setupText:'Set SUPABASE_URL and SUPABASE_ANON_KEY in index.html to the club\'s Supabase project.',
     demoBanner:'Demo mode — data lives only in this tab and is not saved.',
     errFill:'Enter username and password', errUserRule:'Username: 3+ characters, letters, numbers and . _ - only',
-    errPassLen:'Password must be at least 6 characters', errPassMatch:'Passwords do not match', errTaken:'This username is taken',
+    errPassLen:'Password must be at least 6 characters', forgotPassword:'I forgot my password', forgotTitle:'Reset password', forgotSub:'Enter your username and a new password. It starts working once an admin approves it.', newPassword:'New password', sendRequest:'Send request', backToSignIn:'Back to sign in', forgotDone:'Request sent. Give this code to an admin yourself (in person or by message). Once they enter it and approve, sign in with your new password.', resetCode:'Their code', wrongCode:'Wrong code. The request was not changed.', resetRequests:'Password reset requests', resetHint:'To approve, ask the person for the code shown on their screen. Only the person who sent the request knows it.', requestedOn:'Requested {date}', confirmResetApprove:'Enter the code {name} received to approve their new password. They will be signed out of other devices.', resetApproved:'Password changed', resetRejected:'Request rejected', errPassMatch:'Passwords do not match', errTaken:'This username is taken',
     errBadLogin:'Wrong username or password', errNoPerm:'You do not have permission to do this', errTaskFull:'This task is already full',
     errGeneric:'Something went wrong', errTitle:'Title is required', errEndBeforeStart:'End must be after start',
     errWeekdays:'Pick at least one day', errUntil:'End date cannot be before the start',
@@ -918,7 +956,7 @@ function makeDemoApi(){
   const k0 = todayKey();
   const db = { profiles:[], events:[], event_exceptions:[], tasks:[], task_claims:[], task_comments:[], notes:[], note_shares:[], note_hidden:[], tags:[], task_tags:[] };
   const users = {}; // username -> { id, password }
-  let uid = null, listener = () => {};
+  let uid = null, listener = () => {}, resets = [];
   const addUser = (username, role) => {
     const id = uuid(); users[username] = { id, password:'demo123' };
     db.profiles.push({ id, username, display_name:username, role, created_at: now.toISOString() });
@@ -1071,6 +1109,27 @@ function makeDemoApi(){
     },
     async rpc(fn, params){
       await delay();
+      if(fn === 'request_password_reset'){
+        const u = users[String(params.p_username).trim().toLowerCase()];
+        if(!params.p_password || params.p_password.length < 6) throw new Error('Password must be 6 to 72 characters');
+        const code = Math.random().toString(16).slice(2, 10).toUpperCase().padEnd(8, '0');
+        if(!u) return code;
+        resets = resets.filter(r => r.user_id !== u.id).concat({ user_id: u.id, pw: params.p_password, code, created_at: new Date().toISOString() });
+        return code;
+      }
+      if(fn === 'list_password_resets'){
+        if(!isAdmin()) throw new Error('NO_PERMISSION');
+        return resets.map(r => { const p = db.profiles.find(x => x.id === r.user_id) || {}; return { user_id: r.user_id, username: p.username, display_name: p.display_name, created_at: r.created_at }; });
+      }
+      if(fn === 'resolve_password_reset'){
+        if(!isAdmin()) throw new Error('NO_PERMISSION');
+        const r = resets.find(x => x.user_id === params.p_user);
+        if(!r) throw new Error('Request not found');
+        if(params.p_approve && String(params.p_code || '').trim().toUpperCase() !== r.code) throw new Error('WRONG_CODE');
+        resets = resets.filter(x => x !== r);
+        if(params.p_approve){ const u = Object.values(users).find(x => x.id === r.user_id); if(u) u.password = r.pw; }
+        return null;
+      }
       if(fn !== 'create_next_task_copy') throw new Error('unknown function');
       const src = db.tasks.find(x => x.id === params.p_task_id);
       if(!src || !src.repeat) return null;
@@ -1141,9 +1200,9 @@ function colorOf(c){ return COLORS[c] || COLORS.violet; }
    ===================================================================== */
 function showAuthBox(which){
   state.authView = which;
-  for(const id of ['signin-box','signup-box','waiting-box','setup-box']) $(id).hidden = id !== which + '-box';
+  for(const id of ['signin-box','signup-box','forgot-box','waiting-box','setup-box']) $(id).hidden = id !== which + '-box';
   $('auth-screen').hidden = false; $('app').hidden = true;
-  const focus = which==='signin' ? 'si-user' : which==='signup' ? 'su-user' : null;
+  const focus = which==='signin' ? 'si-user' : which==='signup' ? 'su-user' : which==='forgot' ? 'fp-user' : null;
   if(focus) setTimeout(() => $(focus).focus(), 0);
 }
 function showWaiting(kind){
@@ -1176,11 +1235,61 @@ async function doSignUp(){
   catch(e){ err.textContent = errMessage(e); }
   finally{ $('su-btn').disabled = false; }
 }
+async function doForgot(){
+  const u = $('fp-user').value.trim(), p = $('fp-pass').value, p2 = $('fp-pass2').value, err = $('fp-error');
+  err.textContent = '';
+  if(!u || !p){ err.textContent = t('errFill'); return; }
+  if(p.length < 6){ err.textContent = t('errPassLen'); return; }
+  if(p !== p2){ err.textContent = t('errPassMatch'); return; }
+  $('fp-btn').disabled = true;
+  try{
+    const code = await api.rpc('request_password_reset', { p_username: u, p_password: p });
+    $('fp-code').textContent = code || '';
+    $('fp-pass').value = ''; $('fp-pass2').value = '';
+    $('fp-form').hidden = true; $('fp-done').hidden = false;
+  }catch(e){ err.textContent = errMessage(e); }
+  finally{ $('fp-btn').disabled = false; }
+}
+function showForgot(){
+  $('fp-error').textContent = ''; $('fp-form').hidden = false; $('fp-done').hidden = true;
+  $('fp-user').value = $('si-user').value; $('fp-pass').value = ''; $('fp-pass2').value = '';
+  showAuthBox('forgot');
+}
+// Password reset requests (admins only; read through a function, never the table).
+async function loadResets(){
+  if(!isAdmin()){ state.resets = []; return; }
+  try{ state.resets = await api.rpc('list_password_resets', {}) || []; }catch(e){ state.resets = []; }
+}
+function askCode(text){
+  return new Promise(resolve => {
+    let answered = false;
+    const el = openModal(`<p style="margin:0 0 10px">${esc(text)}</p>
+      <div class="field"><label>${t('resetCode')}</label><input type="text" id="reset-code-input" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12"></div>
+      <div class="modal-actions"><button class="btn" data-r="0">${t('cancel')}</button><button class="btn btn-primary" data-r="1">${t('approve')}</button></div>`,
+      { onClose: () => { if(!answered) resolve(null); } });
+    const inp = el.querySelector('#reset-code-input');
+    setTimeout(() => inp.focus(), 0);
+    const finish = ok => { answered = true; resolve(ok ? inp.value.trim().toUpperCase() || null : null); closeModal(el); };
+    el.querySelectorAll('[data-r]').forEach(b => b.addEventListener('click', () => finish(b.dataset.r === '1')));
+    inp.addEventListener('keydown', ev => { if(ev.key === 'Enter') finish(true); });
+  });
+}
+async function resolveReset(userId, approve){
+  const r = state.resets.find(x => x.user_id === userId);
+  let code = null;
+  if(approve){
+    code = await askCode(t('confirmResetApprove', { name: r ? r.username : '' }));
+    if(!code) return;
+  }
+  try{ await api.rpc('resolve_password_reset', { p_user: userId, p_approve: approve, p_code: code }); toast(t(approve ? 'resetApproved' : 'resetRejected')); }
+  catch(e){ if(/WRONG_CODE/.test(e.message || '')) toast(t('wrongCode')); else showError(e); }
+  await loadResets(); renderAll();
+}
 async function doSignOut(){
   if(unsubscribe){ unsubscribe(); unsubscribe = null; }
   await api.signOut();
   Object.assign(state, { uid:null, me:null, profiles:[], events:[], event_exceptions:[], tasks:[], task_claims:[],
-    tags:[], task_tags:[], notes:[], note_shares:[], note_hidden:[], notesLoaded:false, notesLoading:false, openNoteId:null, noteEdit:null });
+    tags:[], task_tags:[], resets:[], notes:[], note_shares:[], note_hidden:[], notesLoaded:false, notesLoading:false, openNoteId:null, noteEdit:null });
   closeAllModals();
   showAuthBox('signin');
 }
@@ -1199,6 +1308,7 @@ async function enterApp(){
   $('auth-screen').hidden = true; $('app').hidden = false;
   $('demo-banner').hidden = !DEMO;
   await loadAll();
+  await loadResets();
   startLive();
   renderAll();
 }
@@ -1270,7 +1380,7 @@ function renderAll(){
 }
 function renderNav(){
   if(state.view === 'members' && !isAdmin()) state.view = 'schedule';
-  const pendingCount = state.profiles.filter(p => p.role === 'pending').length;
+  const pendingCount = state.profiles.filter(p => p.role === 'pending').length + (state.resets || []).length;
   const items = [['schedule','calendar','navSchedule'], ['tasks','tasks','navTasks'], ['notes','note','navNotes'], ['teams','crown','navTeams']];
   if(isAdmin()) items.push(['members','users','navMembers']);
   $('nav').innerHTML = items.map(([v, ic, label]) =>
@@ -1278,7 +1388,10 @@ function renderNav(){
   const me = state.me;
   $('side-user').innerHTML = me ? `<span class="avatar">${esc(initials(me.display_name||me.username))}</span><div><div>${esc(me.display_name||me.username)}</div><div class="role">${esc(profileTitle(me))}</div></div>` : '';
 }
-function setView(v){ state.view = v; document.body.classList.remove('nav-open'); renderAll(); window.scrollTo(0,0); }
+function setView(v){
+  state.view = v; document.body.classList.remove('nav-open'); renderAll(); window.scrollTo(0,0);
+  if(v === 'members') loadResets().then(() => { if(state.view === 'members') renderAll(); });
+}
 
 /* =====================================================================
    Modals
@@ -2452,6 +2565,11 @@ function renderMembers(){
     <div class="page-header rule"><div><span class="kicker">${esc(t('kMembers',{n: members.length}))}</span><h1>${t('navMembers')}</h1></div></div>
     <div class="section-title">${t('pending')} (${pending.length})</div>
     <div class="card">${pending.length ? pending.map(p => row(p, `<div class="toolbar"><button class="btn btn-sm btn-danger" data-action="m-reject" data-id="${p.id}">${t('reject')}</button><button class="btn btn-sm btn-primary" data-action="m-role" data-role="member" data-id="${p.id}">${t('approve')}</button></div>`)).join('') : `<div class="empty-state">${t('noPending')}</div>`}</div>
+    ${(state.resets || []).length ? `<div class="section-title">${t('resetRequests')} (${state.resets.length})</div>
+    <p class="reset-hint">${t('resetHint')}</p>
+    <div class="card">${state.resets.map(r => `<div class="member-row"><span class="avatar">${esc(initials(r.display_name || r.username))}</span>
+      <div class="grow"><div><b>${esc(r.display_name || r.username)}</b></div><div class="muted small">@${esc(r.username)} · ${esc(t('requestedOn', { date: fmtDateShort(istKey(r.created_at)) }))}</div></div>
+      <div class="toolbar"><button class="btn btn-sm btn-danger" data-action="reset-reject" data-id="${r.user_id}">${t('reject')}</button><button class="btn btn-sm btn-primary" data-action="reset-approve" data-id="${r.user_id}">${t('approve')}</button></div></div>`).join('')}</div>` : ''}
     <div class="section-title">${t('members')} (${members.length})</div>
     <div class="card">${members.map(p => row(p, `<span class="badge ${p.role==='admin'?'accent':''}">${t(p.role==='admin'?'roleAdmin':'roleMember')}</span>` +
       clubRolePicker(p) +
@@ -2502,7 +2620,11 @@ document.addEventListener('click', async e => {
     case 'signin': return doSignIn();
     case 'signup': return doSignUp();
     case 'show-signup': $('si-error').textContent=''; return showAuthBox('signup');
-    case 'show-signin': $('su-error').textContent=''; return showAuthBox('signin');
+    case 'show-forgot': return showForgot();
+    case 'forgot': return doForgot();
+    case 'reset-approve': return resolveReset(a.dataset.id, true);
+    case 'reset-reject': return resolveReset(a.dataset.id, false);
+    case 'show-signin': $('su-error').textContent=''; $('fp-error').textContent=''; return showAuthBox('signin');
     case 'check-status': return route();
     case 'signout': return doSignOut();
     case 'lang': return setLang(a.dataset.lang);
