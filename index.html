@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ozu Tourism Club</title>
+<title>ÖzüTo</title>
 <meta name="theme-color" content="#f3ece0">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="logo.jpg">
@@ -61,7 +61,7 @@
   #auth-screen{ position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:9999; padding:16px; }
   .lock-box{ width:min(360px,100%); background:var(--bg-elev); border:1.5px dashed var(--rule); border-radius:var(--radius); padding:26px 24px 22px; text-align:left; }
   .lock-box .brand-mark{ display:flex; align-items:center; gap:10px; margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--rule); }
-  .lock-box .brand-mark .name{ font-family:var(--font-display); font-size:17px; line-height:1.1; }
+  .lock-box .brand-mark .name{ font-family:var(--font-display); font-size:22px; line-height:1.1; }
   .lock-box .brand-mark .sub{ display:block; font-family:var(--font-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
   .lock-box h1{ font-family:var(--font-display); font-size:26px; font-weight:500; margin:0 0 4px; }
   .lock-box p{ font-size:13px; color:var(--text-dim); margin:0 0 18px; }
@@ -84,7 +84,7 @@
   #app{ display:flex; min-height:100vh; }
   .sidebar{ width:232px; flex-shrink:0; background:var(--bg); color:var(--text); display:flex; flex-direction:column; padding:20px 14px; position:sticky; top:0; height:100vh; border-right:1px solid var(--rule); }
   .brand{ display:flex; align-items:center; gap:10px; padding:0 6px 18px; margin-bottom:12px; border-bottom:1px solid var(--border); }
-  .brand .name{ font-family:var(--font-display); font-size:17px; line-height:1.1; }
+  .brand .name{ font-family:var(--font-display); font-size:22px; line-height:1.1; }
   .brand .sub{ display:block; font-family:var(--font-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
   .nav-item{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; padding:8px 8px; border-radius:var(--radius-sm); background:transparent; border:none; border-left:2px solid transparent; color:var(--text-dim); font-size:14px; margin-bottom:2px; }
   .nav-item:hover{ color:var(--text); background:var(--bg-soft); }
@@ -396,7 +396,7 @@
 <!-- ======================= Auth screens ======================= -->
 <div id="auth-screen">
   <div class="lock-box">
-    <div class="brand-mark"><img class="logo-mark" src="logo.jpg" alt="OzU.To"><span><span class="name">Ozu Tourism Club</span><span class="sub">Özyeğin · Turizm Kulübü</span></span></div>
+    <div class="brand-mark"><img class="logo-mark" src="logo.jpg" alt="OzU.To"><span class="name">ÖzüTo</span></div>
 
     <div id="signin-box">
       <h1 data-i18n="signIn"></h1>
@@ -440,11 +440,11 @@
 <div id="app" hidden>
   <div class="topbar">
     <button data-action="toggle-nav" aria-label="Menu"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
-    <img class="logo-mark" src="logo.jpg" alt="OzU.To"><span>Ozu Tourism Club</span>
+    <img class="logo-mark" src="logo.jpg" alt="OzU.To"><span>ÖzüTo</span>
   </div>
   <div class="scrim" data-action="toggle-nav"></div>
   <aside class="sidebar">
-    <div class="brand"><img class="logo-mark" src="logo.jpg" alt="OzU.To"><span><span class="name">Ozu Tourism Club</span><span class="sub">Özyeğin · Turizm Kulübü</span></span></div>
+    <div class="brand"><img class="logo-mark" src="logo.jpg" alt="OzU.To"><span class="name">ÖzüTo</span></div>
     <nav id="nav"></nav>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-footer">
