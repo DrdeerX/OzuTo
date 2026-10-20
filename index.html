@@ -101,7 +101,16 @@
   .nav-badge{ margin-left:auto; background:var(--accent); color:var(--accent-contrast); font-family:var(--font-mono); font-size:10.5px; border-radius:var(--radius-sm); padding:0 6px; }
   .sidebar-spacer{ flex:1; }
   .sidebar-footer{ padding-top:12px; border-top:1px solid var(--border); }
-  .side-user{ display:flex; align-items:center; gap:9px; padding:4px 6px 10px; font-size:13.5px; }
+  .side-user{ display:flex; align-items:center; gap:9px; padding:6px 6px 10px; font-size:13.5px; width:100%; text-align:left; background:none; border:none; color:inherit; border-radius:var(--radius-sm); cursor:pointer; }
+  .side-user:hover{ background:var(--bg-soft); }
+  .profile-head{ display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+  .profile-head .avatar{ width:52px; height:52px; font-size:20px; }
+  .profile-head .pname{ font-family:var(--font-display); font-size:22px; line-height:1.15; }
+  .profile-facts{ display:grid; grid-template-columns:auto 1fr; gap:4px 14px; font-size:13px; margin-bottom:6px; }
+  .profile-facts dt{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-dim); padding-top:2px; }
+  .profile-facts dd{ margin:0; }
+  .profile-msg{ font-size:12.5px; min-height:18px; margin-top:6px; }
+  .profile-msg.err{ color:var(--danger); }
   .side-user .role{ font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-dim); }
   .side-btn{ display:flex; align-items:center; gap:8px; width:100%; padding:7px 8px; border-radius:var(--radius-sm); background:transparent; border:none; color:var(--text-dim); font-size:13px; text-align:left; }
   .side-btn:hover{ background:var(--bg-soft); color:var(--text); }
@@ -255,7 +264,7 @@
   .modal-actions .left{ margin-right:auto; }
   .field{ margin-bottom:12px; }
   .field > label, .field-label{ display:block; font-family:var(--font-mono); font-size:10.5px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:var(--text-dim); margin-bottom:5px; }
-  .field input[type=text], .field input[type=number], .field input[type=date], .field input[type=time], .field select, .field textarea{
+  .field input[type=text], .field input[type=password], .field input[type=number], .field input[type=date], .field input[type=time], .field select, .field textarea{
     width:100%; padding:9px 11px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg); font-size:14px; }
   .field textarea{ min-height:80px; resize:vertical; }
   .field input:focus, .field select:focus, .field textarea:focus, .comment-form textarea:focus{ outline:none; border-color:var(--rule); }
@@ -506,7 +515,7 @@
     <div class="sidebar-spacer"></div>
     <div class="sidebar-footer">
       <div class="offline-badge" id="offline-badge" hidden data-i18n="offline"></div>
-      <div class="side-user" id="side-user"></div>
+      <button class="side-user" id="side-user" data-action="profile"></button>
       <div class="lang-switch"><button data-action="lang" data-lang="tr">TR</button><button data-action="lang" data-lang="en">EN</button></div>
       <button class="side-btn" data-action="theme"><svg class="icon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span data-i18n="theme"></span></button>
       <button class="side-btn" data-action="signout"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span data-i18n="signOut"></span></button>
@@ -551,7 +560,7 @@ const I18N = {
     setupTitle:'Supabase ayarlanmadı', setupText:'index.html içindeki SUPABASE_URL ve SUPABASE_ANON_KEY değerlerini kulübün Supabase projesine göre ayarla.',
     demoBanner:'Demo modu — veriler sadece bu sekmede tutulur ve kaydedilmez.',
     errFill:'Kullanıcı adı ve şifre gir', errUserRule:'Kullanıcı adı: en az 3 karakter, sadece harf, rakam ve . _ -',
-    errPassLen:'Şifre en az 6 karakter olmalı', forgotPassword:'Şifremi unuttum', forgotTitle:'Şifre sıfırlama', forgotSub:'Kullanıcı adını ve yeni şifreni yaz. Bir yönetici onaylayınca yeni şifren geçerli olur.', newPassword:'Yeni şifre', sendRequest:'İstek gönder', backToSignIn:'Girişe dön', forgotDone:'İsteğin gönderildi. Bu kodu bir yöneticiye kendin söyle (yüz yüze veya mesajla). Yönetici kodu girip onaylayınca yeni şifrenle giriş yapabilirsin.', resetCode:'Kişinin kodu', wrongCode:'Kod yanlış. İstek değişmedi.', resetRequests:'Şifre sıfırlama istekleri', resetHint:'Onaylamak için kişiden ekranında gördüğü kodu iste. Kodu yalnızca isteği gönderen kişi bilir.', requestedOn:'İstek: {date}', confirmResetApprove:'{name} için yeni şifreyi onaylamak üzere kişinin kodunu gir. Diğer oturumlarından çıkış yapılacak.', resetApproved:'Şifre değiştirildi', resetRejected:'İstek reddedildi', errPassMatch:'Şifreler eşleşmiyor', errTaken:'Bu kullanıcı adı alınmış',
+    errPassLen:'Şifre en az 6 karakter olmalı', forgotPassword:'Şifremi unuttum', myProfile:'Profilim', displayName:'Görünen ad', saveName:'Adı kaydet', memberSince:'Üyelik', roleLbl:'Rol', positionLbl:'Görev', teamLbl:'Ekip', changePassword:'Şifre değiştir', currentPassword:'Mevcut şifre', passwordChanged:'Şifren değişti. Diğer cihazlarda çıkış yapıldı.', errCurrentPass:'Mevcut şifre yanlış', errSamePass:'Yeni şifre eskisinden farklı olmalı', nameSaved:'Ad kaydedildi', errNameLen:'Ad 1–40 karakter olmalı', forgotTitle:'Şifre sıfırlama', forgotSub:'Kullanıcı adını ve yeni şifreni yaz. Bir yönetici onaylayınca yeni şifren geçerli olur.', newPassword:'Yeni şifre', sendRequest:'İstek gönder', backToSignIn:'Girişe dön', forgotDone:'İsteğin gönderildi. Bu kodu bir yöneticiye kendin söyle (yüz yüze veya mesajla). Yönetici kodu girip onaylayınca yeni şifrenle giriş yapabilirsin.', resetCode:'Kişinin kodu', wrongCode:'Kod yanlış. İstek değişmedi.', resetRequests:'Şifre sıfırlama istekleri', resetHint:'Onaylamak için kişiden ekranında gördüğü kodu iste. Kodu yalnızca isteği gönderen kişi bilir.', requestedOn:'İstek: {date}', confirmResetApprove:'{name} için yeni şifreyi onaylamak üzere kişinin kodunu gir. Diğer oturumlarından çıkış yapılacak.', resetApproved:'Şifre değiştirildi', resetRejected:'İstek reddedildi', errPassMatch:'Şifreler eşleşmiyor', errTaken:'Bu kullanıcı adı alınmış',
     errBadLogin:'Kullanıcı adı veya şifre hatalı', errNoPerm:'Bunu yapma yetkin yok', errTaskFull:'Bu görev zaten dolu',
     errGeneric:'Bir hata oluştu', errTitle:'Başlık gerekli', errEndBeforeStart:'Bitiş, başlangıçtan sonra olmalı',
     errWeekdays:'En az bir gün seç', errUntil:'Bitiş tarihi başlangıçtan önce olamaz',
@@ -621,7 +630,7 @@ const I18N = {
     setupTitle:'Supabase is not configured', setupText:'Set SUPABASE_URL and SUPABASE_ANON_KEY in index.html to the club\'s Supabase project.',
     demoBanner:'Demo mode — data lives only in this tab and is not saved.',
     errFill:'Enter username and password', errUserRule:'Username: 3+ characters, letters, numbers and . _ - only',
-    errPassLen:'Password must be at least 6 characters', forgotPassword:'I forgot my password', forgotTitle:'Reset password', forgotSub:'Enter your username and a new password. It starts working once an admin approves it.', newPassword:'New password', sendRequest:'Send request', backToSignIn:'Back to sign in', forgotDone:'Request sent. Give this code to an admin yourself (in person or by message). Once they enter it and approve, sign in with your new password.', resetCode:'Their code', wrongCode:'Wrong code. The request was not changed.', resetRequests:'Password reset requests', resetHint:'To approve, ask the person for the code shown on their screen. Only the person who sent the request knows it.', requestedOn:'Requested {date}', confirmResetApprove:'Enter the code {name} received to approve their new password. They will be signed out of other devices.', resetApproved:'Password changed', resetRejected:'Request rejected', errPassMatch:'Passwords do not match', errTaken:'This username is taken',
+    errPassLen:'Password must be at least 6 characters', forgotPassword:'I forgot my password', myProfile:'My profile', displayName:'Display name', saveName:'Save name', memberSince:'Member since', roleLbl:'Role', positionLbl:'Position', teamLbl:'Team', changePassword:'Change password', currentPassword:'Current password', passwordChanged:'Password changed. Other devices were signed out.', errCurrentPass:'Current password is wrong', errSamePass:'New password must be different from the old one', nameSaved:'Name saved', errNameLen:'Name must be 1–40 characters', forgotTitle:'Reset password', forgotSub:'Enter your username and a new password. It starts working once an admin approves it.', newPassword:'New password', sendRequest:'Send request', backToSignIn:'Back to sign in', forgotDone:'Request sent. Give this code to an admin yourself (in person or by message). Once they enter it and approve, sign in with your new password.', resetCode:'Their code', wrongCode:'Wrong code. The request was not changed.', resetRequests:'Password reset requests', resetHint:'To approve, ask the person for the code shown on their screen. Only the person who sent the request knows it.', requestedOn:'Requested {date}', confirmResetApprove:'Enter the code {name} received to approve their new password. They will be signed out of other devices.', resetApproved:'Password changed', resetRejected:'Request rejected', errPassMatch:'Passwords do not match', errTaken:'This username is taken',
     errBadLogin:'Wrong username or password', errNoPerm:'You do not have permission to do this', errTaskFull:'This task is already full',
     errGeneric:'Something went wrong', errTitle:'Title is required', errEndBeforeStart:'End must be after start',
     errWeekdays:'Pick at least one day', errUntil:'End date cannot be before the start',
@@ -929,6 +938,13 @@ function makeSupabaseApi(){
       if(!data.session) await this.signIn(username, password);
     },
     async signOut(){ await sb.auth.signOut(); },
+    async changePassword(username, current, next){
+      const { error: e1 } = await sb.auth.signInWithPassword({ email: usernameToEmail(username), password: current });
+      if(e1) throw new Error('WRONG_CURRENT');
+      const { error: e2 } = await sb.auth.updateUser({ password: next });
+      if(e2) throw e2;
+      await sb.auth.signOut({ scope: 'others' });
+    },
     async userId(){ const { data } = await sb.auth.getSession(); return data.session ? data.session.user.id : null; },
     async list(table, match){ return check(await applyMatch(sb.from(table).select('*'), match || {})); },
     async insert(table, row){ check(await sb.from(table).insert(row)); },
@@ -1027,6 +1043,12 @@ function makeDemoApi(){
       const id = addUser(username.toLowerCase(), 'pending'); users[username.toLowerCase()].password = password; uid = id;
     },
     async signOut(){ uid = null; },
+    async changePassword(username, current, next){
+      await delay();
+      const u = users[username.toLowerCase()];
+      if(!u || u.id !== uid || u.password !== current) throw new Error('WRONG_CURRENT');
+      u.password = next;
+    },
     async userId(){ return uid; },
     async list(table, match){
       await delay();
@@ -1285,6 +1307,53 @@ async function resolveReset(userId, approve){
   catch(e){ if(/WRONG_CODE/.test(e.message || '')) toast(t('wrongCode')); else showError(e); }
   await loadResets(); renderAll();
 }
+function openProfile(){
+  const me = state.me;
+  if(!me) return;
+  document.body.classList.remove('nav-open');
+  const fact = (k, v) => v ? `<dt>${esc(t(k))}</dt><dd>${esc(v)}</dd>` : '';
+  const el = openModal(`${modalHeader(esc(t('myProfile')))}
+    <div class="profile-head"><span class="avatar">${esc(initials(me.display_name || me.username))}</span>
+      <div><div class="pname">${esc(me.display_name || me.username)}</div><div class="muted small">@${esc(me.username)}</div></div></div>
+    <dl class="profile-facts">
+      ${fact('roleLbl', t(me.role === 'admin' ? 'roleAdmin' : 'roleMember'))}
+      ${fact('positionLbl', me.position ? positionLabel(me.position) : '')}
+      ${fact('teamLbl', me.team && !me.position ? teamName(me.team) : '')}
+      ${fact('memberSince', fmtDateShort(istKey(me.created_at)))}
+    </dl>
+    <div class="section-title" style="margin-top:14px">${t('displayName')}</div>
+    <div class="field"><input type="text" id="pf-name" maxlength="40" value="${esc(me.display_name || me.username)}"></div>
+    <div class="modal-actions" style="margin-top:6px"><button class="btn" id="pf-name-btn">${t('saveName')}</button></div>
+    <div class="profile-msg" id="pf-name-msg"></div>
+    <div class="section-title" style="margin-top:14px">${t('changePassword')}</div>
+    <div class="field"><label>${t('currentPassword')}</label><input type="password" id="pf-cur" autocomplete="current-password"></div>
+    <div class="field"><label>${t('newPassword')}</label><input type="password" id="pf-new" autocomplete="new-password"></div>
+    <div class="field"><label>${t('repeatPassword')}</label><input type="password" id="pf-new2" autocomplete="new-password"></div>
+    <div class="modal-actions" style="margin-top:6px"><button class="btn btn-primary" id="pf-pass-btn">${t('changePassword')}</button></div>
+    <div class="profile-msg" id="pf-pass-msg"></div>`);
+  el.dataset.kind = 'profile';
+  const msg = (id, text, isErr) => { const m = el.querySelector(id); m.textContent = text; m.classList.toggle('err', !!isErr); };
+  el.querySelector('#pf-name-btn').addEventListener('click', async () => {
+    const name = el.querySelector('#pf-name').value.trim();
+    if(!name || name.length > 40){ msg('#pf-name-msg', t('errNameLen'), true); return; }
+    try{ await api.update('profiles', { id: state.uid }, { display_name: name }); msg('#pf-name-msg', t('nameSaved')); await reload('profiles'); state.me = state.profiles.find(p => p.id === state.uid) || state.me; renderNav(); el.querySelector('.pname').textContent = name; }
+    catch(e){ msg('#pf-name-msg', errMessage(e), true); }
+  });
+  el.querySelector('#pf-pass-btn').addEventListener('click', async () => {
+    const cur = el.querySelector('#pf-cur').value, nw = el.querySelector('#pf-new').value, nw2 = el.querySelector('#pf-new2').value;
+    if(!cur || !nw){ msg('#pf-pass-msg', t('errFill'), true); return; }
+    if(nw.length < 6){ msg('#pf-pass-msg', t('errPassLen'), true); return; }
+    if(nw !== nw2){ msg('#pf-pass-msg', t('errPassMatch'), true); return; }
+    if(nw === cur){ msg('#pf-pass-msg', t('errSamePass'), true); return; }
+    const btn = el.querySelector('#pf-pass-btn'); btn.disabled = true;
+    try{
+      await api.changePassword(me.username, cur, nw);
+      ['#pf-cur','#pf-new','#pf-new2'].forEach(id => { el.querySelector(id).value = ''; });
+      msg('#pf-pass-msg', t('passwordChanged'));
+    }catch(e){ msg('#pf-pass-msg', /WRONG_CURRENT/.test(e.message || '') ? t('errCurrentPass') : errMessage(e), true); }
+    finally{ btn.disabled = false; }
+  });
+}
 async function doSignOut(){
   if(unsubscribe){ unsubscribe(); unsubscribe = null; }
   await api.signOut();
@@ -1387,6 +1456,7 @@ function renderNav(){
     `<button class="nav-item ${state.view===v?'active':''}" data-action="nav" data-view="${v}">${icon(ic)}<span>${t(label)}</span>${v==='members' && pendingCount ? `<span class="nav-badge">${pendingCount}</span>` : ''}</button>`).join('');
   const me = state.me;
   $('side-user').innerHTML = me ? `<span class="avatar">${esc(initials(me.display_name||me.username))}</span><div><div>${esc(me.display_name||me.username)}</div><div class="role">${esc(profileTitle(me))}</div></div>` : '';
+  $('side-user').title = t('myProfile');
 }
 function setView(v){
   state.view = v; document.body.classList.remove('nav-open'); renderAll(); window.scrollTo(0,0);
@@ -2620,6 +2690,7 @@ document.addEventListener('click', async e => {
     case 'signin': return doSignIn();
     case 'signup': return doSignUp();
     case 'show-signup': $('si-error').textContent=''; return showAuthBox('signup');
+    case 'profile': return openProfile();
     case 'show-forgot': return showForgot();
     case 'forgot': return doForgot();
     case 'reset-approve': return resolveReset(a.dataset.id, true);

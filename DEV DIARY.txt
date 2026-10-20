@@ -1,0 +1,73 @@
+ÖzüTo — Dev Diary
+=================
+The Özyeğin Tourism Club's own workspace app (like a small Notion).
+Live site: https://drdeerx.github.io/OzuTo/
+Code:      https://github.com/DrdeerX/OzuTo
+
+
+WHAT IS WHAT
+------------
+index.html                  The whole app: design, text (TR/EN) and code in one file.
+logo.jpg, favicon.png       Club logo and browser tab icon.
+supabase-setup.sql          Database, part 1: members, schedule, tasks, comments.
+supabase-migration-2.sql    Part 2: notes, tags, repeating tasks.
+supabase-migration-3.sql    Part 3: club positions, teams, team tasks.
+supabase-migration-4.sql    Part 4: "I forgot my password" requests.
+docs/superpowers/specs/     Design notes written before each big feature.
+
+How it runs: GitHub Pages hosts index.html. All data lives in Supabase (an online
+database with logins). The .sql files are run once, in order, in the Supabase
+SQL Editor. They also hold the security rules (who can see and change what), so
+the rules work even if someone edits the page in their browser.
+
+
+TRY IT WITHOUT AN ACCOUNT
+-------------------------
+index.html?demo       Fake sample data, nothing is saved. Sign in as demo / demo123
+                      (also ayse, deniz, can, ece — same password).
+index.html?selftest   Checks the repeating-event date maths.
+
+
+DIARY
+-----
+13 Oct 2026
+- Started the app. Sign in with username + password (no email), sign-up screen,
+  "waiting for an admin" screen until approved.
+- Schedule: one-time and repeating events (daily, weekly, monthly, yearly).
+  Edit or delete "this one / this and following / all".
+- Tasks: claim, multiple people, priority, link to an event, board with
+  To do / In progress / Done, comments.
+- Turkish/English switch. Published on GitHub Pages.
+- New look: "passport / travel poster" theme, with a dark mode.
+- Notes tab: private, for all members, or for chosen people; "readers can edit"
+  switch; hide notes you don't need. Admins can't read private notes.
+- Tags for tasks (admins manage them) and task search.
+- Repeating tasks: finishing one creates the next copy.
+- Events can create a matching task for the people involved.
+- Added the club logo.
+
+14 Oct 2026
+- Renamed the app to "ÖzüTo".
+- Club positions: President, Vice President, and Presidents of Financial Affairs,
+  Events and Organisation, and Media. President and VP are admins.
+- Teams: each head manages their own team members. Team tasks are visible only to
+  that team, its head, the President and the VP.
+- Admins set anyone's club role from the Members tab.
+- Task deadlines now show on the Schedule.
+- Better on phones: no sideways scrolling, bigger buttons, no zoom when typing,
+  can be added to the home screen.
+- "I forgot my password": the person gets a code, tells it to an admin, and the
+  admin approves with that code on the Members tab.
+
+20 Oct 2026
+- Profile window: click your name at the bottom left. Change your display name
+  or your password (other devices get signed out).
+
+
+RULES OF THUMB
+--------------
+- Database change? Run the new .sql file in Supabase BEFORE pushing the app,
+  or the live site breaks.
+- Test in ?demo first, then push.
+- Keep at least two admins (e.g. President + VP), so someone can always approve
+  members and password resets.
