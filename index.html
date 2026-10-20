@@ -1239,7 +1239,7 @@ function userInTeam(p, team){ return !!p && p.role !== 'pending' && (p.team === 
 function teamName(team){ return team ? t({ finance:'teamFinance', events:'teamEvents', media:'teamMedia' }[team]) : t('clubWide'); }
 function positionLabel(pos){ return pos ? t({ president:'posPresident', vice_president:'posVP', head_finance:'posHeadFinance', head_events:'posHeadEvents', head_media:'posHeadMedia' }[pos]) : ''; }
 function holderOf(pos){ return state.profiles.find(p => p.position === pos) || null; }
-function profileTitle(p){ return p.position ? positionLabel(p.position) : p.team ? t('teamOf', { team: teamName(p.team) }) : t(p.role === 'admin' ? 'roleAdmin' : p.role === 'pending' ? 'rolePending' : 'roleMember'); }
+function profileTitle(p){ return p.position ? positionLabel(p.position) : p.team ? t('teamOf', { team: teamName(p.team) }) : t(p.role === 'admin' && isAdmin() ? 'roleAdmin' : p.role === 'pending' ? 'rolePending' : 'roleMember'); }
 function assignableTeams(){ return isAdmin() ? TEAMS : (headOf() ? [headOf()] : []); }
 function canEditEvent(ev){ return isAdmin() || ev.created_by === state.uid; }
 function canEditTask(tk){ return isAdmin() || tk.created_by === state.uid || (!!tk.team && tk.team === headOf()); }
@@ -1355,7 +1355,7 @@ function openProfile(){
     <div class="profile-head"><span class="avatar">${esc(initials(me.display_name || me.username))}</span>
       <div><div class="pname">${esc(me.display_name || me.username)}</div><div class="muted small">@${esc(me.username)}</div></div></div>
     <dl class="profile-facts">
-      ${fact('roleLbl', t(me.role === 'admin' ? 'roleAdmin' : 'roleMember'))}
+      ${isAdmin() ? fact('roleLbl', t(me.role === 'admin' ? 'roleAdmin' : 'roleMember')) : ''}
       ${fact('positionLbl', me.position ? positionLabel(me.position) : '')}
       ${fact('teamLbl', me.team && !me.position ? teamName(me.team) : '')}
       ${fact('memberSince', fmtDateShort(istKey(me.created_at)))}
