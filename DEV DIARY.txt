@@ -64,6 +64,7 @@ DIARY
   or your password (other devices get signed out).
 - Home tab: your tasks this week, reminders, this week's events, help wanted,
   latest notes. Events can be added to Google/Apple calendar.
+- Search box (Ctrl+K): tasks, events, notes and people in one place.
 
 
 RULES OF THUMB
