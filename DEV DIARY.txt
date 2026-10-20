@@ -62,6 +62,8 @@ DIARY
 20 Oct 2026
 - Profile window: click your name at the bottom left. Change your display name
   or your password (other devices get signed out).
+- Home tab: your tasks this week, reminders, this week's events, help wanted,
+  latest notes. Events can be added to Google/Apple calendar.
 
 
 RULES OF THUMB
